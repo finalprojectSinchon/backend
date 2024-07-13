@@ -1,15 +1,14 @@
 package com.finalproject.airport.member.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "tbl_user")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 public class UserEntity {
 
     @Id
@@ -32,8 +31,11 @@ public class UserEntity {
     @Column(name = "user_address")
     public String userAddress;
 
+    @Setter
     @Column(name = "user_role")
     private String userRole;
+
+
 
     public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole) {
         this.userId = userId;

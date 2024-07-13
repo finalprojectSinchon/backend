@@ -1,7 +1,10 @@
 package com.finalproject.airport.auth.config;
 
+import com.finalproject.airport.auth.filter.JWTFilter;
 import com.finalproject.airport.auth.filter.LoginFilter;
 import com.finalproject.airport.auth.util.JWTUtil;
+import com.finalproject.airport.member.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -41,7 +48,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
 
         //csrf disable
         http
@@ -55,12 +62,36 @@ public class SecurityConfig {
         http
                 .httpBasic((auth) -> auth.disable());
 
+        // cors 설정
+        http
+                .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+
+                        CorsConfiguration configuration = new CorsConfiguration();
+
+                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.setAllowCredentials(true);
+                        configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.setMaxAge(3600L);
+
+                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+
+                        return configuration;
+                    }
+                })));
+
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/", "/join").permitAll()
                         .requestMatchers("/admin","/api/hello").hasRole("ADMIN")
                         .anyRequest().authenticated());
+
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil, userRepository), LoginFilter.class);
 
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
