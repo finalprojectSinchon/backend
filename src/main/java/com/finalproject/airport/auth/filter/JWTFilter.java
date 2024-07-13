@@ -1,6 +1,8 @@
 package com.finalproject.airport.auth.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finalproject.airport.auth.util.JWTUtil;
+import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.member.repository.UserRepository;
 import com.finalproject.airport.member.service.CustomUserDetails;
@@ -80,6 +82,5 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 다음 필터로 이동
         filterChain.doFilter(request, response);
-
     }
 }

@@ -1,7 +1,7 @@
 package com.finalproject.airport.member.service;
 
 import com.finalproject.airport.member.entity.UserEntity;
-import com.finalproject.airport.member.join.JoinDTO;
+import com.finalproject.airport.member.dto.JoinDTO;
 import com.finalproject.airport.member.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ public class JoinService {
         String userEmail = joinDTO.getUserEmail();
         String userPhone = joinDTO.getUserPhone();
         String userAddress= joinDTO.getUserAddress();
+        String userName = joinDTO.getUserName();
 
 
         Boolean isExist = userRepository.existsByUserId(userId);
@@ -39,7 +40,7 @@ public class JoinService {
 
         String encodePassword = bCryptPasswordEncoder.encode(password);
 
-        UserEntity data = new UserEntity(userId,encodePassword,userEmail,userPhone,userAddress,"ROLE_USER");
+        UserEntity data = new UserEntity(userId,encodePassword,userEmail,userPhone,userAddress,"ROLE_USER",userName);
 
         userRepository.save(data);
     }

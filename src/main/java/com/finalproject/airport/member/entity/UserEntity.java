@@ -31,18 +31,22 @@ public class UserEntity {
     @Column(name = "user_address")
     public String userAddress;
 
+    @Column(name = "user_name")
+    public String userName;
+
     @Setter
     @Column(name = "user_role")
     private String userRole;
 
 
 
-    public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole) {
+    public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole, String userName) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
         this.userPhone = userPhone;
         this.userAddress = userAddress;
         this.userRole = userRole;
+        this.userName = userName;
     }
 }

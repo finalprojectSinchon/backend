@@ -1,5 +1,6 @@
 package com.finalproject.airport.member.service;
 
+import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,12 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(UserEntity userEntity) {
 
         this.userEntity = userEntity;
+    }
+
+    public UserDTO getUserDTO() {
+        UserDTO userDTO = new UserDTO(userEntity.getUserCode(),userEntity.getUserId(),userEntity.getUserEmail(),userEntity.getUserPhone(),userEntity.getUserAddress(),userEntity.getUserName(),userEntity.getUserRole());
+
+        return userDTO;
     }
 
 

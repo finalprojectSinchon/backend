@@ -1,6 +1,7 @@
 package com.finalproject.airport.auth.filter;
 
 import com.finalproject.airport.auth.util.JWTUtil;
+import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -53,6 +54,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         String userId = customUserDetails.getUsername();
+
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
