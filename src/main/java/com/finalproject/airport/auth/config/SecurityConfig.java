@@ -1,6 +1,7 @@
 package com.finalproject.airport.auth.config;
 
 import com.finalproject.airport.auth.filter.LoginFilter;
+import com.finalproject.airport.auth.util.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,9 +19,12 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
+    private final JWTUtil jwtUtil;
+
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtUtil = jwtUtil;
     }
 
     //AuthenticationManager Bean 등록
@@ -59,7 +63,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
 
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
         http
