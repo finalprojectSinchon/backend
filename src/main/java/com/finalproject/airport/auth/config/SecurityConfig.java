@@ -1,5 +1,6 @@
 package com.finalproject.airport.auth.config;
 
+import com.finalproject.airport.auth.filter.HeaderFilter;
 import com.finalproject.airport.auth.filter.JWTFilter;
 import com.finalproject.airport.auth.filter.LoginFilter;
 import com.finalproject.airport.auth.util.JWTUtil;
@@ -24,6 +25,7 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     private final AuthenticationConfiguration authenticationConfiguration;
 
     private final JWTUtil jwtUtil;
@@ -47,6 +49,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // cors 설정
+    @Bean
+    public HeaderFilter headerFilter() {
+        return new HeaderFilter();
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
 
@@ -62,26 +70,7 @@ public class SecurityConfig {
         http
                 .httpBasic((auth) -> auth.disable());
 
-        // cors 설정
-        http
-                .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-
-                        CorsConfiguration configuration = new CorsConfiguration();
-
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
-                        configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(3600L);
-
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
-                        return configuration;
-                    }
-                })));
 
         //경로별 인가 작업
         http
