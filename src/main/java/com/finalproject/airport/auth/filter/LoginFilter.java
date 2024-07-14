@@ -1,6 +1,8 @@
 package com.finalproject.airport.auth.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finalproject.airport.auth.util.JWTUtil;
+import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import jakarta.servlet.FilterChain;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -63,6 +66,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createJwt(userId, role, 60 * 60 * 10L);
 
         response.addHeader("Authorization", "Bearer " + token);
+
+        // body 설정
+        response.setContentType("application/json; charset=utf-8");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(new ResponseDTO(HttpStatus.OK,"로그인 성공",null));
+        response.getWriter().write(jsonResponse);
     }
 
 
@@ -72,5 +81,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info("login failed");
         response.setStatus(401);
 
+        response.setContentType("application/json; charset=utf-8");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(new ResponseDTO(HttpStatus.UNAUTHORIZED,"로그인 실패",null));
+        response.getWriter().write(jsonResponse);
     }
 }
