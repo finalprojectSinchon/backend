@@ -1,10 +1,12 @@
 package com.finalproject.airport.auth.controller;
 
+import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.JoinDTO;
 import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import com.finalproject.airport.member.service.JoinService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,7 +56,7 @@ public class AuthController {
         System.out.println(joinDTO.getUserId());
         joinService.joinProcess(joinDTO);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"회원가입 성공",null));
     }
 
     @GetMapping("/user-info")
