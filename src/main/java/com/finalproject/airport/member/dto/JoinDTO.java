@@ -28,6 +28,7 @@ public class JoinDTO {
     private String userEmail;
 
     @Pattern(regexp = "^\\d{10,11}$", message = "유효한 전화번호 형식을 입력해 주세요. (10-11자리 숫자)")
+    @NotBlank(message = "휴대폰 번호는 필수 입력값 입니다.")
     private String userPhone;
 
     @NotBlank(message = "주소는 필수 입력값 입니다.")

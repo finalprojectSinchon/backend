@@ -56,15 +56,16 @@ public class AuthController {
         System.out.println(joinDTO.getUserId());
         joinService.joinProcess(joinDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"회원가입 성공",null));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"회원가입이 완료되었습니다.",null));
     }
+
 
     @GetMapping("/user-info")
     public ResponseEntity<?> getUserInfo() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDTO userDTO =  userDetails.getUserDTO();
 
-        return ResponseEntity.ok().body(userDTO);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",userDTO));
     }
 
 }
