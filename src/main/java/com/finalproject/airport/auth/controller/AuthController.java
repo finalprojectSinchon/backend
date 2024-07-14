@@ -58,9 +58,11 @@ public class AuthController {
     }
 
     @GetMapping("/user-info")
-    public UserDTO getUserInfo() {
+    public ResponseEntity<?> getUserInfo() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getUserDTO();
+        UserDTO userDTO =  userDetails.getUserDTO();
+
+        return ResponseEntity.ok().body(userDTO);
     }
 
 }

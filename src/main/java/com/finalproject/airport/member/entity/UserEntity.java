@@ -1,5 +1,6 @@
 package com.finalproject.airport.member.entity;
 
+import com.finalproject.airport.auditi.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @ToString
-public class UserEntity {
+public class UserEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
