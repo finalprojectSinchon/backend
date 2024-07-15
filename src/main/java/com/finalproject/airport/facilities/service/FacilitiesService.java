@@ -1,7 +1,7 @@
 package com.finalproject.airport.facilities.service;
 
 import com.finalproject.airport.facilities.dto.FacilitiesDTO;
-import com.finalproject.airport.facilities.entity.Facilities;
+import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,10 +22,17 @@ public class FacilitiesService {
     public List<FacilitiesDTO> selectAllFacilities() {
 
 
-        List<Facilities> facilities = facilitiesRepository.findAll();
+        List<FacilitiesEntity> facilities = facilitiesRepository.findAll();
 
         return facilities.stream()
                 .map(fact -> modelMapper.map(fact, FacilitiesDTO.class)
                 ).collect(Collectors.toList());
+    }
+
+    public FacilitiesDTO getfailties(String facilitiesCode) {
+
+        FacilitiesEntity facilities = facilitiesRepository.findById(Integer.valueOf(facilitiesCode)).orElse(null);
+
+        return modelMapper.map(facilities, FacilitiesDTO.class);
     }
 }

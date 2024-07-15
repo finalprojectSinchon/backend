@@ -1,9 +1,7 @@
 package com.finalproject.airport.airplane.baggageclaim.dto;
 
-import com.finalproject.airport.airplane.AirplaneDTO;
+import com.finalproject.airport.airplane.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.*;
 
 import java.util.Date;
@@ -23,5 +21,5 @@ public class BaggageClaimDTO {
     private Date lastInspectionDate;
     private String manager;
     private String note;
-    private AirplaneDTO airplane;
+    private ArrivalAirplaneDTO airplane;
 }
