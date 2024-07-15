@@ -32,7 +32,7 @@ public class Airplane {
     private String airport;
 
     @Column(name = "FLIGHTID")
-    private int flightId;
+    private String flightId;       // 편명
 
     @Column(name = "CHKINRANGE")
     private String chkinrange;  // 체크인 카운터

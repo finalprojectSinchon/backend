@@ -3,6 +3,7 @@ package com.finalproject.airport.airplane.gate.entity;
 import com.finalproject.airport.airplane.Airplane;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -13,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class Gate {
 
     @Id
@@ -45,6 +47,9 @@ public class Gate {
     @ManyToOne
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
+
+    @Column(name = "ISACTIVE")
+    private String isActive;
 
     protected Gate(){}
 
