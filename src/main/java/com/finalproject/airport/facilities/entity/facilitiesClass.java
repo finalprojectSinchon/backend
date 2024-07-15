@@ -1,4 +1,4 @@
-package com.finalproject.airport.facilities.dto;
+package com.finalproject.airport.facilities.entity;
 
 public enum facilitiesClass {
     편의시설 , 이동수단
