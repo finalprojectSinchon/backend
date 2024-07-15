@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface GateRepository extends JpaRepository<Gate, Integer> {
 
 
-
+    Gate findBygateCode(int gateCode);
 }
