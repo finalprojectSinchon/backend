@@ -15,6 +15,8 @@ public class EquipmentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    
+
     private int equipmentCode;
 
     //장비 이름
