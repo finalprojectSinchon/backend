@@ -37,10 +37,8 @@ public class StoreService {
         return modelMapper.map(store, StoreDTO.class);
     }
 
-    @Transactional
     public void addStore(StoreRegistDTO storeRegistDTO) {
         StoreEntity storeEntity = modelMapper.map(storeRegistDTO, StoreEntity.class);
-        System.out.println("storeEntity = " + storeEntity);
         storeRepository.save(storeEntity);
     }
 
