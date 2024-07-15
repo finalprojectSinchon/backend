@@ -9,40 +9,41 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @ToString
-
-
+@Builder(toBuilder = true)
 public class EquipmentEntity {
 
-    //장비 코드
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "equipment_code")
+    
+
     private int equipmentCode;
 
     //장비 이름
-    @Column(name = "equipment_name")
     private String equipmentName;
 
     //장비 가격
-    @Column(name = "equipment_price")
     private int equipmentPrice;
 
-
     //장비 수량
-    @Column(name = "equipment_quantity")
     private int equipmentQuantity;
 
     //장비 위치
-    @Column(name = "equipment_location")
     private String equipmentLocation;
 
     //담당자
-    @Column(name = "equipment_assign")
-    private String equipmentAssign;
+    private String equipmentManager;
+
+    // 상태
+    private String equipmentStatus;
 
 
-
-
+    public EquipmentEntity(String equipmentName, int equipmentPrice, int equipmentQuantity, String equipmentLocation, String equipmentManager, String equipmentStatus) {
+        this.equipmentName = equipmentName;
+        this.equipmentPrice = equipmentPrice;
+        this.equipmentQuantity = equipmentQuantity;
+        this.equipmentLocation = equipmentLocation;
+        this.equipmentManager = equipmentManager;
+        this.equipmentStatus = equipmentStatus;
+    }
 }

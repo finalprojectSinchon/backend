@@ -1,6 +1,6 @@
 package com.finalproject.airport.member.entity;
 
-import com.finalproject.airport.auditi.BaseTimeEntity;
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

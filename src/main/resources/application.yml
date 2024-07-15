@@ -3,10 +3,9 @@ spring:
     url: jdbc:mysql://localhost:3306/airservice
     username: air
     password: air
-
     driver-class-name: com.mysql.cj.jdbc.Driver
   jwt:
-    secret: dkssudgktpdyqksrkdnjdydkssudgktpdyqksrkdnjdy
+    secret: 
 
   jpa:
     hibernate:

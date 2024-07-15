@@ -1,4 +1,4 @@
-package com.finalproject.airport.auditi;
+package com.finalproject.airport.common;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
