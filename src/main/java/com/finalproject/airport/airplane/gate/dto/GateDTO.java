@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.gate.dto;
 
-import com.finalproject.airport.airplane.AirplaneDTO;
+import com.finalproject.airport.airplane.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.gate.entity.GateType;
 import lombok.*;
 
@@ -21,6 +21,6 @@ public class GateDTO {
     private Date lastInspectionDate;
     private String manager;
     private String note;
-    private AirplaneDTO airplane;
+    private ArrivalAirplaneDTO airplane;
 
 }
