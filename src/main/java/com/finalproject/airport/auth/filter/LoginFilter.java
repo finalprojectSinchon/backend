@@ -23,7 +23,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 @Slf4j
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
@@ -70,7 +72,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // body 설정
         response.setContentType("application/json; charset=utf-8");
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(new ResponseDTO(HttpStatus.OK,"로그인 성공",null));
+        Map<String, Object> JSONToken = new HashMap<>();
+        JSONToken.put("Authorization", "Bearer " + token);
+        String jsonResponse = objectMapper.writeValueAsString(new ResponseDTO(HttpStatus.OK,"로그인 성공",JSONToken));
         response.getWriter().write(jsonResponse);
     }
 
