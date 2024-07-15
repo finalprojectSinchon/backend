@@ -17,8 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-
-
 public class InspectionController {
 
     private final InspectionService inspectionService;
@@ -32,7 +30,7 @@ public class InspectionController {
     }
 
     @GetMapping("/inspection/{inspectionCode}")
-    public ResponseEntity<?> getInspectionByStoreCode(@PathVariable String inspectionCode) {
+    public ResponseEntity<?> getInspectionByStoreCode(@PathVariable int inspectionCode) {
         InspectionDTO inspection = inspectionService.getInspection(inspectionCode);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"안전 점검 조회 성공", inspection ));
