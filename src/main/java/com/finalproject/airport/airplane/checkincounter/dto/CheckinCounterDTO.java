@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.checkincounter.dto;
 
-import com.finalproject.airport.airplane.AirplaneDTO;
+import com.finalproject.airport.airplane.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterType;
 import lombok.*;
 
@@ -21,5 +21,5 @@ public class CheckinCounterDTO {
     private Date lastInspectionDate;
     private String manager;
     private String note;
-    private AirplaneDTO airplane;
+    private ArrivalAirplaneDTO airplane;
 }
