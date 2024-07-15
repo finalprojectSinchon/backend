@@ -1,10 +1,7 @@
 package com.finalproject.airport.equipment.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -20,6 +17,7 @@ public class EquipmentEntity {
 
     //장비 코드
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "equipment_code")
     private int equipmentCode;
 

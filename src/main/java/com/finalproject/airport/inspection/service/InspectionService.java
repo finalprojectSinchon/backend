@@ -14,7 +14,7 @@ public class InspectionService {
 
 
 
-    public InspectionDTO getInspection(String storeCode) {
+    public InspectionDTO getInspection(int inspectionCode) {
 
         return null;
     }
