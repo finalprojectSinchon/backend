@@ -65,7 +65,8 @@ public class JWTFilter extends OncePerRequestFilter {
         UserEntity userEntity = userRepository.findByUserId(userId);
 
         if (userEntity == null) {
-            log.error("User not found for userId: " + userId);
+            log.error("userId 찾을수 없음: " + userId);
+
             filterChain.doFilter(request, response);
             return;
         }
