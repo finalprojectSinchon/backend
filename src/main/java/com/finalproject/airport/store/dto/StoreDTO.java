@@ -3,7 +3,13 @@ package com.finalproject.airport.store.dto;
 import com.finalproject.airport.store.entity.StoreType;
 import com.finalproject.airport.store.entity.StoreWork;
 import jakarta.persistence.*;
+import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class StoreDTO {
 
     private int storeId;

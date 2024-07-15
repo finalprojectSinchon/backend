@@ -50,4 +50,11 @@ public class StoreService {
         storeEntity = storeEntity.toBuilder().storeStatus("중단").build();
         storeRepository.save(storeEntity);
     }
+
+    public void updateStore(int storeCode, StoreDTO storeDTO) {
+        storeDTO.setStoreId(storeCode);
+        StoreEntity storeEntity = storeRepository.findById(storeCode).orElseThrow(IllegalArgumentException::new);
+        storeEntity = modelMapper.map(storeDTO, StoreEntity.class);
+        storeRepository.save(storeEntity);
+    }
 }

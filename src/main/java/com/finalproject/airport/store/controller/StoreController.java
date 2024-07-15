@@ -31,8 +31,12 @@ public class StoreController {
     @GetMapping("/store/{storeCode}")
     public ResponseEntity<?> getStoreByStoreCode(@PathVariable String storeCode) {
         StoreDTO store = storeService.getStore(storeCode);
+        if(store == null) {
+            return ResponseEntity.notFound().build();
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"점포 상세 조회 성공", store));
+        } else {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "점포 상세 조회 성공", store));
+        }
     }
 
     @PostMapping("/store")
@@ -58,5 +62,17 @@ public class StoreController {
         }
     }
 
+    @PutMapping("/store/{storeCode}")
+    public ResponseEntity<?> updateStore(@PathVariable int storeCode, StoreDTO storeDTO) {
+            try {
+                storeService.updateStore(storeCode,storeDTO);
+
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"수정에 성공하였습니다.",null));
+            } catch (Exception e) {
+
+                return ResponseEntity.internalServerError().build();
+            }
+
+    }
 
 }
