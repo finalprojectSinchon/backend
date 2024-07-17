@@ -1,10 +1,7 @@
 package com.finalproject.airport.auth.controller;
 
 import com.finalproject.airport.common.ResponseDTO;
-import com.finalproject.airport.member.dto.JoinDTO;
-import com.finalproject.airport.member.dto.UserDTO;
-import com.finalproject.airport.member.dto.UserModifyDTO;
-import com.finalproject.airport.member.dto.UserPasswordCheckDTO;
+import com.finalproject.airport.member.dto.*;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import com.finalproject.airport.member.service.JoinService;
 import jakarta.validation.Valid;
@@ -13,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -78,6 +72,14 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.",null));
         }
 
+    }
+
+    @PostMapping("/api/v1/account/change-password")
+    public ResponseEntity<?> passwordChange(@RequestBody ChangePasswordDTO changePasswordDTO){
+
+        ResponseEntity<?> response = joinService.passwordChange(changePasswordDTO);
+
+        return response;
     }
 
 

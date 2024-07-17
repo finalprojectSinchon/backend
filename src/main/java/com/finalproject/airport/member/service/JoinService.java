@@ -1,11 +1,8 @@
 package com.finalproject.airport.member.service;
 
 import com.finalproject.airport.common.ResponseDTO;
-import com.finalproject.airport.member.dto.UserDTO;
-import com.finalproject.airport.member.dto.UserModifyDTO;
-import com.finalproject.airport.member.dto.UserPasswordCheckDTO;
+import com.finalproject.airport.member.dto.*;
 import com.finalproject.airport.member.entity.UserEntity;
-import com.finalproject.airport.member.dto.JoinDTO;
 import com.finalproject.airport.member.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -80,5 +77,25 @@ public class JoinService {
 
         UserEntity user = userRepository.findById(passwordCheckDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
         return bCryptPasswordEncoder.matches(passwordCheckDTO.getUserPassword(),user.getUserPassword());
+    }
+
+    public ResponseEntity<?> passwordChange(ChangePasswordDTO changePasswordDTO) {
+
+        // 새로운 비밀번호 비밀번호 확인
+        if(changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())){
+            // 비밀번호 인코드
+            String encodePassword = bCryptPasswordEncoder.encode(changePasswordDTO.getNewPassword());
+            // 변경
+            UserEntity user = userRepository.findById(changePasswordDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
+            UserEntity newUser = user.toBuilder().userPassword(encodePassword).build();
+            userRepository.save(newUser);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.ACCEPTED,"비밀번호 변경에 성공하였습니다.",null));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDTO(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다.",null));
+        }
+
+
+
+
     }
 }
