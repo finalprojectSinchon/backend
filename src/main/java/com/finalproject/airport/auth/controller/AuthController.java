@@ -74,7 +74,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/api/v1/account/change-password")
+    @PutMapping("/api/v1/account/change-password")
     public ResponseEntity<?> passwordChange(@RequestBody ChangePasswordDTO changePasswordDTO){
 
         ResponseEntity<?> response = joinService.passwordChange(changePasswordDTO);
