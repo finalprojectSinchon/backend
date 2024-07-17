@@ -31,11 +31,12 @@ public class JoinDTO {
     @NotBlank(message = "휴대폰 번호는 필수 입력값 입니다.")
     private String userPhone;
 
-    @NotBlank(message = "주소는 필수 입력값 입니다.")
     private String userAddress;
 
     @NotBlank(message = "이름은 필수 입력값 입니다.")
     private String userName;
+
+    private String userAbout;
 
 
     private String userRole;

@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
@@ -51,12 +52,13 @@ public class AuthController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid JoinDTO joinDTO){
+    public ResponseEntity<?> join(@RequestBody JoinDTO joinDTO){
 
-        System.out.println(joinDTO.getUserId());
-        joinService.joinProcess(joinDTO);
+        System.out.println("joinDTO = " + joinDTO);
 
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"회원가입이 완료되었습니다.",null));
+        ResponseEntity<?> response = joinService.joinProcess(joinDTO);
+
+        return response;
     }
 
 

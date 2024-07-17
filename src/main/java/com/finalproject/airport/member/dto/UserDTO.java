@@ -26,7 +26,9 @@ public class UserDTO {
 
     private String userRole;
 
-    public UserDTO(int userCode, String userId, String userEmail, String userPhone, String userAddress, String userName, String userRole) {
+    private String userAbout;
+
+    public UserDTO(int userCode, String userId, String userEmail, String userPhone, String userAddress, String userName, String userRole, String userAbout) {
         this.userCode = userCode;
         this.userId = userId;
         this.userEmail = userEmail;
@@ -34,5 +36,6 @@ public class UserDTO {
         this.userAddress = userAddress;
         this.userName = userName;
         this.userRole = userRole;
+        this.userAbout = userAbout;
     }
 }
