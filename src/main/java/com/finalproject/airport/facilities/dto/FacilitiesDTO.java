@@ -1,6 +1,6 @@
 package com.finalproject.airport.facilities.dto;
 
-import com.finalproject.airport.facilities.entity.facilitesType;
+import com.finalproject.airport.facilities.entity.FacilitesType;
 import lombok.*;
 
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class FacilitiesDTO {
 
     private String facilitiesName;
 
-    private facilitesType facilitiesType;
+    private FacilitesType facilitiesType;
 
     private String facilitiesManager;
 
