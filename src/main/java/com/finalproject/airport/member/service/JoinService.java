@@ -3,6 +3,7 @@ package com.finalproject.airport.member.service;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.dto.UserModifyDTO;
+import com.finalproject.airport.member.dto.UserPasswordCheckDTO;
 import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.member.dto.JoinDTO;
 import com.finalproject.airport.member.repository.UserRepository;
@@ -73,5 +74,11 @@ public class JoinService {
         userRepository.save(modifiedUser);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"수정 성공하였습니다.",null));
+    }
+
+    public Boolean passwordCheck(UserPasswordCheckDTO passwordCheckDTO) {
+
+        UserEntity user = userRepository.findById(passwordCheckDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
+        return bCryptPasswordEncoder.matches(passwordCheckDTO.getUserPassword(),user.getUserPassword());
     }
 }

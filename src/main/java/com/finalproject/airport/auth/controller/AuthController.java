@@ -4,6 +4,7 @@ import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.JoinDTO;
 import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.dto.UserModifyDTO;
+import com.finalproject.airport.member.dto.UserPasswordCheckDTO;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import com.finalproject.airport.member.service.JoinService;
 import jakarta.validation.Valid;
@@ -66,7 +67,18 @@ public class AuthController {
         return response;
     }
 
+    @PostMapping("/api/v1/account/password-check")
+    public ResponseEntity<?> passwordCheck(@RequestBody UserPasswordCheckDTO passwordCheckDTO){
 
+        Boolean CorrectPassword = joinService.passwordCheck(passwordCheckDTO);
+
+        if(CorrectPassword){
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"비밀번호가 일치합니다.",null));
+        } else {
+            return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.",null));
+        }
+
+    }
 
 
     @GetMapping("/user-info")
