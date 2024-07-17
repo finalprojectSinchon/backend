@@ -26,7 +26,7 @@ public class FacilitiesEntity {
     private String facilitiesName;   // 시설물이름   ex)이동수단 = 2층 화장실 , 편의시설 = 화장실 남,여
 
     @Enumerated(EnumType.STRING)
-    private facilitesType facilitiesType; // 시설물종류  ex)이동수단 = 엘베,에스컬, 무빙워크  , 편의시설 = 화장실
+    private FacilitesType facilitiesType; // 시설물종류  ex)이동수단 = 엘베,에스컬, 무빙워크  , 편의시설 = 화장실
 
 
     private String facilitiesManager;  // 담당자

@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/airplane")
-public class baggageClaimController {
+public class BaggageClaimController {
 
     private final BaggageClaimService service;
 
     @Autowired
-    public baggageClaimController(BaggageClaimService service){
+    public BaggageClaimController(BaggageClaimService service){
         this.service = service;
     }
 
