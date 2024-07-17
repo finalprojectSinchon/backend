@@ -56,16 +56,6 @@ public class MaintenanceController {
         }
     }
 
-    // 정비 삭제
-    @PutMapping("/maintenance/{maintenanceCode}")
-    public ResponseEntity<?> deleteMaintenance(@PathVariable int maintenanceCode) {
-        boolean isDeleted = maintenanceService.deleteMaintenance(maintenanceCode);
-        if (isDeleted) {
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정비 삭제 성공", null));
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponseDTO(HttpStatus.NOT_FOUND, "해당 코드의 정비 항목을 찾을 수 없습니다.", null));
-        }
-    }
+
 
 }
