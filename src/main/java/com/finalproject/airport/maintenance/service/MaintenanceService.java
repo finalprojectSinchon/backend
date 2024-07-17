@@ -1,57 +1,29 @@
 package com.finalproject.airport.maintenance.service;
 
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
-import com.finalproject.airport.maintenance.entity.MaintenanceEntity;
-import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class MaintenanceService {
 
-    private final MaintenanceRepository maintenanceRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
+    // 예시 데이터로 정비 항목 목록을 반환하는 메서드
     public List<MaintenanceDTO> getMaintenanceList() {
-       List<MaintenanceEntity> maintenanceList = maintenanceRepository.findAll();
-       List<MaintenanceDTO> maintenanceDTOList = new ArrayList<>();
-       maintenanceList.forEach(maintenanceEntity -> maintenanceDTOList.add(modelMapper.map(maintenanceEntity, MaintenanceDTO.class)));
-
-       return maintenanceDTOList;
+        List<MaintenanceDTO> maintenanceList = new ArrayList<>();
+        return maintenanceList;
     }
 
-    public MaintenanceDTO getMaintenance(int maintenanceCode) {
-        MaintenanceEntity maintenanceEntity = maintenanceRepository.findById(Integer.valueOf(maintenanceCode)).orElse(null);
-
-        return modelMapper.map(maintenanceEntity, MaintenanceDTO.class);
+    // 특정 코드에 대한 정비 항목을 반환하는 메서드
+    public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
+        List<MaintenanceDTO> maintenanceList = getMaintenanceList();
+        for (MaintenanceDTO maintenance : maintenanceList) {
+            if (maintenance.getMaintenanceCode() == maintenanceCode) {
+                return maintenance;
+            }
+        }
+        return null; // 해당 코드의 정비 항목이 없을 경우 null 반환
     }
-
-    public void add(MaintenanceDTO maintenanceDTO) {
-        MaintenanceEntity maintenanceEntity = modelMapper.map(maintenanceDTO, MaintenanceEntity.class);
-        maintenanceRepository.save(maintenanceEntity);
-    }
-
-    public void softDeleteMaintenance(int maintenanceCode) {
-        MaintenanceEntity maintenanceEntity = maintenanceRepository.findById(maintenanceCode).orElseThrow(IllegalArgumentException::new);
-
-        maintenanceEntity = maintenanceRepository.findById(maintenanceCode).orElseThrow(IllegalArgumentException::new);
-        maintenanceRepository.delete(maintenanceEntity);
-
-    }
-
-    public void updateMaintenance(int maintenanceCode, MaintenanceDTO maintenanceDTO) {
-        maintenanceDTO.setMaintenanceCode(maintenanceCode);
-        MaintenanceEntity maintenanceEntity = maintenanceRepository.findById(maintenanceCode).orElseThrow(IllegalArgumentException::new);
-        maintenanceEntity = modelMapper.map(maintenanceDTO, MaintenanceEntity.class);
-        maintenanceRepository.save(maintenanceEntity);
-    }
-
 }
