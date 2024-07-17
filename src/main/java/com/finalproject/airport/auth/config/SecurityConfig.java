@@ -1,6 +1,5 @@
 package com.finalproject.airport.auth.config;
 
-import com.finalproject.airport.auth.filter.HeaderFilter;
 import com.finalproject.airport.auth.filter.JWTFilter;
 import com.finalproject.airport.auth.filter.LoginFilter;
 import com.finalproject.airport.auth.util.JWTUtil;
@@ -49,14 +48,28 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // cors 설정
-    @Bean
-    public HeaderFilter headerFilter() {
-        return new HeaderFilter();
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, UserRepository userRepository) throws Exception {
+
+        // CORS 설정
+        http.cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+            @Override
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                CorsConfiguration configuration = new CorsConfiguration();
+
+                // 특정 도메인 허용 설정 (http://localhost:5713)
+                configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5713"));
+                configuration.setAllowedMethods(Collections.singletonList("*"));  // 모든 HTTP 메서드 허용
+                configuration.setAllowCredentials(true);  // 인증 정보 허용
+                configuration.setAllowedHeaders(Collections.singletonList("*"));  // 모든 헤더 허용
+                configuration.setMaxAge(3600L);  // Preflight 요청 결과를 캐시할 시간 설정
+
+                configuration.setExposedHeaders(Collections.singletonList("Authorization"));  // 노출할 응답 헤더 설정
+
+                return configuration;
+            }
+        })));
 
         //csrf disable
         http
@@ -81,6 +94,8 @@ public class SecurityConfig {
 
         http
                 .addFilterBefore(new JWTFilter(jwtUtil, userRepository), LoginFilter.class);
+
+        // CORS 필터 추가
 
         http
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
