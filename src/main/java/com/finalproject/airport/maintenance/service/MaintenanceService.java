@@ -10,20 +10,24 @@ import java.util.List;
 @Service
 public class MaintenanceService {
 
-    // 예시 데이터로 정비 항목 목록을 반환하는 메서드
+    private final List<MaintenanceDTO> maintenanceList = new ArrayList<>();
+
     public List<MaintenanceDTO> getMaintenanceList() {
-        List<MaintenanceDTO> maintenanceList = new ArrayList<>();
         return maintenanceList;
     }
 
-    // 특정 코드에 대한 정비 항목을 반환하는 메서드
+
     public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
-        List<MaintenanceDTO> maintenanceList = getMaintenanceList();
         for (MaintenanceDTO maintenance : maintenanceList) {
             if (maintenance.getMaintenanceCode() == maintenanceCode) {
                 return maintenance;
             }
         }
-        return null; // 해당 코드의 정비 항목이 없을 경우 null 반환
+        return null;
+    }
+
+    public MaintenanceDTO addMaintenance(MaintenanceDTO maintenanceDTO) {
+        maintenanceList.add(maintenanceDTO);
+        return maintenanceDTO;
     }
 }
