@@ -3,6 +3,7 @@ package com.finalproject.airport.auth.controller;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.JoinDTO;
 import com.finalproject.airport.member.dto.UserDTO;
+import com.finalproject.airport.member.dto.UserModifyDTO;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import com.finalproject.airport.member.service.JoinService;
 import jakarta.validation.Valid;
@@ -33,8 +34,6 @@ public class AuthController {
 
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
 
-
-
         return "Hello World" + name ;
     }
 
@@ -54,12 +53,21 @@ public class AuthController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody @Valid JoinDTO joinDTO){
 
-        System.out.println("joinDTO = " + joinDTO);
-
         ResponseEntity<?> response = joinService.joinProcess(joinDTO);
 
         return response;
     }
+
+    @PostMapping("/user")
+    public ResponseEntity<?> modifyUser(@RequestBody @Valid UserModifyDTO userModifyDTO){
+
+        System.out.println("들어옴?");
+        ResponseEntity<?> response = joinService.modifyUser(userModifyDTO);
+
+        return response;
+    }
+
+
 
 
     @GetMapping("/user-info")
