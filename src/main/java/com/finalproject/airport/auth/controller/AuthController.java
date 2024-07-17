@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody JoinDTO joinDTO){
+    public ResponseEntity<?> join(@RequestBody @Valid JoinDTO joinDTO){
 
         System.out.println("joinDTO = " + joinDTO);
 
