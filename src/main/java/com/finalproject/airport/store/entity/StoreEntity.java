@@ -1,5 +1,6 @@
 package com.finalproject.airport.store.entity;
 
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 @Getter
 @ToString
 @Builder(toBuilder = true)
-public class StoreEntity {
+public class StoreEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

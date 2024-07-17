@@ -1,5 +1,6 @@
 package com.finalproject.airport.maintenance.entity;
 
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class MaintenanceEntity {
+public class MaintenanceEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

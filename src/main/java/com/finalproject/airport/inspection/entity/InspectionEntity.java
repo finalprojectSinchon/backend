@@ -1,6 +1,7 @@
 package com.finalproject.airport.inspection.entity;
 
 
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.Date;
 @ToString
 @Builder(toBuilder = true)
 
-public class InspectionEntity {
+public class InspectionEntity extends BaseTimeEntity {
 
     @Id
     @Column(name = "inspection_code")

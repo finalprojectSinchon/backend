@@ -1,6 +1,7 @@
 package com.finalproject.airport.airplane.checkincounter.entity;
 
 import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @ToString
-public class CheckinCounter {
+public class CheckinCounter extends BaseTimeEntity {
 
     @Id
     @Column(name = "CHECKINCOUNTER_CODE")

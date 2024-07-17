@@ -1,6 +1,7 @@
 package com.finalproject.airport.airplane.baggageclaim.entity;
 
 import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @ToString
-public class BaggageClaim {
+public class BaggageClaim extends BaseTimeEntity {
 
     @Id
     @Column(name = "BAGGAGECLAIM_CODE", nullable = false)
