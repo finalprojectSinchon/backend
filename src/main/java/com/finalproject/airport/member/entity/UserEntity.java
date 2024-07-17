@@ -3,6 +3,7 @@ package com.finalproject.airport.member.entity;
 import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Table(name = "tbl_user")
@@ -18,6 +19,7 @@ public class UserEntity extends BaseTimeEntity {
     public int userCode;
 
     @Column(name = "user_id")
+    @Comment(value = "유저 아이디")
     public String userId;
 
     @Column(name = "user_password")
@@ -35,13 +37,16 @@ public class UserEntity extends BaseTimeEntity {
     @Column(name = "user_name")
     public String userName;
 
+    @Column(name = "user_about")
+    public String userAbout;
+
     @Setter
     @Column(name = "user_role")
     private String userRole;
 
 
 
-    public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole, String userName) {
+    public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole, String userName, String userAbout) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
@@ -49,5 +54,6 @@ public class UserEntity extends BaseTimeEntity {
         this.userAddress = userAddress;
         this.userRole = userRole;
         this.userName = userName;
+        this.userAbout = userAbout;
     }
 }
