@@ -43,12 +43,16 @@ public class GateController {
     @GetMapping("/gate")
     public ResponseEntity<ResponseDTO> getGate(){
 
+        System.out.println("gate");
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
         List<GateDTO> gateList = gateService.findAll();
         Map<String,Object> responseMap = new HashMap<>();
         responseMap.put("gateList",gateList);
+
+        System.out.println("gateList:"+gateList);
 
         return ResponseEntity.ok()
                 .headers(headers)

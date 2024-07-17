@@ -1,10 +1,22 @@
 package com.finalproject.airport.airplane.checkincounter.controller;
 
 
+import com.finalproject.airport.airplane.checkincounter.dto.CheckinCounterDTO;
 import com.finalproject.airport.airplane.checkincounter.service.CheckinCounterService;
+import com.finalproject.airport.airplane.gate.dto.GateDTO;
+import com.finalproject.airport.common.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/airplane")
@@ -16,5 +28,16 @@ public class CheckinCounterController {
     public CheckinCounterController(CheckinCounterService service){
         this.service = service;
     }
+
+    // 체크인카운터 등록
+    @PostMapping("/gate")
+    public ResponseEntity<?> insertchkinCounter(@ModelAttribute CheckinCounterDTO chkinCounter){
+
+        service.insertchkinCounter(chkinCounter);
+
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }

@@ -22,4 +22,5 @@ public class CheckinCounterDTO {
     private String manager;
     private String note;
     private ArrivalAirplaneDTO airplane;
+    private char isActive;
 }

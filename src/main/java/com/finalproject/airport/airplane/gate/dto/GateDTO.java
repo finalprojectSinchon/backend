@@ -14,6 +14,7 @@ import java.util.Date;
 @ToString
 public class GateDTO {
 
+    private int gateCode;
     private String location;
     private GateType gateType;
     private String status;

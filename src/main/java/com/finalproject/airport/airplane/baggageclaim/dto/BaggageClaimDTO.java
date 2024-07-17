@@ -22,4 +22,5 @@ public class BaggageClaimDTO {
     private String manager;
     private String note;
     private ArrivalAirplaneDTO airplane;
+    private char isActive;
 }
