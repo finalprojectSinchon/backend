@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, Integer> {
 
 
-
+    CheckinCounter findBycheckinCounterCode(int checkinCounterCode);
 }

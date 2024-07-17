@@ -30,12 +30,47 @@ public class CheckinCounterController {
     }
 
     // 체크인카운터 등록
-    @PostMapping("/gate")
+    @PostMapping("/checkin-counter")
     public ResponseEntity<?> insertchkinCounter(@ModelAttribute CheckinCounterDTO chkinCounter){
 
         service.insertchkinCounter(chkinCounter);
 
         return ResponseEntity.ok().build();
+    }
+
+    // 체크인카운터 전체 조회
+    @GetMapping("/checkin-counter")
+    public ResponseEntity<ResponseDTO> getChkinCounter(){
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        List<CheckinCounterDTO> chkinCounterList = service.findAll();
+        Map<String,Object> responseMap = new HashMap<>();
+        responseMap.put("chkinCounterList",chkinCounterList);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK,"체크인카운터 전체 조회 ",responseMap));
+
+    }
+
+    // 체크인카운터 상세 조회
+    @GetMapping("/checkin-counter/{checkinCounterCode}")
+    public ResponseEntity<ResponseDTO> chkinCounterDetail(@PathVariable int checkinCounterCode){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        CheckinCounterDTO chkinCounter = service.findBycheckinCounterCode(checkinCounterCode);
+
+        Map<String,Object> responseMap = new HashMap<>();
+        responseMap.put("chkinCounter",chkinCounter);
+
+        return ResponseEntity.ok().headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK,"체크인카운터 조회",responseMap));
+
     }
 
 
