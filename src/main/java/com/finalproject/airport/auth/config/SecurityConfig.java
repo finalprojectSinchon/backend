@@ -89,7 +89,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/", "/join").permitAll()
                         .requestMatchers("/admin","/api/hello").hasRole("ADMIN")
-                        .requestMatchers("/user-info","/api/v1/**").authenticated()      // 로그인 한 사용자만 접근 가능
+                        .requestMatchers("/user-info","/api/v1/**","/user").authenticated()      // 로그인 한 사용자만 접근 가능
                         .anyRequest().authenticated());
 
         http

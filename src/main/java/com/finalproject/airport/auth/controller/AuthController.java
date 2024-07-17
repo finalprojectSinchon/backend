@@ -61,7 +61,6 @@ public class AuthController {
     @PostMapping("/user")
     public ResponseEntity<?> modifyUser(@RequestBody @Valid UserModifyDTO userModifyDTO){
 
-        System.out.println("들어옴?");
         ResponseEntity<?> response = joinService.modifyUser(userModifyDTO);
 
         return response;
