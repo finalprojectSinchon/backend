@@ -39,6 +39,10 @@ public class MaintenanceService {
         return null;
     }
 
+    // 정비 항목 삭제
+    public boolean deleteMaintenance(int maintenanceCode) {
+        return maintenanceList.removeIf(maintenance -> maintenance.getMaintenanceCode() == maintenanceCode);
+    }
 
 
 }
