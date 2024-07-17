@@ -1,9 +1,12 @@
 package com.finalproject.airport.member.service;
 
 import com.finalproject.airport.common.ResponseDTO;
+import com.finalproject.airport.member.dto.UserDTO;
+import com.finalproject.airport.member.dto.UserModifyDTO;
 import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.member.dto.JoinDTO;
 import com.finalproject.airport.member.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,10 +18,12 @@ public class JoinService {
     private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ModelMapper modelMapper;
 
-    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.modelMapper = modelMapper;
     }
 
     public ResponseEntity<?> joinProcess(JoinDTO joinDTO) {
@@ -55,5 +60,18 @@ public class JoinService {
         userRepository.save(data);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"회원가입이 완료되었습니다.",null));
+    }
+
+    public ResponseEntity<?> modifyUser(UserModifyDTO userModifyDTO) {
+
+        UserEntity user = userRepository.findById(userModifyDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
+
+        UserEntity modifiedUser = user.toBuilder().userName(userModifyDTO.getUserName()).userEmail(userModifyDTO.getUserEmail()).userPhone(userModifyDTO.getUserPhone())
+                .userAddress(userModifyDTO.getUserAddress()).userAbout(userModifyDTO.getUserAbout()).build();
+
+        System.out.println("modifiedUser = " + modifiedUser);
+        userRepository.save(modifiedUser);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"수정 성공하였습니다.",null));
     }
 }

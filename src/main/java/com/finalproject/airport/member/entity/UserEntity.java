@@ -11,6 +11,7 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class UserEntity extends BaseTimeEntity {
 
     @Id
@@ -37,14 +38,20 @@ public class UserEntity extends BaseTimeEntity {
     @Column(name = "user_name")
     public String userName;
 
-    @Column(name = "user_about")
+    @Column(name = "user_about", columnDefinition = "TEXT")
     public String userAbout;
 
     @Setter
     @Column(name = "user_role")
     private String userRole;
 
-
+    public UserEntity(String userEmail, String userPhone, String userAddress, String userName, String userAbout) {
+        this.userEmail = userEmail;
+        this.userPhone = userPhone;
+        this.userAddress = userAddress;
+        this.userName = userName;
+        this.userAbout = userAbout;
+    }
 
     public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole, String userName, String userAbout) {
         this.userId = userId;
