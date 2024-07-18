@@ -22,6 +22,11 @@ public class MaintenanceService {
         return null;
     }
 
+    public List<MaintenanceDTO> getMaintenanceList() {
+
+        return maintenanceList;
+    }
+
     // 정비 항목 추가/등록
     public MaintenanceDTO addMaintenance(MaintenanceDTO maintenanceDTO) {
         maintenanceList.add(maintenanceDTO);
@@ -43,6 +48,7 @@ public class MaintenanceService {
     public boolean deleteMaintenance(int maintenanceCode) {
         return maintenanceList.removeIf(maintenance -> maintenance.getMaintenanceCode() == maintenanceCode);
     }
+
 
 
 }
