@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class JoinService {
 
@@ -96,6 +98,14 @@ public class JoinService {
 
 
 
+
+    }
+
+    public void saveprofileImg(Map<String, Object> info) {
+
+        UserEntity user = userRepository.findById((Integer) info.get("userCode")).orElseThrow();
+        UserEntity newUser = user.toBuilder().userImg((String) info.get("profileImageUrl")).build();
+        userRepository.save(newUser);
 
     }
 }

@@ -11,9 +11,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 @RestController
 public class AuthController {
@@ -89,6 +91,14 @@ public class AuthController {
         UserDTO userDTO =  userDetails.getUserDTO();
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",userDTO));
+    }
+
+    @PostMapping("/api/v1/profile/img")
+    public ResponseEntity<?> profileImg(@RequestBody Map<String,Object> info){
+
+        joinService.saveprofileImg(info);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공",null));
     }
 
 }
