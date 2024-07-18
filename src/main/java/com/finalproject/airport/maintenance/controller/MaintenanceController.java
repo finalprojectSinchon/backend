@@ -57,7 +57,7 @@ public class MaintenanceController {
     }
 
     // 정비 삭제
-    @PutMapping("/maintenance/{maintenanceCode}")
+    @PutMapping("/maintenance/{maintenanceCode}/delete")
     public ResponseEntity<?> deleteMaintenance(@PathVariable int maintenanceCode) {
         boolean isDeleted = maintenanceService.deleteMaintenance(maintenanceCode);
         if (isDeleted) {
