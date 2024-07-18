@@ -45,5 +45,8 @@ public class BaggageClaim extends BaseTimeEntity {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
+    @Column(name = "ISACTIVE")
+    private String isActive;
+
     protected BaggageClaim(){}
 }
