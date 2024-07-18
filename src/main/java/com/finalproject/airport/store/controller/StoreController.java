@@ -30,6 +30,7 @@ public class StoreController {
 
     @GetMapping("/store/{storeCode}")
     public ResponseEntity<?> getStoreByStoreCode(@PathVariable String storeCode) {
+        System.out.println("storeCode = " + storeCode);
         StoreDTO store = storeService.getStore(storeCode);
         if(store == null) {
             return ResponseEntity.notFound().build();

@@ -45,6 +45,9 @@ public class UserEntity extends BaseTimeEntity {
     @Column(name = "user_role")
     private String userRole;
 
+    @Column(columnDefinition = "TEXT")
+    private String userImg;
+
     public UserEntity(String userEmail, String userPhone, String userAddress, String userName, String userAbout) {
         this.userEmail = userEmail;
         this.userPhone = userPhone;
