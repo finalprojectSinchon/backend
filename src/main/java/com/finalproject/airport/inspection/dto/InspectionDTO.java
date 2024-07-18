@@ -18,9 +18,6 @@ public class InspectionDTO {
 
     private String location;
 
-    private Date regularInspectionDate;
-
-    private Date lastInscpectionDate;
 
     private String type;
 
