@@ -27,6 +27,7 @@ public class GateDTO {
     private String manager;
     private String note;
     private ArrivalAirplaneDTO airplane;
-    private char isActive;
+    private String isActive;
+    private int delayTime;
 
 }

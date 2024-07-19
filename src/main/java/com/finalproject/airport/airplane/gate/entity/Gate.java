@@ -51,6 +51,9 @@ public class Gate {
     @Column(name = "ISACTIVE")
     private String isActive;
 
+    @Column(name = "DELAY_TIME")
+    private int delayTime;
+
     protected Gate(){}
 
 }
