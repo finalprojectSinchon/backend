@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class BaggageClaimController {
     }
 
     // 수화물 수취대 상세 조회
-    @GetMapping("baggage-claim/{baggageClaimCode}")
+    @GetMapping("/baggage-claim/{baggageClaimCode}")
     public ResponseEntity<ResponseDTO> baggageClaimDetail(@PathVariable int baggageClaimCode){
 
         HttpHeaders headers = new HttpHeaders();
@@ -71,6 +72,28 @@ public class BaggageClaimController {
 
         return ResponseEntity.ok().build();
     }
+
+    // 탑승구 수정
+    @PutMapping("/baggage-claim/{baggageClaimCode}")
+    public ResponseEntity<?> modifybaggageClaim(@PathVariable int baggageClaimCode, @RequestBody BaggageClaimDTO modifybaggageClaim){
+
+
+        service.modifybaggageClaim(baggageClaimCode,modifybaggageClaim);
+
+        return ResponseEntity.created(URI.create("/baggage-claim/"+baggageClaimCode)).build();
+    }
+
+    // 탑승구 soft delete
+    @PutMapping("/baggage-claim/{baggageClaimCode}/delete")
+    public ResponseEntity<?> remodveBaggageClaimCode(@PathVariable int baggageClaimCode){
+
+
+        service.softDelete(baggageClaimCode);
+
+        return ResponseEntity.ok().build();
+
+    }
+
 
 
 

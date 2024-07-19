@@ -9,6 +9,7 @@ import com.finalproject.airport.airplane.gate.entity.Gate;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class BaggageClaimService {
         return modelMapper.map(baggageClaim,BaggageClaimDTO.class);
     }
 
+    @Transactional
     public String insertBaggageClaim(BaggageClaimDTO baggageClaim) {
 
         int result = 0;
@@ -51,6 +53,34 @@ public class BaggageClaimService {
         }
 
         return (result > 0)? "수화물 수취대 등록 성공": "수화물 수취대 등록 실패";
+
+    }
+
+    @Transactional
+    public void modifybaggageClaim(int baggageClaimCode, BaggageClaimDTO modifybaggageClaim) {
+        BaggageClaim baggageClaim = repository.findBybaggageClaimCode(baggageClaimCode);
+
+
+        baggageClaim =  baggageClaim.toBuilder()
+                .location(modifybaggageClaim.getLocation())
+                .type(modifybaggageClaim.getType())
+                .status(modifybaggageClaim.getStatus())
+                .registrationDate(modifybaggageClaim.getRegistrationDate())
+                .lastInspectionDate(modifybaggageClaim.getLastInspectionDate())
+                .manager(modifybaggageClaim.getManager())
+                .note(modifybaggageClaim.getNote())
+                .build();
+
+        repository.save(baggageClaim);
+
+    }
+
+    @Transactional
+    public void softDelete(int baggageClaimCode) {
+        BaggageClaim baggageClaim = repository.findBybaggageClaimCode(baggageClaimCode);
+        baggageClaim = baggageClaim.toBuilder().isActive("N").build();
+
+        repository.save(baggageClaim);
 
     }
 }
