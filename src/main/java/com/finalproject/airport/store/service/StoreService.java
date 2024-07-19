@@ -61,7 +61,8 @@ public class StoreService {
     public void updateApi(List<StoreAPIDTO> storeDTO) {
         List<StoreEntity> storeEntityList = new ArrayList<>();
         for(StoreAPIDTO storeAPIDTO : storeDTO) {
-            StoreEntity storeEntity = new StoreEntity(storeAPIDTO.getEntrpskoreannm(),null,storeAPIDTO.getTel(),storeAPIDTO.getServicetime(),storeAPIDTO.getTrtmntprdlstkoreannm(),"운영중", StoreType.점포,"담당자");
+            StoreEntity storeEntity = new StoreEntity(storeAPIDTO.getEntrpskoreannm(),null,storeAPIDTO.getTel(),
+                    storeAPIDTO.getServicetime(),storeAPIDTO.getTrtmntprdlstkoreannm(),"운영중", StoreType.점포,"담당자");
             storeEntityList.add(storeEntity);
         }
 
