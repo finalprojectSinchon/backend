@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class BaggageClaim extends BaseTimeEntity {
 
     @Id
