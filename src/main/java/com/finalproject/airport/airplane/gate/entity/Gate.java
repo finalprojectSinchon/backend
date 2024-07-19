@@ -1,11 +1,9 @@
 package com.finalproject.airport.airplane.gate.entity;
 
 import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.common.IsActiveEmbeddable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -48,8 +46,8 @@ public class Gate {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
-    @Column(name = "ISACTIVE")
-    private String isActive;
+    @Embedded
+    private IsActiveEmbeddable isActiveEmbeddable;
 
     @Column(name = "DELAY_TIME")
     private int delayTime;
