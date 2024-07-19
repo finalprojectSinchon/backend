@@ -46,8 +46,7 @@ public class Gate {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
-    @Embedded
-    private IsActiveEmbeddable isActiveEmbeddable;
+    private String isActive;
 
     @Column(name = "DELAY_TIME")
     private int delayTime;

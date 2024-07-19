@@ -31,7 +31,7 @@ public class StoreController {
 
     @GetMapping("/store/{storeCode}")
     public ResponseEntity<?> getStoreByStoreCode(@PathVariable String storeCode) {
-        System.out.println("storeCode = " + storeCode);
+
         StoreDTO store = storeService.getStore(storeCode);
         if(store == null) {
             return ResponseEntity.notFound().build();
@@ -65,7 +65,7 @@ public class StoreController {
     }
 
     @PutMapping("/store/{storeCode}")
-    public ResponseEntity<?> updateStore(@PathVariable int storeCode, StoreDTO storeDTO) {
+    public ResponseEntity<?> updateStore(@PathVariable int storeCode, @RequestBody StoreDTO storeDTO) {
             try {
                 storeService.updateStore(storeCode,storeDTO);
 

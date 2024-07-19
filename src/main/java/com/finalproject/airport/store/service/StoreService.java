@@ -26,7 +26,7 @@ public class StoreService {
     private ModelMapper modelMapper;
 
     public List<StoreDTO> getStoreList() {
-        List<StoreEntity> storeList = storeRepository.findAll();
+        List<StoreEntity> storeList = storeRepository.findByIsActive("Y");
         List<StoreDTO> storeDTOList = new ArrayList<>();
         storeList.forEach(storeEntity -> storeDTOList.add(modelMapper.map(storeEntity, StoreDTO.class)));
 
@@ -34,6 +34,7 @@ public class StoreService {
     }
 
     public StoreDTO getStore(String storeCode) {
+
         StoreEntity store = storeRepository.findById(Integer.valueOf(storeCode)).orElse(null);
 
         return modelMapper.map(store, StoreDTO.class);
@@ -47,11 +48,12 @@ public class StoreService {
     public void softDeleteStore(int storeCode) {
         StoreEntity storeEntity = storeRepository.findById(storeCode).orElseThrow(IllegalArgumentException::new);
 
-        storeEntity = storeEntity.toBuilder().storeStatus("중단").build();
+        storeEntity = storeEntity.toBuilder().isActive("N").build();
         storeRepository.save(storeEntity);
     }
 
     public void updateStore(int storeCode, StoreDTO storeDTO) {
+        System.out.println("storeDTO = " + storeDTO);
         storeDTO.setStoreId(storeCode);
         StoreEntity storeEntity = storeRepository.findById(storeCode).orElseThrow(IllegalArgumentException::new);
         storeEntity = modelMapper.map(storeDTO, StoreEntity.class);
