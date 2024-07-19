@@ -1,6 +1,7 @@
 package com.finalproject.airport.store.controller;
 
 import com.finalproject.airport.common.ResponseDTO;
+import com.finalproject.airport.store.dto.StoreAPIDTO;
 import com.finalproject.airport.store.dto.StoreDTO;
 import com.finalproject.airport.store.dto.StoreRegistDTO;
 import com.finalproject.airport.store.service.StoreService;
@@ -73,7 +74,15 @@ public class StoreController {
 
                 return ResponseEntity.internalServerError().build();
             }
+    }
 
+    @PostMapping("/store/insertapi")
+    public ResponseEntity<?> insertApi(@RequestBody List<StoreAPIDTO> storeDTO) {
+
+        System.out.println("storeDTO = " + storeDTO);
+        storeService.updateApi(storeDTO);
+
+        return ResponseEntity.ok().build();
     }
 
 }
