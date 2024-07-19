@@ -83,8 +83,9 @@ public class GateService {
     public void softDelete(int gateCode) {
 
        Gate gate = gateRepository.findBygateCode(gateCode);
-        System.out.println("gate"+gate);
+
         gate = gate.toBuilder().isActive("N").build();
+
 
        gateRepository.save(gate);
 

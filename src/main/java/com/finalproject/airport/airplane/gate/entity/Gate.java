@@ -46,7 +46,9 @@ public class Gate {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
+
     @Column(name = "ISACTIVE", length = 1, nullable = false)
+
     private String isActive;
 
     @Column(name = "DELAY_TIME")
