@@ -24,6 +24,7 @@ public class InspectionController {
     public ResponseEntity<?> getInspection () {
 
         List<InspectionDTO> inspectionList = inspectionService.getInspectionList();
+        System.out.println("inspectionList = " + inspectionList);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"안전 점검 전체조회 성공", inspectionList));
     }
