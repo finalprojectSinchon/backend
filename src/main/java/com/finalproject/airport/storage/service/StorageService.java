@@ -1,8 +1,11 @@
 package com.finalproject.airport.storage.service;
 
 import com.finalproject.airport.storage.dto.StorageDTO;
+import com.finalproject.airport.storage.dto.StorageRegistDTO;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
+import com.finalproject.airport.store.dto.StoreRegistDTO;
+import com.finalproject.airport.store.entity.StoreEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +31,31 @@ public class StorageService {
                 ).collect(Collectors.toList());
     }
 
-    public StorageDTO getstorage(String storageCode) {
+    public StorageDTO getStorage(String storageCode) {
 
         StorageEntity storage = storageRepository.findById(Integer.valueOf(storageCode)).orElse(null);
 
         return modelMapper.map(storage, StorageDTO.class);
 
     }
+
+    public void addStorage(StorageRegistDTO storageRegistDTO) {
+        StorageEntity storageEntity = modelMapper.map(storageRegistDTO, StorageEntity.class);
+        storageRepository.save(storageEntity);
+    }
+
+    public void softDeleteStorage(int storageCode) {
+        StorageEntity storageEntity = storageRepository.findById(storageCode).orElseThrow(IllegalArgumentException::new);
+
+        storageEntity = storageEntity.toBuilder().storageStatus("중단").build();
+        storageRepository.save(storageEntity);
+    }
+
+//    public void updateStorage(int storageCode, StorageDTO storageDTO) {
+//        storageDTO.setStorageCode(storageCode);
+//        StorageEntity storageEntity = storageRepository.findById(storageCode).orElseThrow(IllegalArgumentException::new);
+//        storageEntity = modelMapper.map(storageDTO, StorageEntity.class);
+//        storageRepository.save(StorageEntity);
+//    }
+
 }

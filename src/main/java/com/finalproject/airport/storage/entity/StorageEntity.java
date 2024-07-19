@@ -13,6 +13,7 @@ import lombok.*;
 @ToString
 @Builder(toBuilder= true)
 
+
 public class StorageEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +40,6 @@ public class StorageEntity extends BaseTimeEntity {
     private String manager;
 
     // 등록일은 시설물에서 관리
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    private String isActive = "Y";
 }

@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class StorageDTO {
+public class StorageRegistDTO {
 
     // 창고명
     private int storageCode;
