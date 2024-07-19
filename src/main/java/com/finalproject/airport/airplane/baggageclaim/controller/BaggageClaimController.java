@@ -9,10 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -49,9 +46,9 @@ public class BaggageClaimController {
 
     }
 
-    // 탑승구 상세 조회
+    // 수화물 수취대 상세 조회
     @GetMapping("baggage-claim/{baggageClaimCode}")
-    public ResponseEntity<ResponseDTO> gateDetail(@PathVariable int baggageClaimCode){
+    public ResponseEntity<ResponseDTO> baggageClaimDetail(@PathVariable int baggageClaimCode){
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
@@ -64,6 +61,15 @@ public class BaggageClaimController {
         return ResponseEntity.ok().headers(headers)
                 .body(new ResponseDTO(HttpStatus.OK,"수화물 수취대 상세 조회",responseMap));
 
+    }
+
+    // 수화물 수취대 등록
+    @PostMapping("/baggage-claim")
+    public ResponseEntity<?> insertbaggageClaim(@RequestBody BaggageClaimDTO baggageClaim){
+
+        service.insertBaggageClaim(baggageClaim);
+
+        return ResponseEntity.ok().build();
     }
 
 

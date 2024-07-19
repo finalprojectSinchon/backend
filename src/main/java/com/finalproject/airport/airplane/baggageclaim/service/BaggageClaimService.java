@@ -37,4 +37,20 @@ public class BaggageClaimService {
         BaggageClaim baggageClaim = repository.findBybaggageClaimCode(baggageClaimCode);
         return modelMapper.map(baggageClaim,BaggageClaimDTO.class);
     }
+
+    public String insertBaggageClaim(BaggageClaimDTO baggageClaim) {
+
+        int result = 0;
+        try{
+
+            BaggageClaim insertBaggageClaim = modelMapper.map(baggageClaim, BaggageClaim.class);
+            repository.save(insertBaggageClaim);
+            result = 1;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        return (result > 0)? "수화물 수취대 등록 성공": "수화물 수취대 등록 실패";
+
+    }
 }
