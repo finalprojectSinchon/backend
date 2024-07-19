@@ -80,9 +80,9 @@ public class GateController {
 
     // 탑승구 수정
     @PutMapping("/gate/{gateCode}")
-    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @ModelAttribute GateDTO modifyGate){
+    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @RequestBody GateDTO modifyGate){
 
-        System.out.println(modifyGate);
+        System.out.println("modifyGate "+modifyGate);
 
         gateService.modifyGate(gateCode,modifyGate);
 
