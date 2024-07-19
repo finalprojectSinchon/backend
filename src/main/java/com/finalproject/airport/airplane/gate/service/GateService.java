@@ -46,7 +46,7 @@ public class GateService {
 
     public List<GateDTO> findAll() {
 
-        List<Gate> gateList = gateRepository.findAll();
+        List<Gate> gateList = gateRepository.findByisActive("Y");
 
         return gateList.stream()
                 .map(gate -> modelMapper.map(gate,GateDTO.class))
@@ -59,6 +59,7 @@ public class GateService {
         return modelMapper.map(gate,GateDTO.class);
     }
 
+    @Transactional
     public void modifyGate(int gateCode, GateDTO modifyGate) {
 
         Gate gate = gateRepository.findBygateCode(gateCode);
@@ -78,11 +79,13 @@ public class GateService {
 
     }
 
+    @Transactional
     public void softDelete(int gateCode) {
 
        Gate gate = gateRepository.findBygateCode(gateCode);
 
-       gate = gate.toBuilder().isActive("N").build();
+        gate = gate.toBuilder().isActive("N").build();
+
 
        gateRepository.save(gate);
 
