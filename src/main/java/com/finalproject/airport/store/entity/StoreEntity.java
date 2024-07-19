@@ -1,8 +1,10 @@
 package com.finalproject.airport.store.entity;
 
 import com.finalproject.airport.common.BaseTimeEntity;
+
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 
 @Entity
@@ -43,6 +45,19 @@ public class StoreEntity extends BaseTimeEntity {
 
     // 담당자
     private String storeManager;
+
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    private String isActive;
+
+    @Column(columnDefinition = "TEXT")
+    private String storeExtra;
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+    }
 
     public StoreEntity(String storeName, StoreWork storeWork, String storeContact, String storeOperatingTime, String storeItems, String storeStatus, StoreType storeType, String storeManager) {
         this.storeName = storeName;

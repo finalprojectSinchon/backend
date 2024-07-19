@@ -44,4 +44,10 @@ public class StoreDTO {
     // 담당자
     private String storeManager;
 
+    // 활성여부
+    private String isActive;
+
+    // 비고
+    private String storeExtra;
+
 }

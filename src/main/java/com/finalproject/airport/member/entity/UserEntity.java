@@ -45,6 +45,9 @@ public class UserEntity extends BaseTimeEntity {
     @Column(name = "user_role")
     private String userRole;
 
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    private String isActive = "Y";
+
     @Column(columnDefinition = "TEXT")
     private String userImg;
 
