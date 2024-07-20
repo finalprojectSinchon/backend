@@ -4,6 +4,7 @@ import com.finalproject.airport.airplane.Airplane;
 import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class CheckinCounter extends BaseTimeEntity {
 
     @Id
