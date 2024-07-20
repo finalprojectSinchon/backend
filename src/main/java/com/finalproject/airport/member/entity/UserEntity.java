@@ -46,10 +46,22 @@ public class UserEntity extends BaseTimeEntity {
     private String userRole;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive = "Y";
+    private String isActive;
 
     @Column(columnDefinition = "TEXT")
     private String userImg;
+
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+        if ( this.userImg == null) {
+            this.userImg = "https://i.namu.wiki/i/KTpTMexyA3WHmFNhXwOdo3nT_GURxYuA8tEedFzGqFRWXRg78FtmecK21BIsn7qUddH-Ch9z7k64BA7dVTdSaI-0QK5oftkiOgvEc5RuJmYzrJECd3Oa3GNOJUptym3vMN9P3PCYMEycdftWYayZYg.webp";
+        }
+    }
+
 
     public UserEntity(String userEmail, String userPhone, String userAddress, String userName, String userAbout) {
         this.userEmail = userEmail;

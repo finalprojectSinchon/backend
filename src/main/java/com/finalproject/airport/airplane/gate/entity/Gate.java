@@ -1,7 +1,6 @@
 package com.finalproject.airport.airplane.gate.entity;
 
 import com.finalproject.airport.airplane.Airplane;
-import com.finalproject.airport.common.IsActiveEmbeddable;
 import jakarta.persistence.*;
 import lombok.*;
 
