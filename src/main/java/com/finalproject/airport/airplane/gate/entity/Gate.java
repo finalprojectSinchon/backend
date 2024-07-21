@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.gate.entity;
 
-import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.finalproject.airport.airplane;
+package com.finalproject.airport.airplane.airplane.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,6 +48,9 @@ public class Airplane {
 
     @Column(name = "DELAY_TIME")
     private int delayTime;
+
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    private String isActive;
 
     protected Airplane(){}
 

@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.gate.dto;
 
-import com.finalproject.airport.airplane.ArrivalAirplaneDTO;
+import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.gate.entity.GateType;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;

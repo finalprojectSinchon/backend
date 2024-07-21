@@ -1,4 +1,4 @@
-package com.finalproject.airport.airplane;
+package com.finalproject.airport.airplane.airplane.DTO;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @ToString
-public class ArrivalAirplaneDTO {
+public class AirplaneDTO {
 
     private int airplaneCode;
     private String airline;              // 항공사
@@ -20,6 +20,6 @@ public class ArrivalAirplaneDTO {
     private int carousel;                // 수화물 수취대 번호
     private int gatenumber;              // 탑승구 번호
     private String terminalid;           // 터미널 구분 (ex. P01: 제1 터미널 P02: 탑승동 P03: 제2 터미널 C01 : 화물터미널 남측 C02 : 화물터미널 북측 C03 : 제2 화물터미널)
-
+    private String chkinrange;           // 체크인카운터
 
 }
