@@ -1,5 +1,6 @@
 package com.finalproject.airport.airplane.airplane.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -13,6 +14,8 @@ public class AirplaneDTO {
 
     private int airplaneCode;
     private String airline;              // 항공사
+
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     private Timestamp scheduleDateTime;  // 예정일자 (도착 예정시간)
     private String remark;               // 운항상태 (도착,결항,지연,회항,착륙)
     private String airport;              // 출발지공항명

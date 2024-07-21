@@ -72,7 +72,7 @@ public class BaggageClaimController {
         return ResponseEntity.ok().build();
     }
 
-    // 탑승구 수정
+    // 수화물 수취대 수정
     @PutMapping("/baggage-claim/{baggageClaimCode}")
     public ResponseEntity<?> modifybaggageClaim(@PathVariable int baggageClaimCode, @RequestBody BaggageClaimDTO modifybaggageClaim){
 
@@ -82,7 +82,7 @@ public class BaggageClaimController {
         return ResponseEntity.created(URI.create("/baggage-claim/"+baggageClaimCode)).build();
     }
 
-    // 탑승구 soft delete
+    // 수화물 수취대 soft delete
     @PutMapping("/baggage-claim/{baggageClaimCode}/delete")
     public ResponseEntity<?> remodveBaggageClaimCode(@PathVariable int baggageClaimCode){
 
