@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.baggageclaim.entity;
 
-import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,7 +46,7 @@ public class BaggageClaim extends BaseTimeEntity {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
-    @Column(name = "ISACTIVE")
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
     protected BaggageClaim(){}

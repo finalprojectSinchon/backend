@@ -2,7 +2,6 @@ package com.finalproject.airport.airplane.baggageclaim.controller;
 
 import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
 import com.finalproject.airport.airplane.baggageclaim.service.BaggageClaimService;
-import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.common.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

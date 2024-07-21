@@ -1,6 +1,5 @@
 package com.finalproject.airport.airplane.gate.service;
 
-import com.finalproject.airport.airplane.Airplane;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;

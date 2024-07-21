@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.checkincounter.entity;
 
-import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,7 +50,7 @@ public class CheckinCounter extends BaseTimeEntity {
     private Airplane airplane;
 
 
-    @Column(name = "ISACTIVE")
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
     protected CheckinCounter(){}

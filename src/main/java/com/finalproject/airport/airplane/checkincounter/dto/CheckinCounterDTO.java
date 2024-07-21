@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.checkincounter.dto;
 
-import com.finalproject.airport.airplane.ArrivalAirplaneDTO;
+import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterType;
 import lombok.*;
 
