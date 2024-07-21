@@ -9,11 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +60,27 @@ public class AirplaneController {
 
         return ResponseEntity.ok().headers(headers)
                 .body(new ResponseDTO(HttpStatus.OK,"비행기 상세 조회",responseMap));
+
+    }
+
+    // 수화물 수취대 수정
+    @PutMapping("/airplane/{airplaneCode}")
+    public ResponseEntity<?> modifybAirplane(@PathVariable int airplaneCode, @RequestBody AirplaneDTO modifyairplane){
+
+
+        airPlaneService.modifybAirplane(airplaneCode,modifyairplane);
+
+        return ResponseEntity.created(URI.create("/airplane//"+airplaneCode)).build();
+    }
+
+    // 수화물 수취대 soft delete
+    @PutMapping("/airplane/{airplaneCode}/delete")
+    public ResponseEntity<?> remodveBaggageClaimCode(@PathVariable int airplaneCode){
+
+
+        airPlaneService.softDelete(airplaneCode);
+
+        return ResponseEntity.ok().build();
 
     }
 }

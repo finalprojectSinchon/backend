@@ -2,6 +2,7 @@ package com.finalproject.airport.airplane.airplane.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class Airplane {
 
     @Id

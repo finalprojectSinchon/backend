@@ -5,10 +5,12 @@ import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
 import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,5 +39,35 @@ public class AirPlaneService {
 
         Airplane airplane  = airplaneRepository.findByairplaneCode(airplaneCode);
         return modelMapper.map(airplane, AirplaneDTO.class);
+    }
+
+    @Transactional
+    public void modifybAirplane(int airplaneCode, AirplaneDTO modifyairplane) {
+
+        Airplane airplane = airplaneRepository.findByairplaneCode(airplaneCode);
+
+        airplane =  airplane.toBuilder()
+                .airline(modifyairplane.getAirline())
+                .scheduleDateTime(modifyairplane.getScheduleDateTime())
+                .remark(modifyairplane.getRemark())
+                .airport(modifyairplane.getAirport())
+                .flightId(modifyairplane.getFlightId())
+                .carousel(modifyairplane.getCarousel())
+                .gatenumber(modifyairplane.getGatenumber())
+                .terminalid(modifyairplane.getTerminalid())
+                .chkinrange(modifyairplane.getChkinrange())
+                .build();
+
+        airplaneRepository.save(airplane);
+
+    }
+
+    @Transactional
+    public void softDelete(int airplaneCode) {
+        Airplane airplane = airplaneRepository.findByairplaneCode(airplaneCode);
+        airplane = airplane.toBuilder().isActive("N").build();
+
+        airplaneRepository.save(airplane);
+
     }
 }
