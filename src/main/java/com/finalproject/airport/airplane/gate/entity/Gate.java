@@ -47,11 +47,9 @@ public class Gate {
 
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-
     private String isActive;
 
-    @Column(name = "DELAY_TIME")
-    private int delayTime;
+
 
     @PrePersist
     private void ensureIsActiveDefault() {
