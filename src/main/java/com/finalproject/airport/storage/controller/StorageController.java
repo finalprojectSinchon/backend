@@ -47,7 +47,23 @@ public class StorageController {
         }
     }
 
-    @PutMapping(/)
+//    @PutMapping("/storage/{storageCode}") // 수정
+//    public ResponseEntity<?> updateStorage(@PathVariable int storageCode) {
+//
+//    }
+
+    @PutMapping("/storage/{storageCode}/delete")    // 삭제
+    public ResponseEntity<?> deleteStorage(@PathVariable int storageCode) {
+        try {
+            storageService.softDeleteStorage(storageCode);
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "삭제에 성공했습니다.", null));
+
+        } catch (Exception e) {
+
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "등록에 오류가 발생했습니다.", null));
+        }
+    }
 
 
 }
