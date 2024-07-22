@@ -6,6 +6,7 @@ import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,30 @@ public class MaintenanceService {
         return modelMapper.map(maintenanceEntity, MaintenanceDTO.class);
     }
 
-// 정비 항목 반환
+    // 정비 항목 수정
+    @Transactional
+    public void updateMaintenance(int maintenanceCode, MaintenanceDTO maintenanceDTO) {
+
+        MaintenanceEntity maintenanceEntity = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
+
+        maintenanceEntity = maintenanceEntity.toBuilder()
+                .maintenanceStructure(maintenanceDTO.getStructure())
+                .maintenanceType(maintenanceDTO.getType())
+                .maintenanceLocation(maintenanceDTO.getLocation())
+                .maintenanceStatus(maintenanceDTO.getStatus())
+                .maintenanceManager(maintenanceDTO.getManager())
+                .maintenanceEquipment(maintenanceDTO.getEquipment())
+                .maintenanceNumber(maintenanceDTO.getNumber())
+                .maintenanceExpense(maintenanceDTO.getExpense())
+                .maintenanceStartDate(maintenanceDTO.getMaintenanceStartDate())
+                .maintenanceEndDate(maintenanceDTO.getMaintenanceEndDate())
+                .maintenanceDetails(maintenanceDTO.getMaintenanceDetails())
+                .build();
+
+        maintenanceRepository.save(maintenanceEntity);
+    }
+
+    // 정비 항목 반환
 //    public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
 //        for (MaintenanceDTO maintenance : maintenanceList) {
 //            if (maintenance.getMaintenanceCode() == maintenanceCode) {
