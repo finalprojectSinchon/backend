@@ -24,16 +24,13 @@ public class MaintenanceService {
         this.modelMapper = modelMapper;
     }
 
-
-
-
-//    // 정비 전체 조회
-//    public List<MaintenanceDTO> getMaintenanceList() {
-//        List<MaintenanceEntity> maintenanceList = maintenanceRepository.findAll();
-//        return maintenanceList.stream()
-//                .map(maintenance -> modelMapper.map(maintenance, MaintenanceDTO.class))
-//                .collect(Collectors.toList());
-//    }
+    // 정비 전체 조회
+    public List<MaintenanceDTO> findAll() {
+        List<MaintenanceEntity> maintenanceList = maintenanceRepository.findByIsActive("Y");
+        return maintenanceList.stream()
+                .map(maintenance -> modelMapper.map(maintenance, MaintenanceDTO.class))
+                .collect(Collectors.toList());
+    }
 
     // 정비 상세 조회
     public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
@@ -76,18 +73,21 @@ public class MaintenanceService {
         maintenanceRepository.save(maintenanceEntity);
     }
 
-    // 정비 전체 조회
-    public List<MaintenanceDTO> findAll() {
-        List<MaintenanceEntity> maintenanceList = maintenanceRepository.findByIsActive("Y");
-        return maintenanceList.stream()
-                .map(maintenance -> modelMapper.map(maintenance, MaintenanceDTO.class))
-                .collect(Collectors.toList());
+    @Transactional
+    public String insertMaintenance(MaintenanceDTO maintenanceDTO) {
+
+        int result = 0;
+
+        try {
+            MaintenanceEntity insertMaintenance = modelMapper.map(maintenanceDTO, MaintenanceEntity.class);
+            maintenanceRepository.save(insertMaintenance);
+
+            result = 1;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return(result > 0)? "정비 등록 성공": "정비 등록 실패";
     }
 
-
-//    // 정비 항목 추가/등록
-//    public MaintenanceDTO addMaintenance(MaintenanceDTO maintenanceDTO) {
-//        maintenanceList.add(maintenanceDTO);
-//        return maintenanceDTO;
-//    }
 }
