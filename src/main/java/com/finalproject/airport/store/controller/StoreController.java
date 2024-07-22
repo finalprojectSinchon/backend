@@ -35,7 +35,6 @@ public class StoreController {
         StoreDTO store = storeService.getStore(storeCode);
         if(store == null) {
             return ResponseEntity.notFound().build();
-
         } else {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "점포 상세 조회 성공", store));
         }
