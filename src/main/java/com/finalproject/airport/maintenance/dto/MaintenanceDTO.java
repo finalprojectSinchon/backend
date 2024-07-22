@@ -32,4 +32,8 @@ public class MaintenanceDTO {
     private int expense;
 
     private String maintenanceDetails;
+
+    private String manager;
+
+    private String status;
 }
