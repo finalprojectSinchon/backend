@@ -12,4 +12,5 @@ public interface MaintenanceRepository extends JpaRepository<MaintenanceEntity, 
     MaintenanceEntity findBymaintenanceCode(int maintenanceCode);
 
 
+    List<MaintenanceEntity> findByIsActive(String y);
 }

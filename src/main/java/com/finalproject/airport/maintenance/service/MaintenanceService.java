@@ -27,13 +27,13 @@ public class MaintenanceService {
 
 
 
-    // 정비 전체 조회
-    public List<MaintenanceDTO> getMaintenanceList() {
-        List<MaintenanceEntity> maintenanceList = maintenanceRepository.findAll();
-        return maintenanceList.stream()
-                .map(maintenance -> modelMapper.map(maintenance, MaintenanceDTO.class))
-                .collect(Collectors.toList());
-    }
+//    // 정비 전체 조회
+//    public List<MaintenanceDTO> getMaintenanceList() {
+//        List<MaintenanceEntity> maintenanceList = maintenanceRepository.findAll();
+//        return maintenanceList.stream()
+//                .map(maintenance -> modelMapper.map(maintenance, MaintenanceDTO.class))
+//                .collect(Collectors.toList());
+//    }
 
     // 정비 상세 조회
     public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
@@ -65,6 +65,8 @@ public class MaintenanceService {
         maintenanceRepository.save(maintenanceEntity);
     }
 
+    // 정비 삭제
+    @Transactional
     public void softDelete(int maintenanceCode) {
 
         MaintenanceEntity maintenanceEntity = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
@@ -74,7 +76,13 @@ public class MaintenanceService {
         maintenanceRepository.save(maintenanceEntity);
     }
 
-
+    // 정비 전체 조회
+    public List<MaintenanceDTO> findAll() {
+        List<MaintenanceEntity> maintenanceList = maintenanceRepository.findByIsActive("Y");
+        return maintenanceList.stream()
+                .map(maintenance -> modelMapper.map(maintenance, MaintenanceDTO.class))
+                .collect(Collectors.toList());
+    }
 
 
 //    // 정비 항목 추가/등록
