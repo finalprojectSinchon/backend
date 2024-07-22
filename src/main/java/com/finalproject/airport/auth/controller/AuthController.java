@@ -101,4 +101,20 @@ public class AuthController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공",null));
     }
 
+    @GetMapping("/api/v1/admin/code")
+    public ResponseEntity<?> getAdminCode(){
+
+        ResponseEntity<?> response = joinService.getAdminCode();
+
+        return response;
+    }
+
+    @PostMapping("/api/v1/auth")
+    public ResponseEntity<?> checkAuthCode(@RequestBody Map<String,Integer> authCode) {
+
+
+
+        return joinService.isCheckAuth(authCode);
+    }
+
 }
