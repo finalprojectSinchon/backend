@@ -75,7 +75,7 @@ public class StoreController {
             }
     }
 
-    @PostMapping("/store/insertapi")
+    @PostMapping("/store/api")
     public ResponseEntity<?> insertApi(@RequestBody List<StoreAPIDTO> storeDTO) {
 
         System.out.println("storeDTO = " + storeDTO);

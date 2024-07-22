@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -56,7 +58,7 @@ public class JoinService {
 
         String encodePassword = bCryptPasswordEncoder.encode(password);
 
-        UserEntity data = new UserEntity(userId,encodePassword,userEmail,userPhone,userAddress,"ROLE_USER",userName,userAbout);
+        UserEntity data = new UserEntity(userId,encodePassword,userEmail,userPhone,userAddress,"ROLE_USER",userName,userAbout,"N");
         userRepository.save(data);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"회원가입이 완료되었습니다.",null));
@@ -107,5 +109,21 @@ public class JoinService {
         UserEntity newUser = user.toBuilder().userImg((String) info.get("profileImageUrl")).build();
         userRepository.save(newUser);
 
+    }
+
+    @Transactional
+    public ResponseEntity<?> getAdminCode() {
+
+        int randomNumber = (int) (Math.random() * 900000) + 100000;
+        UserEntity user = new UserEntity();
+        user.setAuthCode(randomNumber);
+        System.out.println("user = " + user);
+        userRepository.save(user);
+
+        Integer userCode = userRepository.findByAuthCode(randomNumber);
+        Map<String, Object> info = new HashMap<>();
+        info.put("userCode", userCode);
+        info.put("authCode", randomNumber);
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"인증번호 발급 성공",info));
     }
 }

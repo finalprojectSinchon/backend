@@ -18,7 +18,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public UserDTO getUserDTO() {
-        UserDTO userDTO = new UserDTO(userEntity.getUserCode(),userEntity.getUserId(),userEntity.getUserEmail(),userEntity.getUserPhone(),userEntity.getUserAddress(),userEntity.getUserName(),userEntity.getUserRole(),userEntity.getUserAbout(),userEntity.getUserImg());
+        UserDTO userDTO = new UserDTO(userEntity.getUserCode(),userEntity.getUserId(),userEntity.getUserEmail(),userEntity.getUserPhone(),userEntity.getUserAddress(),userEntity.getUserName(),userEntity.getUserRole(),userEntity.getUserAbout(),userEntity.getUserImg(),userEntity.getIsActive());
 
         return userDTO;
     }
