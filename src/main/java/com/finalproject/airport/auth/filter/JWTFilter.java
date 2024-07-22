@@ -17,6 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class JWTFilter extends OncePerRequestFilter {
@@ -32,6 +35,20 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        List<String> roleLeessList = Arrays.asList(
+                "/swagger-ui/(.*)",        //swagger 설정
+                "/swagger-ui/index.html",  //swagger 설정
+                "/v3/api-docs",              //swagger 설정
+                "/v3/api-docs/(.*)",         //swagger 설정
+                "/swagger-resources",        //swagger 설정
+                "/swagger-resources/(.*)"    //swagger 설정
+        );
+
+        if(roleLeessList.stream().anyMatch(uri -> roleLeessList.stream().anyMatch(pattern -> Pattern.matches(pattern, request.getRequestURI())))){
+            filterChain.doFilter(request,response);
+            return;
+        }
 
         //request 에서 Authorization 헤더 검색
         String authorizationHeader = request.getHeader("Authorization");
