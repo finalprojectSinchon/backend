@@ -1,5 +1,6 @@
 package com.finalproject.airport.maintenance.controller;
 
+import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
 import com.finalproject.airport.maintenance.service.MaintenanceService;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -54,23 +56,12 @@ public class MaintenanceController {
     @PutMapping("/maintenance/{maintenanceCode}")
     public ResponseEntity<?> modifyMaintenance(@PathVariable int maintenanceCode, @RequestBody MaintenanceDTO maintenanceDTO) {
 
-        System.out.println(maintenanceDTO);
         maintenanceService.updateMaintenance(maintenanceCode, maintenanceDTO);
-        return ResponseEntity.ok("정비 수정");
+
+        return ResponseEntity.created(URI.create("/gate" + maintenanceCode)).build();
 
     }
 
-    /*
-    * @PutMapping("/gate/{gateCode}")
-    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @ModelAttribute GateDTO modifyGate){
-
-        System.out.println(modifyGate);
-
-        gateService.modifyGate(gateCode,modifyGate);
-
-        return ResponseEntity.created(URI.create("/gate/"+gateCode)).build();
-    }
-    * */
 
     /*@PutMapping("/gate/{gateCode}")
     public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @ModelAttribute GateDTO modifyGate){

@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MaintenanceRepository extends JpaRepository<MaintenanceEntity, Integer> {
 
     MaintenanceEntity findById(int maintenanceCode);
+
+    MaintenanceEntity findBymaintenanceCode(int maintenanceCode);
 }
