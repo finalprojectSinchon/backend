@@ -62,15 +62,17 @@ public class MaintenanceController {
 
     }
 
+    // 정비 삭제
+    @PutMapping("/maintenance/{maintenanceCode}/delete")
+    public ResponseEntity<?> deleteMaintenance(@PathVariable int maintenanceCode) {
+        System.out.println("maintenanceCode: " + maintenanceCode);
 
-    /*@PutMapping("/gate/{gateCode}")
-    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @ModelAttribute GateDTO modifyGate){
+        maintenanceService.softDelete(maintenanceCode);
 
-        System.out.println(modifyGate);
+        return ResponseEntity.ok().build();
+    }
 
-        gateService.modifyGate(gateCode,modifyGate);
 
-        return ResponseEntity.created(URI.create("/gate/"+gateCode)).build();*/
 
 
 

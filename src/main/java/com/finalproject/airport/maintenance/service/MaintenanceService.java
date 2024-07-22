@@ -65,15 +65,14 @@ public class MaintenanceService {
         maintenanceRepository.save(maintenanceEntity);
     }
 
-    // 정비 항목 반환
-//    public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
-//        for (MaintenanceDTO maintenance : maintenanceList) {
-//            if (maintenance.getMaintenanceCode() == maintenanceCode) {
-//                return maintenance;
-//            }
-//        }
-//        return null;
-//    }
+    public void softDelete(int maintenanceCode) {
+
+        MaintenanceEntity maintenanceEntity = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
+
+        maintenanceEntity = maintenanceEntity.toBuilder().isActive("N").build();
+
+        maintenanceRepository.save(maintenanceEntity);
+    }
 
 
 
@@ -83,23 +82,4 @@ public class MaintenanceService {
 //        maintenanceList.add(maintenanceDTO);
 //        return maintenanceDTO;
 //    }
-//
-//    // 정비 항목 수정
-//    public MaintenanceDTO updateMaintenance(int maintenanceCode, MaintenanceDTO updatedMaintenanceDTO) {
-//        for (int i = 0; i < maintenanceList.size(); i++) {
-//            if (maintenanceList.get(i).getMaintenanceCode() == maintenanceCode) {
-//                maintenanceList.set(i, updatedMaintenanceDTO);
-//                return updatedMaintenanceDTO;
-//            }
-//        }
-//        return null;
-//    }
-//
-//    // 정비 항목 삭제
-//    public boolean deleteMaintenance(int maintenanceCode) {
-//        return maintenanceList.removeIf(maintenance -> maintenance.getMaintenanceCode() == maintenanceCode);
-//    }
-//
-
-
 }
