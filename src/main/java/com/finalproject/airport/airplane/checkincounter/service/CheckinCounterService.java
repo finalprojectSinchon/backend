@@ -34,7 +34,7 @@ public class CheckinCounterService {
     }
 
     public List<CheckinCounterDTO> findAll() {
-        List<CheckinCounter> checkinCounters = repository.findAll();
+        List<CheckinCounter> checkinCounters = repository.findByisActive("Y");
 
         return checkinCounters.stream()
                 .map(chkinCounter -> modelMapper.map(chkinCounter, CheckinCounterDTO.class))
@@ -45,5 +45,33 @@ public class CheckinCounterService {
 
         CheckinCounter chkinCounter = repository.findBycheckinCounterCode(checkinCounterCode);
         return modelMapper.map(chkinCounter,CheckinCounterDTO.class);
+    }
+
+    @Transactional
+    public void modifyCheckinCounter(int checkinCounterCode, CheckinCounterDTO modifyCheckinCounter) {
+
+
+        CheckinCounter checkinCounter = repository.findBycheckinCounterCode(checkinCounterCode);
+
+
+        checkinCounter =  checkinCounter.toBuilder()
+                .location(modifyCheckinCounter.getLocation())
+                .type(modifyCheckinCounter.getType())
+                .status(modifyCheckinCounter.getStatus())
+                .registrationDate(modifyCheckinCounter.getRegistrationDate())
+                .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())
+                .manager(modifyCheckinCounter.getManager())
+                .note(modifyCheckinCounter.getNote())
+                .build();
+
+        repository.save(checkinCounter);
+    }
+
+    @Transactional
+    public void remodveCheckinCounter(int checkinCounterCode) {
+        CheckinCounter checkinCounter = repository.findBycheckinCounterCode(checkinCounterCode);
+        checkinCounter = checkinCounter.toBuilder().isActive("N").build();
+
+        repository.save(checkinCounter);
     }
 }

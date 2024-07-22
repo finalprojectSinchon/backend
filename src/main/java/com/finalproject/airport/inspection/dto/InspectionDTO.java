@@ -18,9 +18,12 @@ public class InspectionDTO {
 
     private String location;
 
+    private String regularInspectionDate;
 
     private String type;
 
     private String status;
+
+    private String isActive;
 
 }

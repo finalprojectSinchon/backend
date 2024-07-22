@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.Date;
 
+
 @Entity
 @Table(name = "tbl_inspection")
 @NoArgsConstructor
@@ -14,6 +15,7 @@ import java.util.Date;
 @Getter
 @ToString
 @Builder(toBuilder = true)
+
 
 public class InspectionEntity extends BaseTimeEntity {
 
@@ -39,5 +41,9 @@ public class InspectionEntity extends BaseTimeEntity {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    private String isActive = "Y";
+
 
 }

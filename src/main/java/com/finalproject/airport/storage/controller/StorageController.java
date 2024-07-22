@@ -47,10 +47,7 @@ public class StorageController {
         }
     }
 
-//    @PutMapping("/storage/{storageCode}") // 수정
-//    public ResponseEntity<?> updateStorage(@PathVariable int storageCode) {
-//
-//    }
+
 
     @PutMapping("/storage/{storageCode}/delete")    // 삭제
     public ResponseEntity<?> deleteStorage(@PathVariable int storageCode) {
@@ -64,6 +61,7 @@ public class StorageController {
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "등록에 오류가 발생했습니다.", null));
         }
     }
+
 
 
 }

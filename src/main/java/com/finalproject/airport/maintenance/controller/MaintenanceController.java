@@ -1,5 +1,6 @@
 package com.finalproject.airport.maintenance.controller;
 
+import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
 import com.finalproject.airport.maintenance.service.MaintenanceService;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +51,28 @@ public class MaintenanceController {
         return ResponseEntity.ok().headers(headers)
                 .body(new ResponseDTO(HttpStatus.OK,"정비 상세 조회 성공", responseMap));
     }
+
+    // 정비 수정
+    @PutMapping("/maintenance/{maintenanceCode}")
+    public ResponseEntity<?> modifyMaintenance(@PathVariable int maintenanceCode, @RequestBody MaintenanceDTO maintenanceDTO) {
+
+        maintenanceService.updateMaintenance(maintenanceCode, maintenanceDTO);
+
+        return ResponseEntity.created(URI.create("/gate" + maintenanceCode)).build();
+
+    }
+
+    // 정비 삭제
+    @PutMapping("/maintenance/{maintenanceCode}/delete")
+    public ResponseEntity<?> deleteMaintenance(@PathVariable int maintenanceCode) {
+        System.out.println("maintenanceCode: " + maintenanceCode);
+
+        maintenanceService.softDelete(maintenanceCode);
+
+        return ResponseEntity.ok().build();
+    }
+
+
 
 
 

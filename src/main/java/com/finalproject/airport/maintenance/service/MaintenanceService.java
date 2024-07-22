@@ -6,6 +6,7 @@ import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +42,37 @@ public class MaintenanceService {
         return modelMapper.map(maintenanceEntity, MaintenanceDTO.class);
     }
 
-// 정비 항목 반환
-//    public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
-//        for (MaintenanceDTO maintenance : maintenanceList) {
-//            if (maintenance.getMaintenanceCode() == maintenanceCode) {
-//                return maintenance;
-//            }
-//        }
-//        return null;
-//    }
+    // 정비 항목 수정
+    @Transactional
+    public void updateMaintenance(int maintenanceCode, MaintenanceDTO maintenanceDTO) {
+
+        MaintenanceEntity maintenanceEntity = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
+
+        maintenanceEntity = maintenanceEntity.toBuilder()
+                .maintenanceStructure(maintenanceDTO.getStructure())
+                .maintenanceType(maintenanceDTO.getType())
+                .maintenanceLocation(maintenanceDTO.getLocation())
+                .maintenanceStatus(maintenanceDTO.getStatus())
+                .maintenanceManager(maintenanceDTO.getManager())
+                .maintenanceEquipment(maintenanceDTO.getEquipment())
+                .maintenanceNumber(maintenanceDTO.getNumber())
+                .maintenanceExpense(maintenanceDTO.getExpense())
+                .maintenanceStartDate(maintenanceDTO.getMaintenanceStartDate())
+                .maintenanceEndDate(maintenanceDTO.getMaintenanceEndDate())
+                .maintenanceDetails(maintenanceDTO.getMaintenanceDetails())
+                .build();
+
+        maintenanceRepository.save(maintenanceEntity);
+    }
+
+    public void softDelete(int maintenanceCode) {
+
+        MaintenanceEntity maintenanceEntity = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
+
+        maintenanceEntity = maintenanceEntity.toBuilder().isActive("N").build();
+
+        maintenanceRepository.save(maintenanceEntity);
+    }
 
 
 
@@ -59,23 +82,4 @@ public class MaintenanceService {
 //        maintenanceList.add(maintenanceDTO);
 //        return maintenanceDTO;
 //    }
-//
-//    // 정비 항목 수정
-//    public MaintenanceDTO updateMaintenance(int maintenanceCode, MaintenanceDTO updatedMaintenanceDTO) {
-//        for (int i = 0; i < maintenanceList.size(); i++) {
-//            if (maintenanceList.get(i).getMaintenanceCode() == maintenanceCode) {
-//                maintenanceList.set(i, updatedMaintenanceDTO);
-//                return updatedMaintenanceDTO;
-//            }
-//        }
-//        return null;
-//    }
-//
-//    // 정비 항목 삭제
-//    public boolean deleteMaintenance(int maintenanceCode) {
-//        return maintenanceList.removeIf(maintenance -> maintenance.getMaintenanceCode() == maintenanceCode);
-//    }
-//
-
-
 }

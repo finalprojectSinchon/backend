@@ -34,7 +34,7 @@ public class InspectionService {
 
     //점검 상세 조회
     public InspectionDTO getInspection(int inspectionCode) {
-        InspectionEntity inspection = inspectionRepository.findById(Integer.valueOf(inspectionCode)).orElse(null);
+        InspectionEntity inspection = inspectionRepository.findByinspectionCode(inspectionCode);
 
         return modelMapper.map(inspection, InspectionDTO.class);
     }

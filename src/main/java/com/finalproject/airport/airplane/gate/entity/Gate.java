@@ -1,11 +1,8 @@
 package com.finalproject.airport.airplane.gate.entity;
 
-import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -48,9 +45,18 @@ public class Gate {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
-    @Column(name = "ISACTIVE")
+
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
+
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+    }
     protected Gate(){}
 
 }
