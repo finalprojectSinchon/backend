@@ -73,6 +73,25 @@ public class CheckinCounterController {
 
     }
 
+    // 체크인카운터 수정
+    @PutMapping("/checkin-counter/{checkinCounterCode}")
+    public ResponseEntity<?> modifyCheckinCounter(@PathVariable int checkinCounterCode, @RequestBody CheckinCounterDTO modifyCheckinCounter){
+
+        service.modifyCheckinCounter(checkinCounterCode,modifyCheckinCounter);
+
+        return ResponseEntity.created(URI.create("/checkin-counter/"+checkinCounterCode)).build();
+    }
+
+    // 체크인카운터 soft delete
+    @PutMapping("/checkin-counter/{checkinCounterCode}/delete")
+    public ResponseEntity<?> remodveCheckinCounter(@PathVariable int checkinCounterCode){
+
+        service.remodveCheckinCounter(checkinCounterCode);
+
+        return ResponseEntity.ok().build();
+
+    }
+
 
 
 }

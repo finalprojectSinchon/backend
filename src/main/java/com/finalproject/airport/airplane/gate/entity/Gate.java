@@ -1,7 +1,6 @@
 package com.finalproject.airport.airplane.gate.entity;
 
-import com.finalproject.airport.airplane.Airplane;
-import com.finalproject.airport.common.IsActiveEmbeddable;
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,11 +47,9 @@ public class Gate {
 
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-
     private String isActive;
 
-    @Column(name = "DELAY_TIME")
-    private int delayTime;
+
 
     @PrePersist
     private void ensureIsActiveDefault() {

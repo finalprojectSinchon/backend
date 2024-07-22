@@ -1,9 +1,10 @@
 package com.finalproject.airport.airplane.checkincounter.entity;
 
-import com.finalproject.airport.airplane.Airplane;
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class CheckinCounter extends BaseTimeEntity {
 
     @Id
@@ -47,7 +49,8 @@ public class CheckinCounter extends BaseTimeEntity {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
-    @Column(name = "ISACTIVE")
+
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
     protected CheckinCounter(){}
