@@ -32,10 +32,22 @@ public class MaintenanceController {
 
     //정비 전체 조회
     @GetMapping("/maintenance")
-    public ResponseEntity<?> getMaintenance() {
-        List<MaintenanceDTO> maintenanceDTOList = maintenanceService.getMaintenanceList();
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정비 전체 조회 성공", maintenanceDTOList));
+    public ResponseEntity<ResponseDTO> getMaintenance() {
+        System.out.println("maintenance");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        List<MaintenanceDTO> maintenanceDTOList = maintenanceService.findAll();
+        Map<String, Object> maintenanceMap = new HashMap<>();
+        maintenanceMap.put("maintenanceList", maintenanceDTOList);
+        System.out.println("maintenanceList: " + maintenanceDTOList);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK,"정비 전체 조회", maintenanceMap));
     }
+
 
     //정비 상세 조회
     @GetMapping("/maintenance/{maintenanceCode}")
