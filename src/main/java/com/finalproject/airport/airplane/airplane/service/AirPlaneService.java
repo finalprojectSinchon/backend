@@ -28,7 +28,9 @@ public class AirPlaneService {
 
     @Autowired
     public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper
+
 //             ,@Value("${API_KEY}") String apiKey, @Value("${API_URL}") String apiUrl
+
     ) {
         this.airplaneRepository = airplaneRepository;
         this.modelMapper = modelMapper;
