@@ -21,7 +21,7 @@ public class StorageController {
     private final StorageService storageService;
 
     public StorageController(StorageService storageService) {this.storageService = storageService;}
-    @GetMapping("/storage")  // 전체조회
+    @GetMapping("/storage") // 전체조회
     public ResponseEntity<?> selectStorageList() {
 
         List<StorageDTO> storageList = storageService.selectAllStorage();
@@ -29,16 +29,19 @@ public class StorageController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "창고 목록 조회 성공", storageList));
     }
 
-    @GetMapping("/storage/{storageCode}") // 상세조회
+    @GetMapping("/storage/{storageCode}")   // 상세조회
     public ResponseEntity<?> selectByStorageCode(@PathVariable String storageCode) {
         StorageDTO storage = storageService.getStorage(storageCode);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "창고 상세목록 조회", storage));
     }
 
-    @PostMapping("/storage")  // 등록
-    public ResponseEntity<?> addStorage(StorageRegistDTO storageRegistDTO) {
+    @PostMapping("/storage")    // 등록
+    public ResponseEntity<?> addStorage(@RequestBody StorageRegistDTO storageRegistDTO) {
+        System.out.println("11");
+        System.out.println("storageRegistDTO = " + storageRegistDTO);
         try{
+            System.out.println("22");
             storageService.addStorage(storageRegistDTO);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"창고 등록에 성공하였습니다",null));
@@ -47,6 +50,17 @@ public class StorageController {
         }
     }
 
+    @PutMapping("/storage/{storageCode}")   // 수정
+    public ResponseEntity<?> updateStorage(@PathVariable int storageCode, @RequestBody StorageDTO storageDTO) {
+            try {
+                storageService.updateStorage(storageCode, storageDTO);
+
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정에 성공했습니다.", null));
+            } catch (Exception e) {
+
+                return ResponseEntity.internalServerError().build();
+            }
+    }
 
 
     @PutMapping("/storage/{storageCode}/delete")    // 삭제
@@ -58,7 +72,7 @@ public class StorageController {
 
         } catch (Exception e) {
 
-            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "등록에 오류가 발생했습니다.", null));
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "삭제에 오류가 발생했습니다.", null));
         }
     }
 

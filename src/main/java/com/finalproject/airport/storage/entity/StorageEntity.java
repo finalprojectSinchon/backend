@@ -41,5 +41,5 @@ public class StorageEntity extends BaseTimeEntity {
 
     // 등록일은 시설물에서 관리
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive ;
+    private String isActive="Y";
 }
