@@ -109,4 +109,12 @@ public class AuthController {
         return response;
     }
 
+    @PostMapping("/api/v1/auth")
+    public ResponseEntity<?> checkAuthCode(@RequestBody Map<String,Integer> authCode) {
+
+
+
+        return joinService.isCheckAuth(authCode);
+    }
+
 }

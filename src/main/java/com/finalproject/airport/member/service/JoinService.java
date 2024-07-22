@@ -7,6 +7,7 @@ import com.finalproject.airport.member.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,9 @@ public class JoinService {
         String userAddress= joinDTO.getUserAddress();
         String userName = joinDTO.getUserName();
         String userAbout = joinDTO.getUserAbout();
+        int authCode = joinDTO.getAuthCode();
 
+        UserEntity joinUserEntity = userRepository.findByAuthCode(authCode);
 
         Boolean isExist = userRepository.existsByUserId(userId);
         Boolean emailExist = userRepository.existsByUserEmail(userEmail);
@@ -58,8 +61,11 @@ public class JoinService {
 
         String encodePassword = bCryptPasswordEncoder.encode(password);
 
-        UserEntity data = new UserEntity(userId,encodePassword,userEmail,userPhone,userAddress,"ROLE_USER",userName,userAbout,"N");
-        userRepository.save(data);
+        UserEntity newUser = joinUserEntity.toBuilder().userId(userId).userPhone(encodePassword)
+                .userEmail(userEmail).userPhone(userPhone).userAddress(userAddress).userRole("ROLE_USER")
+                .userName(userName).userAbout(userAbout).isActive("Y").build();
+
+        userRepository.save(newUser);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"회원가입이 완료되었습니다.",null));
     }
@@ -115,15 +121,31 @@ public class JoinService {
     public ResponseEntity<?> getAdminCode() {
 
         int randomNumber = (int) (Math.random() * 900000) + 100000;
-        UserEntity user = new UserEntity();
-        user.setAuthCode(randomNumber);
-        System.out.println("user = " + user);
-        userRepository.save(user);
+        Boolean isAuthCode = userRepository.existsByAuthCode(randomNumber);
+        if (isAuthCode) {
+            return  ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST,"이미 있는 랜덤번호입니다. 다시시도해주세요",null));
+        } else {
+            UserEntity user = new UserEntity();
+            user.setAuthCode(randomNumber);
+            System.out.println("user = " + user);
+            userRepository.save(user);
 
-        Integer userCode = userRepository.findByAuthCode(randomNumber);
-        Map<String, Object> info = new HashMap<>();
-        info.put("userCode", userCode);
-        info.put("authCode", randomNumber);
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"인증번호 발급 성공",info));
+            Integer userCode = userRepository.findforAuthCode(randomNumber);
+            Map<String, Object> info = new HashMap<>();
+            info.put("userCode", userCode);
+            info.put("authCode", randomNumber);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "인증번호 발급 성공", info));
+        }
+    }
+
+    public ResponseEntity<?> isCheckAuth(Map<String, Integer> authCode) {
+        Boolean isAuthCode = userRepository.existsByAuthCode(authCode.get("password"));
+        System.out.println("isAuthCode = " + isAuthCode);
+        if (isAuthCode) {
+
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

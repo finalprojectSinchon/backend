@@ -15,5 +15,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findByUserId(String userId);
 
     @Query(value = "SELECT user_code FROM tbl_user WHERE auth_code = :randomNumber", nativeQuery = true)
-    Integer findByAuthCode(@Param("randomNumber") int randomNumber);
+    Integer findforAuthCode(@Param("randomNumber") int randomNumber);
+
+    Boolean existsByAuthCode(int randomNumber);
+
+    UserEntity findByAuthCode(int authCode);
 }
