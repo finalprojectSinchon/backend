@@ -41,6 +41,30 @@ public class MaintenanceService {
         return modelMapper.map(maintenanceEntity, MaintenanceDTO.class);
     }
 
+    // 정비 항목 수정
+    public MaintenanceDTO updateMaintenance(int maintenanceCode, MaintenanceDTO maintenanceDTO) {
+
+        MaintenanceEntity maintenanceEntity = maintenanceRepository.findById(maintenanceCode);
+
+        maintenanceEntity = maintenanceEntity.toBuilder()
+                .maintenanceStructure(maintenanceDTO.getStructure())
+                .maintenanceType(maintenanceDTO.getType())
+                .maintenanceLocation(maintenanceDTO.getLocation())
+                .maintenanceStatus(maintenanceDTO.getStatus())
+                .maintenanceManager(maintenanceDTO.getManager())
+                .maintenanceEquipment(maintenanceDTO.getEquipment())
+                .maintenanceNumber(maintenanceDTO.getNumber())
+                .maintenanceExpense(maintenanceDTO.getExpense())
+                .maintenanceStartDate(maintenanceDTO.getMaintenanceStartDate())
+                .maintenanceEndDate(maintenanceDTO.getMaintenanceEndDate())
+                .maintenanceDetails(maintenanceDTO.getMaintenanceDetails())
+                .build();
+
+        maintenanceEntity = maintenanceRepository.save(maintenanceEntity);
+
+        return modelMapper.map(maintenanceEntity, MaintenanceDTO.class);
+    }
+
 // 정비 항목 반환
 //    public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
 //        for (MaintenanceDTO maintenance : maintenanceList) {

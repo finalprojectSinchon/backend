@@ -50,6 +50,24 @@ public class MaintenanceController {
                 .body(new ResponseDTO(HttpStatus.OK,"정비 상세 조회 성공", responseMap));
     }
 
+    // 정비 수정
+    @PutMapping("/maintenance/{maintenanceCode}")
+    public ResponseEntity<String> updateMaintenance(@PathVariable int maintenanceCode, @RequestBody MaintenanceDTO maintenanceDTO) {
+
+        System.out.println(maintenanceDTO);
+        maintenanceService.updateMaintenance(maintenanceCode, maintenanceDTO);
+        return ResponseEntity.ok("정비 수정 성공");
+    }
+
+    /*@PutMapping("/gate/{gateCode}")
+    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @ModelAttribute GateDTO modifyGate){
+
+        System.out.println(modifyGate);
+
+        gateService.modifyGate(gateCode,modifyGate);
+
+        return ResponseEntity.created(URI.create("/gate/"+gateCode)).build();*/
+
 
 
 //    //정비 등록

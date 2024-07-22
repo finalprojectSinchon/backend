@@ -13,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@Builder(toBuilder = true)
 public class MaintenanceEntity extends BaseTimeEntity {
 
     @Id
