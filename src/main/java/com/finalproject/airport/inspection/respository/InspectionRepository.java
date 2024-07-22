@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface InspectionRepository extends JpaRepository<InspectionEntity, Integer> {
 
 
-
+    InspectionEntity findByinspectionCode(int inspectionCode);
 }

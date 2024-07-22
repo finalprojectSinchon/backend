@@ -32,7 +32,7 @@ public class GateController {
 
     // 탑승구 등록
     @PostMapping("/gate")
-    public ResponseEntity<?> insertGate(@ModelAttribute GateDTO gate){
+    public ResponseEntity<?> insertGate(@RequestBody GateDTO gate){
 
         gateService.insertGate(gate);
 
@@ -80,9 +80,8 @@ public class GateController {
 
     // 탑승구 수정
     @PutMapping("/gate/{gateCode}")
-    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @ModelAttribute GateDTO modifyGate){
+    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @RequestBody GateDTO modifyGate){
 
-        System.out.println(modifyGate);
 
         gateService.modifyGate(gateCode,modifyGate);
 
@@ -93,6 +92,7 @@ public class GateController {
     @PutMapping("/gate/{gateCode}/delete")
     public ResponseEntity<?> remodveGate(@PathVariable int gateCode){
 
+        System.out.println("gateCode:"+gateCode);
 
         gateService.softDelete(gateCode);
 

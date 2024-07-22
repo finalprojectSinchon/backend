@@ -13,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@Builder(toBuilder = true)
 public class MaintenanceEntity extends BaseTimeEntity {
 
     @Id
@@ -65,4 +66,14 @@ public class MaintenanceEntity extends BaseTimeEntity {
     //정비 내용
     @Column(name = "maintenance_details")
     private String maintenanceDetails;
+
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    private String isActive;
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+    }
 }

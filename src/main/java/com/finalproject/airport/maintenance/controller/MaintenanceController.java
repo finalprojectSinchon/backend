@@ -1,5 +1,6 @@
 package com.finalproject.airport.maintenance.controller;
 
+import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
 import com.finalproject.airport.maintenance.service.MaintenanceService;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +32,22 @@ public class MaintenanceController {
 
     //정비 전체 조회
     @GetMapping("/maintenance")
-    public ResponseEntity<?> getMaintenance() {
-        List<MaintenanceDTO> maintenanceDTOList = maintenanceService.getMaintenanceList();
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정비 전체 조회 성공", maintenanceDTOList));
+    public ResponseEntity<ResponseDTO> getMaintenance() {
+        System.out.println("maintenance");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        List<MaintenanceDTO> maintenanceDTOList = maintenanceService.findAll();
+        Map<String, Object> maintenanceMap = new HashMap<>();
+        maintenanceMap.put("maintenanceList", maintenanceDTOList);
+        System.out.println("maintenanceList: " + maintenanceDTOList);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK,"정비 전체 조회", maintenanceMap));
     }
+
 
     //정비 상세 조회
     @GetMapping("/maintenance/{maintenanceCode}")
@@ -50,38 +64,33 @@ public class MaintenanceController {
                 .body(new ResponseDTO(HttpStatus.OK,"정비 상세 조회 성공", responseMap));
     }
 
+    // 정비 수정
+    @PutMapping("/maintenance/{maintenanceCode}")
+    public ResponseEntity<?> modifyMaintenance(@PathVariable int maintenanceCode, @RequestBody MaintenanceDTO maintenanceDTO) {
+
+        maintenanceService.updateMaintenance(maintenanceCode, maintenanceDTO);
+
+        return ResponseEntity.created(URI.create("/gate" + maintenanceCode)).build();
+
+    }
+
+    // 정비 삭제
+    @PutMapping("/maintenance/{maintenanceCode}/delete")
+    public ResponseEntity<?> deleteMaintenance(@PathVariable int maintenanceCode) {
+        System.out.println("maintenanceCode: " + maintenanceCode);
+
+        maintenanceService.softDelete(maintenanceCode);
+
+        return ResponseEntity.ok().build();
+    }
 
 
-//    //정비 등록
-//    @PostMapping("/maintenance")
-//    public ResponseEntity<?> addMaintenance(@RequestBody MaintenanceDTO maintenanceDTO) {
-//        MaintenanceDTO createdMaintenanceDTO = maintenanceService.addMaintenance(maintenanceDTO);
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(new ResponseDTO(HttpStatus.CREATED, "정비 등록 성공", createdMaintenanceDTO));
-//    }
-//
-//    // 정비 수정
-//    @PutMapping("/maintenance/{maintenanceCode}")
-//    public ResponseEntity<?> updateMaintenance(@PathVariable int maintenanceCode, @RequestBody MaintenanceDTO maintenanceDTO) {
-//        MaintenanceDTO updatedMaintenanceDTO = maintenanceService.updateMaintenance(maintenanceCode, maintenanceDTO);
-//        if (updatedMaintenanceDTO != null) {
-//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정비 수정 성공", updatedMaintenanceDTO));
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new ResponseDTO(HttpStatus.NOT_FOUND, "해당 코드의 정비 항목을 찾을 수 없습니다.", null));
-//        }
-//    }
-//
-//    // 정비 삭제
-//    @PutMapping("/maintenance/{maintenanceCode}/delete")
-//    public ResponseEntity<?> deleteMaintenance(@PathVariable int maintenanceCode) {
-//        boolean isDeleted = maintenanceService.deleteMaintenance(maintenanceCode);
-//        if (isDeleted) {
-//            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정비 삭제 성공", null));
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new ResponseDTO(HttpStatus.NOT_FOUND, "해당 코드의 정비 항목을 찾을 수 없습니다.", null));
-//        }
-//    }
+    //정비 등록
+    @PostMapping("/maintenance")
+    public ResponseEntity<?> insertMaintenance(@RequestBody MaintenanceDTO maintenanceDTO) {
+
+        maintenanceService.insertMaintenance(maintenanceDTO);
+        return ResponseEntity.ok().build();
+    }
 
 }

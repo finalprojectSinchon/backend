@@ -1,6 +1,7 @@
 package com.finalproject.airport.store.controller;
 
 import com.finalproject.airport.common.ResponseDTO;
+import com.finalproject.airport.store.dto.StoreAPIDTO;
 import com.finalproject.airport.store.dto.StoreDTO;
 import com.finalproject.airport.store.dto.StoreRegistDTO;
 import com.finalproject.airport.store.service.StoreService;
@@ -30,11 +31,10 @@ public class StoreController {
 
     @GetMapping("/store/{storeCode}")
     public ResponseEntity<?> getStoreByStoreCode(@PathVariable String storeCode) {
-        System.out.println("storeCode = " + storeCode);
+
         StoreDTO store = storeService.getStore(storeCode);
         if(store == null) {
             return ResponseEntity.notFound().build();
-
         } else {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "점포 상세 조회 성공", store));
         }
@@ -64,7 +64,7 @@ public class StoreController {
     }
 
     @PutMapping("/store/{storeCode}")
-    public ResponseEntity<?> updateStore(@PathVariable int storeCode, StoreDTO storeDTO) {
+    public ResponseEntity<?> updateStore(@PathVariable int storeCode, @RequestBody StoreDTO storeDTO) {
             try {
                 storeService.updateStore(storeCode,storeDTO);
 
@@ -73,7 +73,15 @@ public class StoreController {
 
                 return ResponseEntity.internalServerError().build();
             }
+    }
 
+    @PostMapping("/store/insertapi")
+    public ResponseEntity<?> insertApi(@RequestBody List<StoreAPIDTO> storeDTO) {
+
+        System.out.println("storeDTO = " + storeDTO);
+        storeService.updateApi(storeDTO);
+
+        return ResponseEntity.ok().build();
     }
 
 }
