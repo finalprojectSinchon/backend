@@ -7,9 +7,11 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class AuthMailDTO {
+public class AuthMailPhoneDTO {
 
     private int authCode;
 
     private String userEmail;
+
+    private String userPhone;
 }
