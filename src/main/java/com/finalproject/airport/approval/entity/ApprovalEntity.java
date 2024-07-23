@@ -3,6 +3,8 @@ package com.finalproject.airport.approval.entity;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.facilities.entity.FacilitiesEntity;
+import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.store.entity.StoreEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class Approval {
+public class ApprovalEntity {
 
     @Id
     @Column(name = "APPROVAL_CODE" ,nullable = false)
@@ -23,11 +25,11 @@ public class Approval {
 
     @Column(name = "APPROVAL_TYPE")
     @Enumerated(EnumType.STRING)
-    private ApprovalType approvalType;
+    private ApprovalTypeEntity approvalType;
 
     @Column(name = "APPROVAL_STATUS")
     @Enumerated(EnumType.STRING)
-    private ApprovalStatus approvalStatus;
+    private ApprovalStatusEntity approvalStatus;
 
     @ManyToOne
     @JoinColumn(name = "GATE_CODE")
@@ -45,9 +47,17 @@ public class Approval {
     @JoinColumn(name = "STORE_CODE")
     private StoreEntity store;
 
+    @ManyToOne
+    @JoinColumn(name = "STORAGE_CODE")
+    private StorageEntity storageEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "FACILITY_CODE")
+    private FacilitiesEntity facilitiesEntity;
 
 
 
 
-    protected Approval(){}
+
+    protected ApprovalEntity(){}
 }
