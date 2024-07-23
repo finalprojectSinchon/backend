@@ -148,4 +148,10 @@ public class AuthController {
     }
 
 
+    @PostMapping("/api/v1/user-about")
+    public ResponseEntity<?> userAboutChange(@RequestBody ChangeAboutDTO changeAboutDTO) {
+
+
+        return joinService.userAboutChange(changeAboutDTO);
+    }
 }
