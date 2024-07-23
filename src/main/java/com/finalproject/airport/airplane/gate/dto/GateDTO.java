@@ -1,6 +1,7 @@
 package com.finalproject.airport.airplane.gate.dto;
 
 import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
+import com.finalproject.airport.airplane.gate.entity.GateIsUse;
 import com.finalproject.airport.airplane.gate.entity.GateType;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +16,7 @@ import java.util.Date;
 public class GateDTO {
 
     private int gateCode;
-    private String location;
+    private Integer location;
     private GateType gateType;
     private String status;
 
@@ -28,6 +29,7 @@ public class GateDTO {
     private String note;
     private ArrivalAirplaneDTO airplane;
     private char isActive;
+    private GateIsUse isUse;
 
 
 }

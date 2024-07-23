@@ -72,6 +72,7 @@ public class GateService {
                 .status(modifyGate.getStatus())
                 .lastInspectionDate(modifyGate.getLastInspectionDate())
                 .registrationDate(modifyGate.getRegistrationDate())
+                .isUse(modifyGate.getIsUse())
                 .build();
 
         gateRepository.save(gate);

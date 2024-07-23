@@ -62,6 +62,7 @@ public class CheckinCounterService {
                 .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())
                 .manager(modifyCheckinCounter.getManager())
                 .note(modifyCheckinCounter.getNote())
+                .isUse(modifyCheckinCounter.getIsUse())
                 .build();
 
         repository.save(checkinCounter);
