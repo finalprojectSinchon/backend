@@ -21,7 +21,8 @@ public class BaggageClaim extends BaseTimeEntity {
     private int baggageClaimCode;
 
     @Column(name = "LOCATION" )
-    private String location;
+    @Enumerated(EnumType.STRING)
+    private BaggageClaimLocation location;
 
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
@@ -48,6 +49,10 @@ public class BaggageClaim extends BaseTimeEntity {
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
+
+    @Column(name = "ISUSE")
+    @Enumerated
+    private BaggageClaimIsUse isUse;
 
     protected BaggageClaim(){}
 }

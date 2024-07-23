@@ -58,6 +58,8 @@ public class BaggageClaimService {
 
     @Transactional
     public void modifybaggageClaim(int baggageClaimCode, BaggageClaimDTO modifybaggageClaim) {
+
+
         BaggageClaim baggageClaim = repository.findBybaggageClaimCode(baggageClaimCode);
 
 
@@ -69,6 +71,7 @@ public class BaggageClaimService {
                 .lastInspectionDate(modifybaggageClaim.getLastInspectionDate())
                 .manager(modifybaggageClaim.getManager())
                 .note(modifybaggageClaim.getNote())
+                .isUse(modifybaggageClaim.getIsUse())
                 .build();
 
         repository.save(baggageClaim);

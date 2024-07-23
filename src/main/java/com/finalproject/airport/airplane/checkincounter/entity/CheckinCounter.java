@@ -24,7 +24,8 @@ public class CheckinCounter extends BaseTimeEntity {
     private int checkinCounterCode;
 
     @Column(name = "LOCATION")
-    private String location;
+    @Enumerated(EnumType.STRING)
+    private CheckinCounterLocation location;
 
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
@@ -52,6 +53,10 @@ public class CheckinCounter extends BaseTimeEntity {
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
+
+    @Column(name = "ISUSE")
+    @Enumerated(EnumType.STRING)
+    private CheckinCounterIsUse isUse;
 
     protected CheckinCounter(){}
 
