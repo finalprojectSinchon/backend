@@ -148,4 +148,15 @@ public class JoinService {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    public ResponseEntity<?> userAboutChange(ChangeAboutDTO changeAboutDTO) {
+        int userCode = changeAboutDTO.getUserCode();
+        UserEntity user = userRepository.findById(userCode).orElseThrow(IllegalArgumentException::new);
+        user = user.toBuilder().userAbout(changeAboutDTO.getUserAbout()).build();
+
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.ACCEPTED,"내 정보 등록 성공",null));
+    }
 }

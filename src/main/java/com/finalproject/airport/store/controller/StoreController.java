@@ -53,6 +53,7 @@ public class StoreController {
 
     @PutMapping("/store/{storeCode}/delete")
     public ResponseEntity<?> deleteStore(@PathVariable int storeCode) {
+        System.out.println("storeCode = " + storeCode);
         try {
             storeService.softDeleteStore(storeCode);
 
