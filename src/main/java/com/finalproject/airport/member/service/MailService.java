@@ -1,11 +1,9 @@
 package com.finalproject.airport.member.service;
 
-import com.finalproject.airport.member.dto.MailDTO;
-import com.finalproject.airport.store.dto.AuthMailDTO;
+import com.finalproject.airport.store.dto.AuthMailPhoneDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendForAuthCode(AuthMailDTO authMailDTO) throws MessagingException {
+    public void sendForAuthCode(AuthMailPhoneDTO authMailDTO) throws MessagingException {
         int authCode = authMailDTO.getAuthCode();
         if (99999 < authCode && authCode <= 999999) {
             MimeMessage message = mailSender.createMimeMessage();

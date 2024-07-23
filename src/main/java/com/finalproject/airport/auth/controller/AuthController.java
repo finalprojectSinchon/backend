@@ -1,21 +1,22 @@
 package com.finalproject.airport.auth.controller;
 
+import com.finalproject.airport.auth.util.SMSUtil;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.*;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import com.finalproject.airport.member.service.JoinService;
 import com.finalproject.airport.member.service.MailService;
-import com.finalproject.airport.store.dto.AuthMailDTO;
+import com.finalproject.airport.store.dto.AuthMailPhoneDTO;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,6 +29,8 @@ public class AuthController {
     private final JoinService joinService;
 
     private final MailService mailService;
+
+    private final SMSUtil smsUtil;
 
 
     @GetMapping("/api/hello")
@@ -122,16 +125,27 @@ public class AuthController {
     }
 
     @PostMapping("/api/v1/admin/auth/mail")
-    public ResponseEntity<?> sendMail(@RequestBody AuthMailDTO authMailDTO) {
-
+    public ResponseEntity<?> sendMail(@RequestBody AuthMailPhoneDTO authMailDTO) {
         try {
-            mailService.sendForAuthCode(authMailDTO);
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.ACCEPTED, "정상적으로 메일을 보냈습니다.",null));
+            if (authMailDTO.getUserEmail() != null && !authMailDTO.getUserEmail().isEmpty()) {
+                mailService.sendForAuthCode(authMailDTO);
+                if (authMailDTO.getUserPhone() != null && !authMailDTO.getUserPhone().isEmpty()) {
+                    smsUtil.sendOne(authMailDTO.getUserPhone(), authMailDTO.getAuthCode());
+                    return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정상적으로 메일과 SMS를 보냈습니다.", null));
+                }
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정상적으로 메일을 보냈습니다.", null));
+            } else if (authMailDTO.getUserPhone() != null && !authMailDTO.getUserPhone().isEmpty()) {
+                smsUtil.sendOne(authMailDTO.getUserPhone(), authMailDTO.getAuthCode());
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정상적으로 SMS를 보냈습니다.", null));
+            } else {
+                return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "이메일 또는 전화번호가 필요합니다.", null));
+            }
         } catch (MessagingException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "메일 전송 오류: " + e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류: " + e.getMessage(), null));
         }
-
-
     }
+
 
 }
