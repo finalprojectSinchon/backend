@@ -61,7 +61,7 @@ public class JoinService {
 
         String encodePassword = bCryptPasswordEncoder.encode(password);
 
-        UserEntity newUser = joinUserEntity.toBuilder().userId(userId).userPhone(encodePassword)
+        UserEntity newUser = joinUserEntity.toBuilder().userId(userId).userPassword(encodePassword)
                 .userEmail(userEmail).userPhone(userPhone).userAddress(userAddress).userRole("ROLE_USER")
                 .userName(userName).userAbout(userAbout).isActive("Y").build();
 
