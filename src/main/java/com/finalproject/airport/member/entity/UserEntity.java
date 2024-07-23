@@ -51,6 +51,9 @@ public class UserEntity extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String userImg;
 
+    @Setter
+    private int authCode;
+
 
     @PrePersist
     private void ensureIsActiveDefault() {
@@ -71,7 +74,7 @@ public class UserEntity extends BaseTimeEntity {
         this.userAbout = userAbout;
     }
 
-    public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole, String userName, String userAbout) {
+    public UserEntity(String userId, String userPassword, String userEmail, String userPhone, String userAddress, String userRole, String userName, String userAbout, String isActive) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.userEmail = userEmail;
@@ -80,5 +83,6 @@ public class UserEntity extends BaseTimeEntity {
         this.userRole = userRole;
         this.userName = userName;
         this.userAbout = userAbout;
+        this.isActive = isActive;
     }
 }

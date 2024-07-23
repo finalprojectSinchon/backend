@@ -35,7 +35,6 @@ public class StoreController {
         StoreDTO store = storeService.getStore(storeCode);
         if(store == null) {
             return ResponseEntity.notFound().build();
-
         } else {
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "점포 상세 조회 성공", store));
         }
@@ -76,7 +75,7 @@ public class StoreController {
             }
     }
 
-    @PostMapping("/store/insertapi")
+    @PostMapping("/store/api")
     public ResponseEntity<?> insertApi(@RequestBody List<StoreAPIDTO> storeDTO) {
 
         System.out.println("storeDTO = " + storeDTO);

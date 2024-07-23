@@ -25,6 +25,8 @@ public class InspectionRegistDTO {
 
     private String status;
 
-    private String note;
+    private String text;
+
+    private int Phone;
 
 }

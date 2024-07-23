@@ -30,7 +30,9 @@ public class UserDTO {
 
     private String userImg;
 
-    public UserDTO(int userCode, String userId, String userEmail, String userPhone, String userAddress, String userName, String userRole, String userAbout, String userImg) {
+    private String isActive;
+
+    public UserDTO(int userCode, String userId, String userEmail, String userPhone, String userAddress, String userName, String userRole, String userAbout, String userImg, String isActive) {
         this.userCode = userCode;
         this.userId = userId;
         this.userEmail = userEmail;
@@ -40,5 +42,6 @@ public class UserDTO {
         this.userRole = userRole;
         this.userAbout = userAbout;
         this.userImg = userImg;
+        this.isActive = isActive;
     }
 }

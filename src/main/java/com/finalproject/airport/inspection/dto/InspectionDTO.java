@@ -26,4 +26,8 @@ public class InspectionDTO {
 
     private String isActive;
 
+    private int phone;
+
+    private String text;
+
 }

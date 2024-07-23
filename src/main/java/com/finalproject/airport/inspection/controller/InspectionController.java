@@ -54,7 +54,7 @@ public class InspectionController {
 
     //안전 점검 수정
 
-    @PutMapping("/inspection/{inspectionCode}")
+    @PutMapping("/inspection/{inspectionCode}/update")
     public ResponseEntity<?> updateInspection(@PathVariable int inspectionCode, @RequestBody InspectionDTO inspectionDTO) {
         try {
             inspectionService.updateInspection(inspectionCode, inspectionDTO);
@@ -81,4 +81,6 @@ public class InspectionController {
 
         }
     }
+
+
 }

@@ -38,6 +38,7 @@ public class JoinDTO {
 
     private String userAbout;
 
+    private int authCode;
 
     private String userRole;
 }

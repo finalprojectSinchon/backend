@@ -31,4 +31,5 @@ public class StorageDTO {
 
     // 담당자
     private String manager;
+
 }

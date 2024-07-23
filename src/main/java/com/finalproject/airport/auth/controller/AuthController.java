@@ -4,7 +4,11 @@ import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.*;
 import com.finalproject.airport.member.service.CustomUserDetails;
 import com.finalproject.airport.member.service.JoinService;
+import com.finalproject.airport.member.service.MailService;
+import com.finalproject.airport.store.dto.AuthMailDTO;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,13 +22,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
 
     private final JoinService joinService;
 
-    public AuthController(JoinService joinService) {
-        this.joinService = joinService;
-    }
+    private final MailService mailService;
+
 
     @GetMapping("/api/hello")
     public String hello() {
@@ -99,6 +103,35 @@ public class AuthController {
         joinService.saveprofileImg(info);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공",null));
+    }
+
+    @GetMapping("/api/v1/admin/code")
+    public ResponseEntity<?> getAdminCode(){
+
+        ResponseEntity<?> response = joinService.getAdminCode();
+
+        return response;
+    }
+
+    @PostMapping("/api/v1/auth")
+    public ResponseEntity<?> checkAuthCode(@RequestBody Map<String,Integer> authCode) {
+
+
+
+        return joinService.isCheckAuth(authCode);
+    }
+
+    @PostMapping("/api/v1/admin/auth/mail")
+    public ResponseEntity<?> sendMail(@RequestBody AuthMailDTO authMailDTO) {
+
+        try {
+            mailService.sendForAuthCode(authMailDTO);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.ACCEPTED, "정상적으로 메일을 보냈습니다.",null));
+        } catch (MessagingException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
     }
 
 }

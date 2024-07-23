@@ -40,22 +40,24 @@ public class StorageService {
     }
 
     public void addStorage(StorageRegistDTO storageRegistDTO) {
+        System.out.println("storageRegistDTO = " + storageRegistDTO);
         StorageEntity storageEntity = modelMapper.map(storageRegistDTO, StorageEntity.class);
+        System.out.println("storageEntity = " + storageEntity);
+        storageRepository.save(storageEntity);
+    }
+
+    public void updateStorage(int storageCode, StorageDTO storageDTO) {
+        storageDTO.setStorageCode(storageCode);
+        storageDTO.setStorageStatus("Y");
+        StorageEntity storageEntity = modelMapper.map(storageDTO, StorageEntity.class);
         storageRepository.save(storageEntity);
     }
 
     public void softDeleteStorage(int storageCode) {
         StorageEntity storageEntity = storageRepository.findById(storageCode).orElseThrow(IllegalArgumentException::new);
 
-        storageEntity = storageEntity.toBuilder().storageStatus("중단").build();
+        storageEntity = storageEntity.toBuilder().isActive("N").build();
         storageRepository.save(storageEntity);
     }
-
-//    public void updateStorage(int storageCode, StorageDTO storageDTO) {
-//        storageDTO.setStorageCode(storageCode);
-//        StorageEntity storageEntity = storageRepository.findById(storageCode).orElseThrow(IllegalArgumentException::new);
-//        storageEntity = modelMapper.map(storageDTO, StorageEntity.class);
-//        storageRepository.save(StorageEntity);
-//    }
 
 }

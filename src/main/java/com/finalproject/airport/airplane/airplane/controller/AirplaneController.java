@@ -4,6 +4,7 @@ import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
 import com.finalproject.airport.airplane.airplane.service.AirPlaneService;
 import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
 import com.finalproject.airport.common.ResponseDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @RequestMapping("/api/v1")
 public class AirplaneController {
@@ -29,6 +31,7 @@ public class AirplaneController {
     }
 
     // 비행기 전체 조회
+
     @GetMapping("/airplane")
     public ResponseEntity<ResponseDTO> getAirplane() {
 
