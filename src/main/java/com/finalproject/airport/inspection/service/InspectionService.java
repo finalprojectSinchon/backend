@@ -1,5 +1,6 @@
 package com.finalproject.airport.inspection.service;
 
+import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.inspection.dto.InspectionDTO;
 import com.finalproject.airport.inspection.entity.InspectionEntity;
 import com.finalproject.airport.inspection.respository.InspectionRepository;
@@ -24,9 +25,11 @@ public class InspectionService {
 
     //점검 전체 조회
     public List<InspectionDTO> getInspectionList() {
-        List<InspectionEntity> inspectionList = inspectionRepository.findAll();
+
+//        List<InspectionEntity> inspectionList = inspectionRepository.findAll();
         List<InspectionDTO> inspectionDTOList = new ArrayList<>();
-        inspectionList.forEach(inspectionEntity -> {inspectionDTOList.add(modelMapper.map(inspectionEntity, InspectionDTO.class));});
+        List<InspectionEntity> inspectionList1 = inspectionRepository.findByIsActive("Y");
+        inspectionList1.forEach(inspectionEntity -> {inspectionDTOList.add(modelMapper.map(inspectionEntity, InspectionDTO.class));});
 
 
         return inspectionDTOList;
@@ -58,6 +61,8 @@ public class InspectionService {
     // 점검 삭제
     public void softDeleteInspection(int inspectionCode) {
         InspectionEntity inspectionEntity = inspectionRepository.findById(Integer.valueOf(inspectionCode)).orElseThrow(IllegalArgumentException::new);
+        inspectionEntity = inspectionEntity.toBuilder().isActive("N").build();
+
 
         inspectionRepository.save(inspectionEntity);
 
