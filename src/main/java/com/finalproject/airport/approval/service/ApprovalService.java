@@ -25,5 +25,13 @@ public class ApprovalService {
     public List<ApprovalEntity> findAll() {
         return approvalRepository.findAll();
     }
+
+
+    public ApprovalDTO getApprovalById(int approvalCode) {
+
+        ApprovalEntity approvalEntity = approvalRepository.findById(approvalCode);
+        return modelMapper.map(approvalEntity, ApprovalDTO.class);
+    }
+
 }
 
