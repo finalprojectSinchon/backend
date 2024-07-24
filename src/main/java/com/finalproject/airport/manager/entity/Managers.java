@@ -30,7 +30,7 @@ public class Managers {
     private int userCode;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive = "Y";
+    private String isActive;
     @PrePersist
     private void ensureIsActiveDefault() {
         if (this.isActive == null) {

@@ -31,7 +31,7 @@ public class FacilitiesEntity extends BaseTimeEntity {
     private String facilitiesClass; // 편의시설 구분   ex) 편의시설 , 이동수단
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive = "Y";
+    private String isActive;
 
     @PrePersist
     private void ensureIsActiveDefault() {
