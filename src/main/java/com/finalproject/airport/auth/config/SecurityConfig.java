@@ -4,6 +4,7 @@ import com.finalproject.airport.auth.filter.JWTFilter;
 import com.finalproject.airport.auth.filter.LoginFilter;
 import com.finalproject.airport.auth.util.JWTUtil;
 import com.finalproject.airport.member.repository.UserRepository;
+import com.finalproject.airport.webSocket.handler.WebSocketHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebSocketConfigurer {
 
 
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -33,6 +37,14 @@ public class SecurityConfig {
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
+    }
+
+
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(new WebSocketHandler(), "/ws")
+                .addInterceptors(new HttpSessionHandshakeInterceptor())
+                .setAllowedOrigins("*"); // 또는 특정 도메인으로 제한
     }
 
     //AuthenticationManager Bean 등록
@@ -87,7 +99,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join","/api/v1/auth").permitAll()
+                        .requestMatchers("/login", "/", "/join","/api/v1/auth","/ws/**").permitAll()
                         .requestMatchers("/admin","/api/hello").hasRole("ADMIN")
                         .requestMatchers("/user-info","/api/v1/**","/user").authenticated()      // 로그인 한 사용자만 접근 가능
                         .anyRequest().authenticated());

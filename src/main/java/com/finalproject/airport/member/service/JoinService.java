@@ -21,6 +21,7 @@ public class JoinService {
     private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private final ModelMapper modelMapper;
 
     public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
@@ -73,7 +74,7 @@ public class JoinService {
     public ResponseEntity<?> modifyUser(UserModifyDTO userModifyDTO) {
 
         UserEntity user = userRepository.findById(userModifyDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
-
+        System.out.println("user = " + user);
         UserEntity modifiedUser = user.toBuilder().userName(userModifyDTO.getUserName()).userEmail(userModifyDTO.getUserEmail()).userPhone(userModifyDTO.getUserPhone())
                 .userAddress(userModifyDTO.getUserAddress()).userAbout(userModifyDTO.getUserAbout()).build();
 
@@ -147,5 +148,16 @@ public class JoinService {
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    public ResponseEntity<?> userAboutChange(ChangeAboutDTO changeAboutDTO) {
+        int userCode = changeAboutDTO.getUserCode();
+        UserEntity user = userRepository.findById(userCode).orElseThrow(IllegalArgumentException::new);
+        user = user.toBuilder().userAbout(changeAboutDTO.getUserAbout()).build();
+
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.ACCEPTED,"내 정보 등록 성공",null));
     }
 }
