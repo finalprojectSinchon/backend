@@ -4,9 +4,10 @@ import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "tbl_facilites")
-
 @Getter
 @ToString
 @Builder(toBuilder = true)
@@ -16,12 +17,9 @@ public class FacilitiesEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int facilitiesCode; // 편의시설 시설물코드
 
-
     private String facilitiesStatus;  // 시설물상태  ex) 사용 , 점검중 , 중단
 
-
     private String facilitiesLocation;  // 위치   ex) 이동수단
-
 
     private String facilitiesName;   // 시설물이름   ex)이동수단 = 2층 화장실 , 편의시설 = 화장실 남,여
 
@@ -33,21 +31,24 @@ public class FacilitiesEntity extends BaseTimeEntity {
     private String facilitiesClass; // 편의시설 구분   ex) 편의시설 , 이동수단
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive = "Y";
+    private String isActive;
+
     @PrePersist
     private void ensureIsActiveDefault() {
         if (this.isActive == null) {
             this.isActive = "Y";
         }
+        if (this.createdDate == null) {
+            this.createdDate = LocalDateTime.now();
+        }
     }
 
-    // 등록일은 시설물에서 관리
-
+    private LocalDateTime createdDate; // 등록일은 시설물에서 관리
 
     public FacilitiesEntity() {
     }
 
-    public FacilitiesEntity(int facilitiesCode, String facilitiesStatus, String facilitiesLocation, String facilitiesName, FacilitesType facilitiesType, String facilitiesManager, String facilitiesClass, String isActive) {
+    public FacilitiesEntity(int facilitiesCode, String facilitiesStatus, String facilitiesLocation, String facilitiesName, FacilitesType facilitiesType, String facilitiesManager, String facilitiesClass, String isActive, LocalDateTime createdDate) {
         this.facilitiesCode = facilitiesCode;
         this.facilitiesStatus = facilitiesStatus;
         this.facilitiesLocation = facilitiesLocation;
@@ -56,5 +57,6 @@ public class FacilitiesEntity extends BaseTimeEntity {
         this.facilitiesManager = facilitiesManager;
         this.facilitiesClass = facilitiesClass;
         this.isActive = isActive;
+        this.createdDate = createdDate;
     }
 }

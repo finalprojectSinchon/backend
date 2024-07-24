@@ -43,7 +43,7 @@ public class InspectionEntity extends BaseTimeEntity {
     private String status;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive = "Y";
+    private String isActive;
 
     @Column(name = "phone")
     private Integer phone;

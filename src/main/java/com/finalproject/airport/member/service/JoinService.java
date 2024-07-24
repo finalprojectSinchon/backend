@@ -74,7 +74,7 @@ public class JoinService {
     public ResponseEntity<?> modifyUser(UserModifyDTO userModifyDTO) {
 
         UserEntity user = userRepository.findById(userModifyDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
-
+        System.out.println("user = " + user);
         UserEntity modifiedUser = user.toBuilder().userName(userModifyDTO.getUserName()).userEmail(userModifyDTO.getUserEmail()).userPhone(userModifyDTO.getUserPhone())
                 .userAddress(userModifyDTO.getUserAddress()).userAbout(userModifyDTO.getUserAbout()).build();
 
@@ -159,5 +159,23 @@ public class JoinService {
         userRepository.save(user);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.ACCEPTED,"내 정보 등록 성공",null));
+    }
+
+    public ResponseEntity<?> findUserId(UserIdDTO userIdDTO) {
+
+        String userEmail = userIdDTO.getEmail();
+        String userName = userIdDTO.getUname();
+
+        UserEntity user = userRepository.findByUserEmailAndUserName(userEmail , userName);
+
+        if (user != null) {
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "아이디 찾기완료", user.getUserId() ));
+        } else {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이름,이메일이 틀립니다.");
+        }
+
+
     }
 }

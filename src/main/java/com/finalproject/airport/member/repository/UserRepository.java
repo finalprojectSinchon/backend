@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Boolean existsByAuthCode(int randomNumber);
 
     UserEntity findByAuthCode(int authCode);
+
+    UserEntity findByUserEmailAndUserName(String userEmail, String userName);
 }

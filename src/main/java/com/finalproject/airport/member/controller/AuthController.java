@@ -1,4 +1,4 @@
-package com.finalproject.airport.auth.controller;
+package com.finalproject.airport.member.controller;
 
 import com.finalproject.airport.auth.util.SMSUtil;
 import com.finalproject.airport.common.ResponseDTO;
@@ -116,5 +116,12 @@ public class AuthController {
     @PostMapping("/api/v1/user-about")
     public ResponseEntity<?> userAboutChange(@RequestBody ChangeAboutDTO changeAboutDTO) {
         return joinService.userAboutChange(changeAboutDTO);
+    }
+
+    @PostMapping("/account/search-id")
+    public ResponseEntity<?> id(@RequestBody UserIdDTO userIdDTO ){
+
+        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ" + userIdDTO);
+        return joinService.findUserId(userIdDTO);
     }
 }
