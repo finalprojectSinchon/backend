@@ -28,6 +28,7 @@ public class CheckinCounterService {
     @Transactional
     public void insertchkinCounter(CheckinCounterDTO chkinCounter) {
 
+
         CheckinCounter insertchkinCounter = modelMapper.map(chkinCounter, CheckinCounter.class);
 
         repository.save(insertchkinCounter);

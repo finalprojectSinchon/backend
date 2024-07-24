@@ -3,7 +3,7 @@ package com.finalproject.airport.facilities.dto;
 import com.finalproject.airport.facilities.entity.FacilitesType;
 import lombok.*;
 
-
+import java.time.LocalDateTime;
 
 @ToString
 public class FacilitiesDTO {
@@ -23,10 +23,13 @@ public class FacilitiesDTO {
     private String facilitiesClass;
 
     private String isActive;
+
+    private LocalDateTime createdDate;
+
     public FacilitiesDTO() {
     }
 
-    public FacilitiesDTO(int facilitiesCode, String facilitiesStatus, String facilitiesLocation, String facilitiesName, FacilitesType facilitiesType, String facilitiesManager, String facilitiesClass, String isActive) {
+    public FacilitiesDTO(int facilitiesCode, String facilitiesStatus, String facilitiesLocation, String facilitiesName, FacilitesType facilitiesType, String facilitiesManager, String facilitiesClass, String isActive, LocalDateTime createdDate) {
         this.facilitiesCode = facilitiesCode;
         this.facilitiesStatus = facilitiesStatus;
         this.facilitiesLocation = facilitiesLocation;
@@ -35,6 +38,7 @@ public class FacilitiesDTO {
         this.facilitiesManager = facilitiesManager;
         this.facilitiesClass = facilitiesClass;
         this.isActive = isActive;
+        this.createdDate = createdDate;
     }
 
     public int getFacilitiesCode() {
@@ -99,5 +103,13 @@ public class FacilitiesDTO {
 
     public void setIsActive(String isActive) {
         this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 }

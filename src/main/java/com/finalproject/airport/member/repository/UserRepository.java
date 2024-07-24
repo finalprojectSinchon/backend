@@ -23,5 +23,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     UserEntity findByAuthCode(int authCode);
 
+
     List<UserEntity> findAllByIsActive(String y);
+
+    UserEntity findByUserEmailAndUserName(String userEmail, String userName);
+
 }

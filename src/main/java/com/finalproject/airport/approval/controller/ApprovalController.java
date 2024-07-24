@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +32,7 @@ public class ApprovalController {
         this.approvalService = approvalService;
     }
 
+    // 승인 전체 조회
     @GetMapping("/approve")
     public ResponseEntity<ResponseDTO> getApproval() {
         HttpHeaders headers = new HttpHeaders();
@@ -44,4 +46,21 @@ public class ApprovalController {
                 .headers(headers)
                 .body(new ResponseDTO(HttpStatus.OK, "승인 전체 조회 성공", approvalMap));
     }
+
+    // 승인 상세 조회
+    @GetMapping("/approve/{approvalCode}")
+    public ResponseEntity<ResponseDTO> getApprovalByApprovalDetailInfo(@PathVariable int approvalCode) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        ApprovalDTO approvalDTO = approvalService.getApprovalById(approvalCode);
+
+        Map<String, Object> approvalMap = new HashMap<>();
+        approvalMap.put("approvalDetailInfo", approvalDTO);
+
+        return ResponseEntity.ok().headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK,"승인 상세 조회 성공", approvalMap));
+    }
+
+
 }
