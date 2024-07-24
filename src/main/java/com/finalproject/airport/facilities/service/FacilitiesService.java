@@ -54,7 +54,8 @@ public class FacilitiesService {
                 findfacilities.getFacilitiesType(),
                 findfacilities.getFacilitiesManager(),
                 findfacilities.getFacilitiesClass(),
-                findfacilities.getIsActive()
+                findfacilities.getIsActive(),
+                findfacilities.getCreatedDate()
         );
       return facilitiesDTO2;
     }
@@ -69,8 +70,8 @@ public class FacilitiesService {
                 facilitiesDTO.getFacilitiesType(),
                 facilitiesDTO.getFacilitiesManager(),
                 facilitiesDTO.getFacilitiesClass(),
-                null
-
+                null,
+                facilitiesDTO.getCreatedDate()
                 );
 
                 facilitiesRepository.save(insertFacilities);

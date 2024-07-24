@@ -118,5 +118,10 @@ public class AuthController {
         return joinService.userAboutChange(changeAboutDTO);
     }
 
+    @PostMapping("/account/search-id")
+    public ResponseEntity<?> id(@RequestBody UserIdDTO userIdDTO ){
 
+        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ" + userIdDTO);
+        return joinService.findUserId(userIdDTO);
+    }
 }
