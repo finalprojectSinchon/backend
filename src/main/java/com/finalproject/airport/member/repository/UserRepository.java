@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Boolean existsByUserId(String userId);
 
@@ -20,4 +22,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Boolean existsByAuthCode(int randomNumber);
 
     UserEntity findByAuthCode(int authCode);
+
+    List<UserEntity> findAllByIsActive(String y);
 }
