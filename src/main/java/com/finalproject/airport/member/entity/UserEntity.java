@@ -1,6 +1,7 @@
 package com.finalproject.airport.member.entity;
 
 import com.finalproject.airport.common.BaseTimeEntity;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;

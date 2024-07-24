@@ -1,5 +1,6 @@
 package com.finalproject.airport.store.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @NoArgsConstructor
@@ -9,16 +10,21 @@ import lombok.*;
 @ToString
 public class StoreAPIDTO {
 
-    //입/출국구역 A: 입국장, D: 출국장
+    @Schema(description = "입/출국 구역 (A: 입국장, D: 출국장)", example = "A")
     private String arrordep;
-    //매장명
+
+    @Schema(description = "매장명", example = "CU")
     private String entrpskoreannm;
-    //위치
+
+    @Schema(description = "위치", example = "Terminal 1")
     private String lckoreannm;
-    //영업시간
+
+    @Schema(description = "영업시간", example = "09:00 - 21:00")
     private String servicetime;
-    //전화번호
+
+    @Schema(description = "전화번호", example = "010-9876-5432")
     private String tel;
-    //취급품목
+
+    @Schema(description = "취급 품목", example = "편의점 관련 식품")
     private String trtmntprdlstkoreannm;
 }
