@@ -28,6 +28,7 @@ public class CheckinCounterService {
     @Transactional
     public void insertchkinCounter(CheckinCounterDTO chkinCounter) {
 
+
         CheckinCounter insertchkinCounter = modelMapper.map(chkinCounter, CheckinCounter.class);
 
         repository.save(insertchkinCounter);
@@ -62,7 +63,6 @@ public class CheckinCounterService {
                 .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())
                 .manager(modifyCheckinCounter.getManager())
                 .note(modifyCheckinCounter.getNote())
-                .isUse(modifyCheckinCounter.getIsUse())
                 .build();
 
         repository.save(checkinCounter);
