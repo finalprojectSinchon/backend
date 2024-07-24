@@ -1,4 +1,4 @@
-package com.finalproject.airport.auth.controller;
+package com.finalproject.airport.member.controller;
 
 import com.finalproject.airport.auth.util.SMSUtil;
 import com.finalproject.airport.common.ResponseDTO;
@@ -117,4 +117,6 @@ public class AuthController {
     public ResponseEntity<?> userAboutChange(@RequestBody ChangeAboutDTO changeAboutDTO) {
         return joinService.userAboutChange(changeAboutDTO);
     }
+
+
 }

@@ -56,6 +56,7 @@ public class UserEntity extends BaseTimeEntity {
     private int authCode;
 
 
+
     @PrePersist
     private void ensureIsActiveDefault() {
         if (this.isActive == null) {

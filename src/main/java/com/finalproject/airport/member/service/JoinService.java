@@ -74,7 +74,7 @@ public class JoinService {
     public ResponseEntity<?> modifyUser(UserModifyDTO userModifyDTO) {
 
         UserEntity user = userRepository.findById(userModifyDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
-
+        System.out.println("user = " + user);
         UserEntity modifiedUser = user.toBuilder().userName(userModifyDTO.getUserName()).userEmail(userModifyDTO.getUserEmail()).userPhone(userModifyDTO.getUserPhone())
                 .userAddress(userModifyDTO.getUserAddress()).userAbout(userModifyDTO.getUserAbout()).build();
 
