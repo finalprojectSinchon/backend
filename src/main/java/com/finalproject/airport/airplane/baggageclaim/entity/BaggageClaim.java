@@ -50,9 +50,6 @@ public class BaggageClaim extends BaseTimeEntity {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
-    @Column(name = "ISUSE")
-    @Enumerated
-    private BaggageClaimIsUse isUse;
 
     protected BaggageClaim(){}
 }

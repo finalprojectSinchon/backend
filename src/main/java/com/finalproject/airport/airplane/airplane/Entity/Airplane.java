@@ -40,7 +40,7 @@ public class Airplane {
     private String chkinrange;  // 체크인 카운터
     
     @Column(name = "CAROUEL" )
-    private Integer carousel;       // 수화물 수취대 번호
+    private String carousel;       // 수화물 수취대 번호
 
     @Column(name = "GATE_NUMBER")
     private int gatenumber;     // 탑승구 번호

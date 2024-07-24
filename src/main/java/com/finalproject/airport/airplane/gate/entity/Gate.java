@@ -49,8 +49,6 @@ public class Gate {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
-    @Column(name = "ISUSE" )
-    private GateIsUse isUse;
 
 
 
