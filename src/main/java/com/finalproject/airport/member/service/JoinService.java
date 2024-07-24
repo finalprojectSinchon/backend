@@ -170,7 +170,7 @@ public class JoinService {
 
         if (user != null) {
 
-            return ResponseEntity.ok(user.getUserId());
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "아이디 찾기완료", user.getUserId() ));
         } else {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이름,이메일이 틀립니다.");
