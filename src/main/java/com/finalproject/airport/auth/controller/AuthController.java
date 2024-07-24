@@ -7,123 +7,88 @@ import com.finalproject.airport.member.service.CustomUserDetails;
 import com.finalproject.airport.member.service.JoinService;
 import com.finalproject.airport.member.service.MailService;
 import com.finalproject.airport.store.dto.AuthMailPhoneDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
+@Tag(name = "회원 관련 컨트롤러", description = "회원 관리 및 인증 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
 
     private final JoinService joinService;
-
     private final MailService mailService;
-
     private final SMSUtil smsUtil;
 
-
-    @GetMapping("/api/hello")
-    public String hello() {
-
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return "Hello World" + name ;
-    }
-
-    @GetMapping("/")
-    public String home() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
-        GrantedAuthority auth = iter.next();
-        String role = auth.getAuthority();
-
-        return "Hello user" + role;
-    }
-
+    @Operation(summary = "회원 가입", description = "회원가입을 처리합니다.")
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody @Valid JoinDTO joinDTO){
-
+    public ResponseEntity<?> join(@RequestBody @Valid JoinDTO joinDTO) {
         ResponseEntity<?> response = joinService.joinProcess(joinDTO);
-
         return response;
     }
 
+    @Operation(summary = "회원 정보 수정", description = "사용자 정보를 수정합니다.")
     @PostMapping("/user")
-    public ResponseEntity<?> modifyUser(@RequestBody @Valid UserModifyDTO userModifyDTO){
-
+    public ResponseEntity<?> modifyUser(@RequestBody @Valid UserModifyDTO userModifyDTO) {
         ResponseEntity<?> response = joinService.modifyUser(userModifyDTO);
-
         return response;
     }
 
+    @Operation(summary = "비밀번호 확인", description = "사용자의 비밀번호가 맞는지 확인합니다.")
     @PostMapping("/api/v1/account/password-check")
-    public ResponseEntity<?> passwordCheck(@RequestBody UserPasswordCheckDTO passwordCheckDTO){
-
-        Boolean CorrectPassword = joinService.passwordCheck(passwordCheckDTO);
-
-        if(CorrectPassword){
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"비밀번호가 일치합니다.",null));
+    public ResponseEntity<?> passwordCheck(@RequestBody UserPasswordCheckDTO passwordCheckDTO) {
+        Boolean correctPassword = joinService.passwordCheck(passwordCheckDTO);
+        if (correctPassword) {
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "비밀번호가 일치합니다.", null));
         } else {
-            return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.",null));
+            return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.", null));
         }
-
     }
 
+    @Operation(summary = "비밀번호 변경", description = "사용자의 비밀번호를 변경합니다.")
     @PutMapping("/api/v1/account/change-password")
-    public ResponseEntity<?> passwordChange(@RequestBody ChangePasswordDTO changePasswordDTO){
-
+    public ResponseEntity<?> passwordChange(@RequestBody ChangePasswordDTO changePasswordDTO) {
         ResponseEntity<?> response = joinService.passwordChange(changePasswordDTO);
-
         return response;
     }
 
-
+    @Operation(summary = "사용자 정보 조회", description = "현재 사용자의 정보를 조회합니다.")
     @GetMapping("/user-info")
     public ResponseEntity<?> getUserInfo() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDTO userDTO =  userDetails.getUserDTO();
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",userDTO));
+        UserDTO userDTO = userDetails.getUserDTO();
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", userDTO));
     }
 
+    @Operation(summary = "프로필 이미지 등록", description = "사용자의 프로필 이미지를 저장합니다.")
     @PostMapping("/api/v1/profile/img")
-    public ResponseEntity<?> profileImg(@RequestBody Map<String,Object> info){
-
+    public ResponseEntity<?> profileImg(@RequestBody Map<String, Object> info) {
         joinService.saveprofileImg(info);
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공",null));
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "등록 성공", null));
     }
 
+    @Operation(summary = "신규회원 인증코드 발급", description = "관리자가 신규회원 인증코드를 발급합니다.")
     @GetMapping("/api/v1/admin/code")
-    public ResponseEntity<?> getAdminCode(){
-
+    public ResponseEntity<?> getAdminCode() {
         ResponseEntity<?> response = joinService.getAdminCode();
-
         return response;
     }
 
+    @Operation(summary = "인증 코드 확인", description = "인증 코드를 확인합니다.")
     @PostMapping("/api/v1/auth")
-    public ResponseEntity<?> checkAuthCode(@RequestBody Map<String,Integer> authCode) {
-
-
-
+    public ResponseEntity<?> checkAuthCode(@RequestBody Map<String, Integer> authCode) {
         return joinService.isCheckAuth(authCode);
     }
 
+    @Operation(summary = "메일, 휴대폰 인증 코드 발송", description = "사용자에게 인증 코드를 메일, 휴대폰 으로 발송합니다.")
     @PostMapping("/api/v1/admin/auth/mail")
     public ResponseEntity<?> sendMail(@RequestBody AuthMailPhoneDTO authMailDTO) {
         try {
@@ -147,11 +112,9 @@ public class AuthController {
         }
     }
 
-
+    @Operation(summary = "사용자 소개 변경", description = "사용자의 소개를 변경합니다.")
     @PostMapping("/api/v1/user-about")
     public ResponseEntity<?> userAboutChange(@RequestBody ChangeAboutDTO changeAboutDTO) {
-
-
         return joinService.userAboutChange(changeAboutDTO);
     }
 }

@@ -2,7 +2,7 @@ package com.finalproject.airport.store.dto;
 
 import com.finalproject.airport.store.entity.StoreType;
 import com.finalproject.airport.store.entity.StoreWork;
-import jakarta.persistence.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @NoArgsConstructor
@@ -12,42 +12,36 @@ import lombok.*;
 @ToString
 public class StoreDTO {
 
+    @Schema(description = "점포 ID", example = "1")
     private int storeId;
 
-    // 점포명
-    // entrpskoreannm
+    @Schema(description = "점포명", example = "CU")
     private String storeName;
 
-    // 주요업무
-    // trtmntprdlstkoreannm
+    @Schema(description = "주요업무", example = "식품 등 판매")
     private StoreWork storeWork;
 
-    // 연락처
-    // tel
+    @Schema(description = "연락처", example = "010-9876-5432")
     private String storeContact;
 
-    // 운영시간
-    // servicetime
+    @Schema(description = "운영시간", example = "09:00 - 21:00")
     private String storeOperatingTime;
 
-    // 취급품목
-    // trtmntprdlstkoreannm
+    @Schema(description = "취급 품목", example = "식품, 음료")
     private String storeItems;
 
-    // 상태
-    // lckoreannm
+    @Schema(description = "상태", example = "운영중")
     private String storeStatus;
 
-    // 타입
+    @Schema(description = "타입", example = "점포")
     private StoreType storeType;
 
-    // 담당자
+    @Schema(description = "담당자", example = "홍길동")
     private String storeManager;
 
-    // 활성여부
+    @Schema(description = "활성 여부", example = "Y")
     private String isActive;
 
-    // 비고
+    @Schema(description = "비고", example = "특별 행사 중")
     private String storeExtra;
-
 }

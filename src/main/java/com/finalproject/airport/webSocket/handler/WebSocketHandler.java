@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> userSessions = new ConcurrentHashMap<>();
+    // ConcurrentHashMap  멀티 쓰레드 환경에 좋음
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
