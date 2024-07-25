@@ -121,14 +121,16 @@ public class AuthController {
     @PostMapping("/account/search-id")
     public ResponseEntity<?> id(@RequestBody UserFindIdDTO userFindIdDTO){
 
-        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ" + userFindIdDTO);
+
+        return joinService.findUserId(userIdDTO);
+
         return joinService.findUserId(userFindIdDTO);
     }
 
     @PostMapping("/account/newPassword")
     public ResponseEntity<?> password (@RequestBody UserFindPasswordDTO userFindPasswordDTO){
 
-        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ" + userFindPasswordDTO);
+
         try {
             return joinService.findPwd(userFindPasswordDTO);
         } catch (MessagingException e) {
