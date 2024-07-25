@@ -24,6 +24,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+
         URI uri = session.getUri();
         if (uri != null) {
             String query = uri.getQuery();

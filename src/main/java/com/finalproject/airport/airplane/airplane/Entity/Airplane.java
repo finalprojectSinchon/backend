@@ -1,5 +1,6 @@
 package com.finalproject.airport.airplane.airplane.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TBL_AIRPLANE")
@@ -53,6 +55,7 @@ public class Airplane {
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
+
 
     protected Airplane(){}
 

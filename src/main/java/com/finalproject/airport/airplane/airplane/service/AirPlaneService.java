@@ -1,21 +1,28 @@
 package com.finalproject.airport.airplane.airplane.service;
 
 import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
+import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
+import com.finalproject.airport.airplane.airplane.DTO.DepartureAirplaneDTO;
 import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
-import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
-import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.beans.Transient;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import java.util.List;
+
 import java.util.stream.Collectors;
+
+import static java.security.Timestamp.*;
 
 @Service
 public class AirPlaneService {
@@ -23,35 +30,155 @@ public class AirPlaneService {
     private final AirplaneRepository airplaneRepository;
     private final ModelMapper modelMapper;
 
-//    private final String apiKey;
-//    private final String apiUrl;
+    private final String apiKey;
+    private final String ArrivalApiUrl;
+    private final String DepartureApiUrl;
+
+
 
     @Autowired
-    public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper
-
-//             ,@Value("${API_KEY}") String apiKey, @Value("${API_URL}") String apiUrl
-
-    ) {
+    public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper ) {
         this.airplaneRepository = airplaneRepository;
         this.modelMapper = modelMapper;
-//        this.apiKey = apiKey;
-//        this.apiUrl = apiUrl;
+        Dotenv dotenv = Dotenv.load();
+        this.apiKey = dotenv.get("API_KEY");
+        this.ArrivalApiUrl = dotenv.get("ARRIVAL_API_URL");
+        this.DepartureApiUrl = dotenv.get("DEPARTURE_API_URL");
+
     }
 
-//    public void fetchAirplane() {
-//        RestTemplate restTemplate = new RestTemplate();
-//        String requestUrl = apiUrl + "?apiKey=" + apiKey;
-//        ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
-//
-//        if (response.getStatusCode().is2xxSuccessful()) {
-//            // 성공적으로 데이터를 가져왔습니다.
-//            String responseData = response.getBody();
-//
-//        } else {
-//            // 오류 처리 로직
-//            System.err.println("Error: " + response.getBody());
-//        }
-//    }
+
+    public void fetchArrivalAirplane() {
+
+        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" ;
+        System.out.println("requestUrl = " + requestUrl);
+
+        // WebClient는 Builder 패턴 처럼 사용
+        WebClient webClient = WebClient.builder()
+                .build();
+
+        ArrivalAirplaneDTO arrivalAirplaneDTO = webClient.get()
+                .uri(requestUrl)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .retrieve()
+                .bodyToMono(ArrivalAirplaneDTO.class)
+                .block();
+
+
+        if (arrivalAirplaneDTO != null) {
+            insertArrivalAirplaneItems(arrivalAirplaneDTO);
+        } else {
+            System.out.println("No data received");
+        }
+
+    }
+    public void fetchDepartureAirplane() {
+
+        String requestUrl = DepartureApiUrl +"serviceKey=" +apiKey+ "&type=json" ;
+        System.out.println("requestUrl = " + requestUrl);
+
+        // WebClient는 Builder 패턴 처럼 사용
+        WebClient webClient = WebClient.builder()
+                .build();
+
+        DepartureAirplaneDTO departureAirplaneDTO = webClient.get()
+                .uri(requestUrl)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .retrieve()
+                .bodyToMono(DepartureAirplaneDTO.class)
+                .block();
+
+
+        if (departureAirplaneDTO != null) {
+            insertDepartureAirplaneItems(departureAirplaneDTO);
+        } else {
+            System.out.println("No data received");
+        }
+
+    }
+
+    private void insertArrivalAirplaneItems(ArrivalAirplaneDTO dto) {
+
+        if (dto != null && dto.getResponse() != null && dto.getResponse().getBody() != null) {
+            List<ArrivalAirplaneDTO.Response.Body.Item> items = dto.getResponse().getBody().getItems();
+            if (items != null && !items.isEmpty()) {
+                for (ArrivalAirplaneDTO.Response.Body.Item item : items) {
+                    System.out.println(item.getScheduleDateTime());
+                    // 원본 문자열을 LocalDateTime으로 변환하기 위한 포맷터
+                    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
+                    // 변환할 목표 형식
+                    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                    // 문자열을 LocalDateTime으로 파싱
+                    LocalDateTime localDateTime = LocalDateTime.parse(item.getScheduleDateTime(), inputFormatter);
+
+                    // LocalDateTime을 Timestamp로 변환
+                    Timestamp timestamp = Timestamp.valueOf(localDateTime);
+                    AirplaneDTO airplaneDTO =
+                            new AirplaneDTO(
+                                    item.getAirline(),
+                                    item.getFlightId(),
+                                    timestamp,
+                                    item.getAirport(),
+                                    item.getRemark(),
+                                    item.getCarousel(),
+                                    item.getGatenumber(),
+                                    item.getTerminalid()
+                                    );
+                    Airplane airplane = modelMapper.map(airplaneDTO, Airplane.class);
+                    airplaneRepository.save(airplane);
+
+                }
+            } else {
+                System.out.println("No items available.");
+            }
+        } else {
+            System.out.println("Invalid data structure.");
+        }
+    }
+    private void insertDepartureAirplaneItems(DepartureAirplaneDTO dto) {
+
+        if (dto != null && dto.getResponse() != null && dto.getResponse().getBody() != null) {
+            List<DepartureAirplaneDTO.Response.Body.Item> items = dto.getResponse().getBody().getItems();
+            if (items != null && !items.isEmpty()) {
+                for (DepartureAirplaneDTO.Response.Body.Item item : items) {
+                    System.out.println(item.getScheduleDateTime());
+                    // 원본 문자열을 LocalDateTime으로 변환하기 위한 포맷터
+                    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
+                    // 변환할 목표 형식
+                    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                    // 문자열을 LocalDateTime으로 파싱
+                    LocalDateTime localDateTime = LocalDateTime.parse(item.getScheduleDateTime(), inputFormatter);
+
+                    // LocalDateTime을 Timestamp로 변환
+                    Timestamp timestamp = Timestamp.valueOf(localDateTime);
+                    AirplaneDTO airplaneDTO =
+                            new AirplaneDTO(
+                                    item.getAirline(),
+                                    item.getFlightId(),
+                                    item.getChkinrange(),
+                                    timestamp,
+                                    item.getAirport(),
+                                    item.getRemark(),
+                                    item.getGatenumber(),
+                                    item.getTerminalid()
+                            );
+                    Airplane airplane = modelMapper.map(airplaneDTO, Airplane.class);
+                    airplaneRepository.save(airplane);
+
+                }
+            } else {
+                System.out.println("No items available.");
+            }
+        } else {
+            System.out.println("Invalid data structure.");
+        }
+    }
+
+
 
     public List<AirplaneDTO> findAll() {
         List<Airplane> AirplaneList = airplaneRepository.findByisActive("Y");
