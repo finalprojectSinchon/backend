@@ -3,6 +3,8 @@ package com.finalproject.airport.equipment.dto;
 
 import lombok.*;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -29,6 +31,9 @@ public class EquipmentDTO {
 
     // 상태
     private String equipmentStatus;
+
+
+
 
 
 }

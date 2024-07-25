@@ -5,6 +5,8 @@ import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "tbl_equipment")
 @NoArgsConstructor
@@ -39,12 +41,8 @@ public class EquipmentEntity extends BaseTimeEntity {
     private String equipmentStatus;
 
 
-    public EquipmentEntity(String equipmentName, int equipmentPrice, int equipmentQuantity, String equipmentLocation, String equipmentManager, String equipmentStatus) {
-        this.equipmentName = equipmentName;
-        this.equipmentPrice = equipmentPrice;
-        this.equipmentQuantity = equipmentQuantity;
-        this.equipmentLocation = equipmentLocation;
-        this.equipmentManager = equipmentManager;
-        this.equipmentStatus = equipmentStatus;
-    }
+
+
+
 }
+
