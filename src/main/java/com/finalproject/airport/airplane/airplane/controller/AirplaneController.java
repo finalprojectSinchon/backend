@@ -38,13 +38,14 @@ public class AirplaneController {
     @GetMapping("/airplane")
     public ResponseEntity<ResponseDTO> getAirplane() {
 
+//        airPlaneService.fetchAirplane();
+//        airPlaneService.fetchDepartureAirplane();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
         List<AirplaneDTO> airplaneList = airPlaneService.findAll();
         Map<String,Object> responseMap = new HashMap<>();
         responseMap.put("airplaneList",airplaneList);
-
 
         return ResponseEntity.ok()
                 .headers(headers)

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +21,6 @@ public class AirplaneDTO {
     @Schema(description = "항공사")
     private String airline;              // 항공사
 
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS")
     @Schema(description = "출발/도착 예정시간")
     private Timestamp scheduleDateTime;  // 예정일자 (출발/도착 예정시간)
 
@@ -45,4 +45,28 @@ public class AirplaneDTO {
     @Schema(description = "체크인 카운터 위치")
     private String chkinrange;           // 체크인카운터
 
+    private String isActive;
+
+    public AirplaneDTO(String airline, String flightId, Timestamp scheduleDateTime, String airport, String remark, String carousel, String gatenumber, String terminalid) {
+        this.airline = airline;
+        this.flightId = flightId;
+        this.scheduleDateTime = scheduleDateTime;
+        this.gatenumber = Integer.parseInt(gatenumber);
+        this.terminalid = terminalid;
+        this.airport = airport;
+        this.remark = remark;
+        this.carousel = carousel;
+        this.isActive = "Y";
+    }
+    public AirplaneDTO(String airline, String flightId, String chkinrange, Timestamp scheduleDateTime, String airport, String remark,  String gatenumber, String terminalid) {
+        this.airline = airline;
+        this.flightId = flightId;
+        this.scheduleDateTime = scheduleDateTime;
+        this.gatenumber = Integer.parseInt(gatenumber);
+        this.terminalid = terminalid;
+        this.airport = airport;
+        this.remark = remark;
+        this.chkinrange = chkinrange;
+        this.isActive = "Y";
+    }
 }
