@@ -35,4 +35,14 @@ public class SMSUtil {
         return response;
     }
 
+    public SingleMessageSentResponse newpassword(String userPhone, String randomCode) {
+
+        Message message = new Message();
+        message.setFrom("01079410489");
+        message.setTo(userPhone);
+        message.setText("[AirService] 임시 비밀번호입니다 .\n [" + randomCode + "]"  );
+
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        return response;
+    }
 }

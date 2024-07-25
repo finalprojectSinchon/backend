@@ -125,7 +125,7 @@ public class AuthController {
         return joinService.findUserId(userFindIdDTO);
     }
 
-    @PostMapping("account/newPassword")
+    @PostMapping("/account/newPassword")
     public ResponseEntity<?> password (@RequestBody UserFindPasswordDTO userFindPasswordDTO){
 
         System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ" + userFindPasswordDTO);
