@@ -1,6 +1,12 @@
 package com.finalproject.airport.manager.entity;
 
+import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
+import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
+import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.member.entity.UserEntity;
+import com.finalproject.airport.storage.entity.StorageEntity;
+import com.finalproject.airport.store.entity.StoreEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,26 +19,39 @@ import lombok.*;
 @Builder(toBuilder = true)
 public class ManagersEntity {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int managersCode;
 
-    private int checkinCounterCode;
-    private int airplaneCode;
-    private int facilitiesCode;
-    private int storageCode;
-    private int storeId;
-    private int inspectionCode;
-    private int baggageClaimCode;
-    private int gateCode;
+    @Column(nullable = true)
+    private Integer checkinCounterCode;
+
+    @Column(nullable = true)
+    private Integer facilitiesCode;
+
+    @Column(nullable = true)
+    private Integer storageCode;
+
+    @Column(nullable = true)
+    private Integer storeId;
+
+    @Column(nullable = true)
+    private Integer inspectionCode;
+
+    @Column(nullable = true)
+    private Integer baggageClaimCode;
+
+    @Column(nullable = true)
+    private Integer gateCode;
 
     @ManyToOne
     @JoinColumn(name = "user_code")
     private UserEntity user;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
+    @Setter
     private String isActive;
-
 
     @PrePersist
     private void ensureIsActiveDefault() {
@@ -43,3 +62,5 @@ public class ManagersEntity {
 
 
 }
+
+

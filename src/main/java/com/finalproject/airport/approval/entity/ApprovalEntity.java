@@ -56,8 +56,5 @@ public class ApprovalEntity {
     private FacilitiesEntity facilitiesEntity;
 
 
-
-
-
     protected ApprovalEntity(){}
 }

@@ -1,5 +1,6 @@
 package com.finalproject.airport.member.repository;
 
+import com.finalproject.airport.manager.dto.UserFindManagerDTO;
 import com.finalproject.airport.member.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +29,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     UserEntity findByUserEmailAndUserName(String userEmail, String userName);
 
+    List<UserEntity> findAllByUserRole(String roleUser);
 }
