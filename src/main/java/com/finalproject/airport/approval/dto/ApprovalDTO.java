@@ -26,7 +26,15 @@ public class ApprovalDTO {
     private StoreDTO storeDTO;
     private StorageDTO storageDTO;
     private FacilitiesDTO facilitiesDTO;
+    private Integer gatecode;
+
+    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gateCode) {
+        this.approvalType = approvalType;
+        this.approvalStatus = approvalStatus;
+        this.gatecode = gateCode;
+    }
 
 
-
+    public void save(ApprovalDTO approvalDTO) {
+    }
 }
