@@ -7,9 +7,10 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class UserIdDTO {
+public class UserFindIdDTO {
 
-    public String email;
+    private String email;
 
-    public String uname;
+    private String uname;
+
 }

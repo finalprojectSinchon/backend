@@ -34,4 +34,22 @@ public class MailService {
     }
 
 
+    public void sendForNewPassword(String userEmail, String randomCode) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        String content = "<h2>AirService 임시비밀번호 입니다.</h2>" +
+                "<br> <br>" +
+                "<h3>임시 비밀번호는 " + randomCode + "입니다.</h3>" +
+                "<br> <br>" +
+                "<h3> 반드시 비밀번호를 변경해주세요 </h3> " +
+                "<br> <br>" +
+                "<a href=\"http://localhost:5173/auth/loginformik\">로그인 하기</a>";
+
+        helper.setTo(userEmail);
+        helper.setSubject("AirService 임시비밀번호 입니다.");
+        helper.setText(content, true);
+
+        mailSender.send(message);
+    }
 }

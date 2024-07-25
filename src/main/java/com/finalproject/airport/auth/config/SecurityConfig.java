@@ -99,7 +99,7 @@ public class SecurityConfig implements WebSocketConfigurer {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join","/api/v1/auth","/ws/**", "/account/search-id").permitAll()
+                        .requestMatchers("/login", "/", "/join","/api/v1/auth","/ws/**", "/account/search-id", "/account/newPassword").permitAll()
                         .requestMatchers("/admin","/api/hello").hasRole("ADMIN")
                         .requestMatchers("/user-info","/api/v1/**","/user").authenticated()      // 로그인 한 사용자만 접근 가능
                         .anyRequest().authenticated());
