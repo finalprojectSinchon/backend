@@ -21,7 +21,7 @@ spring:
         protocol: smtp
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
     properties:
       hibernate:

@@ -32,4 +32,13 @@ public class StorageDTO {
     // 담당자
     private String manager;
 
+    // 사용기간
+    private String period;
+
+    // 최근점검날짜
+    private String date;
+
+    // 활성 여부
+    private String isActive;
+
 }
