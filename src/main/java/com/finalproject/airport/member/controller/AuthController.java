@@ -119,8 +119,22 @@ public class AuthController {
     }
 
     @PostMapping("/account/search-id")
-    public ResponseEntity<?> id(@RequestBody UserIdDTO userIdDTO ){
+    public ResponseEntity<?> id(@RequestBody UserFindIdDTO userFindIdDTO){
+
 
         return joinService.findUserId(userIdDTO);
+
+        return joinService.findUserId(userFindIdDTO);
+    }
+
+    @PostMapping("/account/newPassword")
+    public ResponseEntity<?> password (@RequestBody UserFindPasswordDTO userFindPasswordDTO){
+
+
+        try {
+            return joinService.findPwd(userFindPasswordDTO);
+        } catch (MessagingException e) {
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류입니다.",null));
+        }
     }
 }

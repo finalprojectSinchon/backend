@@ -10,7 +10,8 @@ public interface ApprovalRepository extends JpaRepository<ApprovalEntity, Intege
 
     ApprovalEntity findById(int ApprovalCode);
 
-    ApprovalEntity findByApprovalCode(int maintenanceCode);
+    ApprovalEntity findByApprovalCode(int approvalCode);
+
 
 }
 

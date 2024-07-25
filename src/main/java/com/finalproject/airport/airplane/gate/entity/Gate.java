@@ -15,9 +15,9 @@ import java.util.Date;
 public class Gate {
 
     @Id
-    @Column(name = "GATE_CODE", nullable = false)
+    @Column(name = "GATE_CODE")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int gateCode;
+    private Integer gateCode;
 
     @Column(name = "LOCATION")
     private Integer location;
@@ -48,6 +48,15 @@ public class Gate {
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
+
+    // Getter and Setter
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
 
 
 

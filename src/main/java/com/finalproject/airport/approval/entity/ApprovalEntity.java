@@ -2,7 +2,6 @@ package com.finalproject.airport.approval.entity;
 
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
-import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.store.entity.StoreEntity;
@@ -19,7 +18,7 @@ import lombok.ToString;
 public class ApprovalEntity {
 
     @Id
-    @Column(name = "APPROVAL_CODE" ,nullable = false)
+    @Column(name = "APPROVAL_CODE", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int approvalCode;
 
@@ -31,9 +30,8 @@ public class ApprovalEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatusEntity approvalStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "GATE_CODE")
-    private Gate gate;
+    @Column(name = "GATE_CODE")
+    private Integer gate;
 
     @ManyToOne
     @JoinColumn(name = "CHECKINCOUNTER_CODE")
@@ -44,7 +42,7 @@ public class ApprovalEntity {
     private BaggageClaim baggageClaim;
 
     @ManyToOne
-    @JoinColumn(name = "STORE_CODE")
+    @JoinColumn(name = "STORE_ID")
     private StoreEntity store;
 
     @ManyToOne
@@ -55,6 +53,16 @@ public class ApprovalEntity {
     @JoinColumn(name = "FACILITY_CODE")
     private FacilitiesEntity facilitiesEntity;
 
+    protected ApprovalEntity() {
+    }
 
-    protected ApprovalEntity(){}
+    public ApprovalEntity(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gate) {
+        this.approvalType = approvalType;
+        this.approvalStatus = approvalStatus;
+        this.gate = gate;
+    }
+
+    public void setApprovalStatus(ApprovalStatusEntity approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
 }
