@@ -105,6 +105,7 @@ public class StorageController {
     })
     @PutMapping("/storage/{storageCode}/delete")    // 삭제
     public ResponseEntity<?> deleteStorage(@PathVariable int storageCode) {
+        System.out.println("storageCode = " + storageCode);
         try {
             storageService.softDeleteStorage(storageCode);
 
