@@ -17,7 +17,7 @@ import java.util.Date;
 public class GateDTO {
 
     @Schema(description = "탑승구 정보(PK)")
-    private int gateCode;
+    private Integer gateCode;
 
     @Schema(description = "탑승구 위치")
     private Integer location;

@@ -10,10 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -47,20 +44,66 @@ public class ApprovalController {
                 .body(new ResponseDTO(HttpStatus.OK, "승인 전체 조회 성공", approvalMap));
     }
 
-    // 승인 상세 조회
-    @GetMapping("/approve/{approvalCode}")
-    public ResponseEntity<ResponseDTO> getApprovalByApprovalDetailInfo(@PathVariable int approvalCode) {
+    // 승인 isActive 를 N을 Y로 바꿔주기
+    @PutMapping("/approve/{approvalCode}")
+    public ResponseEntity<ResponseDTO> approve(@PathVariable Integer approvalCode) {
+        if (approvalCode == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(HttpStatus.BAD_REQUEST, "Approval code must not be null", null));
+        }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        ApprovalDTO approvalDTO = approvalService.getApprovalById(approvalCode);
-
-        Map<String, Object> approvalMap = new HashMap<>();
-        approvalMap.put("approvalDetailInfo", approvalDTO);
-
-        return ResponseEntity.ok().headers(headers)
-                .body(new ResponseDTO(HttpStatus.OK,"승인 상세 조회 성공", approvalMap));
+        try {
+            approvalService.approve(approvalCode);
+            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "승인 처리 성공", null));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "승인 처리 실패", e.getMessage()));
+        }
     }
+
+//    // 승인 isActive 를 N을 Y로 바꿔주기 11
+//    @PutMapping("/approve/{approvalCode}")
+//    public ResponseEntity<ResponseDTO> approve(@PathVariable Integer approvalCode) {
+//        try {
+//            approvalService.approve(approvalCode);
+//            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "승인 처리 성공", null));
+//        } catch (RuntimeException e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "승인 처리 실패", e.getMessage()));
+//        }
+//    }
+
+
+
+    /* // 승인 isActive 를 N을 Y로 바꿔주기
+    @PutMapping("/approve/{approvalCode}")
+    public ResponseEntity<ResponseDTO> approve(@PathVariable Integer approvalCode) {
+        try {
+            approvalService.approve(approvalCode);
+            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "승인 처리 성공"));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(HttpStatus.NOT_FOUND, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "처리 중 오류 발생"));
+        }
+    }*/
+
+//    // 승인 상세 조회
+//    @GetMapping("/approve/{approvalCode}")
+//    public ResponseEntity<ResponseDTO> getApprovalByApprovalDetailInfo(@PathVariable int approvalCode) {
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//        ApprovalDTO approvalDTO = approvalService.getApprovalById(approvalCode);
+//
+//        Map<String, Object> approvalMap = new HashMap<>();
+//        approvalMap.put("approvalDetailInfo", approvalDTO);
+//
+//        return ResponseEntity.ok().headers(headers)
+//                .body(new ResponseDTO(HttpStatus.OK,"승인 상세 조회 성공", approvalMap));
+//    }
 
 
 }
