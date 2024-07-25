@@ -4,10 +4,11 @@ import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.member.dto.*;
 import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.member.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,19 +17,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class JoinService {
 
     private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private final ModelMapper modelMapper;
+    private final MailService mailService;
 
-    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.modelMapper = modelMapper;
-    }
+    private final ModelMapper modelMapper;
 
     public ResponseEntity<?> joinProcess(JoinDTO joinDTO) {
 
@@ -161,7 +159,7 @@ public class JoinService {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.ACCEPTED,"내 정보 등록 성공",null));
     }
 
-    public ResponseEntity<?> findUserId(UserIdDTO userIdDTO) {
+    public ResponseEntity<?> findUserId(UserFindIdDTO userIdDTO) {
 
         String userEmail = userIdDTO.getEmail();
         String userName = userIdDTO.getUname();
@@ -176,6 +174,49 @@ public class JoinService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이름,이메일이 틀립니다.");
         }
 
+
+    }
+
+    public ResponseEntity<?> findPwd(UserFindPasswordDTO userFindPasswordDTO) throws MessagingException {
+        String userId = userFindPasswordDTO.getUserId();
+        String userPhone = userFindPasswordDTO.getUserPhone();
+        String userEmail = userFindPasswordDTO.getUserEmail();
+
+        System.out.println(userFindPasswordDTO);
+
+        UserEntity user = userRepository.findByUserId(userId);
+
+        if (user.userId != null){
+
+
+          if (userEmail != null && !userEmail.isEmpty()){
+
+              if (user.userEmail .equals(userEmail)){
+
+                  String randomCode = String.valueOf((int) (Math.random() * 900000) + 100000);
+                  mailService.sendForNewPassword(user.userEmail,randomCode);
+                  String code = bCryptPasswordEncoder.encode(randomCode);
+                  UserEntity newPwd = user.toBuilder().userPassword(code).build();
+                  userRepository.save(newPwd);
+
+              } else {
+                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이메일이 일치하지 않습니다.");
+              }
+          } else {
+            if (userPhone != null || userPhone.isEmpty()){
+                if (user.userPhone == userPhone) {
+                    //전화번호 들어갈곳
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("전화번호가 일치하지 않습니다.");
+            }
+
+          }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이디를 찾을수 없습니다");
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이디를 찾을수 없습니다");
 
     }
 }
