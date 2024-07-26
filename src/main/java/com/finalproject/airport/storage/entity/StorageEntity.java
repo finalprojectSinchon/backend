@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jdk.jfr.Category;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "tbl_storage")
 @NoArgsConstructor
@@ -45,19 +47,14 @@ public class StorageEntity extends BaseTimeEntity {
     // 최근점검날짜
     private String date;
 
-    // isActive
-    @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive="Y";
 
-    public StorageEntity(int storageCode, String storageLocation, StorageType storageType, String category, Department department, String manager, String period, String date, String isActive) {
-        this.storageCode = storageCode;
-        this.storageLocation = storageLocation;
-        this.storageType = storageType;
-        this.category = category;
-        this.department = department;
-        this.manager = manager;
-        this.period = period;
-        this.date = date;
-        this.isActive = isActive;
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    private String isActive;
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
     }
 }

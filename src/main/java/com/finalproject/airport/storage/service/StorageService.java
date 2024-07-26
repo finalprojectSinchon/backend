@@ -40,7 +40,7 @@ public class StorageService {
     }
 
     public void addStorage(StorageRegistDTO storageRegistDTO) {
-        System.out.println("storageRegistDTO = " + storageRegistDTO);
+
         StorageEntity storageEntity = modelMapper.map(storageRegistDTO, StorageEntity.class);
         System.out.println("storageEntity = " + storageEntity);
         storageRepository.save(storageEntity);

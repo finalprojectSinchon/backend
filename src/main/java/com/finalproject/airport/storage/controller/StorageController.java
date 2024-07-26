@@ -66,10 +66,7 @@ public class StorageController {
     })
     @PostMapping("/storage")    // 등록
     public ResponseEntity<?> addStorage(@RequestBody StorageRegistDTO storageRegistDTO) {
-        System.out.println("11");
-        System.out.println("storageRegistDTO = " + storageRegistDTO);
         try{
-            System.out.println("22");
             storageService.addStorage(storageRegistDTO);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"창고 등록에 성공하였습니다",null));
