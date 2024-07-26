@@ -37,6 +37,7 @@ public class CheckinCounterService {
     public List<CheckinCounterDTO> findAll() {
         List<CheckinCounter> checkinCounters = repository.findByisActive("Y");
 
+        System.out.println("checkinCounters = " + checkinCounters);
         return checkinCounters.stream()
                 .map(chkinCounter -> modelMapper.map(chkinCounter, CheckinCounterDTO.class))
                 .collect(Collectors.toList());

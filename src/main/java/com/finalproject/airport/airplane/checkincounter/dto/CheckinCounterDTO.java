@@ -1,5 +1,6 @@
 package com.finalproject.airport.airplane.checkincounter.dto;
 
+import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterLocation;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterType;
@@ -41,7 +42,7 @@ public class CheckinCounterDTO {
     private String note;
 
     @Schema(description = "도착 비행기 정보(FK)")
-    private ArrivalAirplaneDTO airplane;
+    private AirplaneDTO airplane;
 
     @Schema(description = "활성화/비활성화")
     private char isActive;
