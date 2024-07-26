@@ -1,5 +1,6 @@
 package com.finalproject.airport.airplane.baggageclaim.dto;
 
+import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimLocation;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimType;
@@ -41,7 +42,7 @@ public class BaggageClaimDTO {
     private String note;
 
     @Schema(description = "비행기 정보(FK)")
-    private ArrivalAirplaneDTO airplane;
+    private AirplaneDTO airplane;
 
     @Schema(description = "활성화/비활성화")
     private char isActive;

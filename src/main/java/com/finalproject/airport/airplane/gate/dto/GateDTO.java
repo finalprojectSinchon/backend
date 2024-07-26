@@ -1,5 +1,6 @@
 package com.finalproject.airport.airplane.gate.dto;
 
+import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.gate.entity.GateType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,7 +44,7 @@ public class GateDTO {
     private String note;
 
     @Schema(description = "출발 비행기 정보(FK)")
-    private ArrivalAirplaneDTO airplane;
+    private AirplaneDTO airplane;
 
     @Schema(description = "활성/비활성화")
     private char isActive;
