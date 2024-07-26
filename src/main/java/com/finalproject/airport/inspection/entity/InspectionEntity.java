@@ -42,14 +42,22 @@ public class InspectionEntity extends BaseTimeEntity {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "ISACTIVE", length = 1, nullable = false)
-    private String isActive;
-
     @Column(name = "phone")
     private Integer phone;
 
     @Column(name = "text")
     private String text;
+
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    @Setter
+    private String isActive;
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+    }
 
 
 }

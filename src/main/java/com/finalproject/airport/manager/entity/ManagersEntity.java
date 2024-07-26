@@ -3,6 +3,7 @@ package com.finalproject.airport.manager.entity;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.common.BaseTimeEntity;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.storage.entity.StorageEntity;
@@ -17,7 +18,7 @@ import lombok.*;
 @Getter
 @ToString
 @Builder(toBuilder = true)
-public class ManagersEntity {
+public class ManagersEntity extends BaseTimeEntity {
 
 
     @Id

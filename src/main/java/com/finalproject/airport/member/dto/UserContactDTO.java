@@ -29,6 +29,8 @@ public class UserContactDTO {
     // userDB
     private String userImg;
 
+    private String userDepartment;
+
     private Boolean deleted;
 
     private String createdDate;

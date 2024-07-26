@@ -31,6 +31,7 @@ public class UserService {
                 userContactDTO.setUserPhone(formattedPhoneNumber);
                 userContactDTO.setDeleted(false);
                 userContactDTO.setCreatedDate(String.valueOf(userEntity.getCreatedDate()));
+                userContactDTO.setUserDepartment(userEntity.getUserDepartment());
                 userContactDTOList.add(userContactDTO);
             }
         }
