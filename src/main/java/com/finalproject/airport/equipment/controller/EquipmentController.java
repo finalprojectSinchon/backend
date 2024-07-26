@@ -52,7 +52,7 @@ public class EquipmentController {
         }
     }
 
-    @PutMapping("/equipment/{equipmentCode}")
+    @PutMapping("/equipment/{equipmentCode}/update")
     public ResponseEntity<?> updateEquipment(EquipmentDTO equipmentDTO, @PathVariable int equipmentCode) {
         try {
             equipmentService.updateEquipment(equipmentCode,equipmentDTO);
