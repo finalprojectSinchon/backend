@@ -1,5 +1,8 @@
 package com.finalproject.airport.manager.service;
 
+import com.finalproject.airport.facilities.dto.FacilitiesDTO;
+import com.finalproject.airport.facilities.entity.FacilitiesEntity;
+import com.finalproject.airport.facilities.repository.FacilitiesRepository;
 import com.finalproject.airport.manager.dto.ManagerTypeCodeDTO;
 import com.finalproject.airport.manager.dto.ManagerUpdateDTO;
 import com.finalproject.airport.manager.dto.UserFindManagerDTO;
@@ -22,7 +25,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ManagersService {
 
-   private final ManagersRepository managersRepository;
+    private final ManagersRepository managersRepository;
+
+    private final FacilitiesRepository facilitiesRepository;
 
     private final UserRepository userRepository;
 
@@ -42,12 +47,19 @@ public class ManagersService {
         switch (airportType) {
             case "checkinCounter" :
             case "facilities" :
+                List<ManagersEntity> findUserCodeForFacilities = managersRepository.findAllByFacilitiesCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForFacilities) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                }
+                break;
             case "storage" :
             case "store" :
                 List<ManagersEntity> findUserCode = managersRepository.findAllByStoreIdAndIsActive(pk,"Y");
                 for (ManagersEntity managerEntity : findUserCode) {
                     UserDTO userDTO = modelMapper.map(managerEntity.getUser(), UserDTO.class);
-                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg());
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
                     findUserList.add(userFindManagerDTO);
                 };
                 break;
@@ -66,6 +78,8 @@ public class ManagersService {
             userFindManagerDTO.setUserCode(userEntity.getUserCode());
             userFindManagerDTO.setUsername(userEntity.getUserName());
             userFindManagerDTO.setUserImg(userEntity.getUserImg());
+            userFindManagerDTO.setUserPhone(userEntity.getUserPhone());
+            userFindManagerDTO.setUserDepartment(userEntity.getUserDepartment());
             userFindManagerList.add(userFindManagerDTO);
         }
 
@@ -96,6 +110,7 @@ public class ManagersService {
         switch (airportType) {
             case "checkinCounter" :
             case "facilities" :
+
             case "storage" :
             case "store" :
                 List<ManagersEntity> managerList = managersRepository.findAllByStoreIdAndIsActive(airportCode,"Y");
@@ -110,6 +125,7 @@ public class ManagersService {
                             .build();
                     managersRepository.save(managerEntity);
                 }
+                break;
             case "inspection" :
             case "baggageClaim" :
             case "gate" :

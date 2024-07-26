@@ -12,5 +12,7 @@ public class UserFindManagerDTO {
     private int userCode;
     private String username;
     private String userImg;
+    private String userPhone;
+    private String userDepartment;
 
 }

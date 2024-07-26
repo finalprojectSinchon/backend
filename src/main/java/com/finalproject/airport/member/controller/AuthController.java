@@ -122,8 +122,6 @@ public class AuthController {
     public ResponseEntity<?> id(@RequestBody UserFindIdDTO userFindIdDTO){
 
 
-//        return joinService.findUserId(userIdDTO);
-
         return joinService.findUserId(userFindIdDTO);
     }
 

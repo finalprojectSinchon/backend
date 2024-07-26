@@ -52,6 +52,9 @@ public class UserEntity extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String userImg;
 
+    @Column(name = "user_department")
+    private String userDepartment;
+
     @Setter
     private int authCode;
 
