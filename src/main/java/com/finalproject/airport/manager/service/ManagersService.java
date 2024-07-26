@@ -55,6 +55,13 @@ public class ManagersService {
                 }
                 break;
             case "storage" :
+                List<ManagersEntity> findUserCodeForStorage = managersRepository.findAllByStorageCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForStorage) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                }
+                break;
             case "store" :
                 List<ManagersEntity> findUserCode = managersRepository.findAllByStoreIdAndIsActive(pk,"Y");
                 for (ManagersEntity managerEntity : findUserCode) {
@@ -110,8 +117,33 @@ public class ManagersService {
         switch (airportType) {
             case "checkinCounter" :
             case "facilities" :
-
+                List<ManagersEntity> facilitiesManagerList = managersRepository.findAllByFacilitiesCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : facilitiesManagerList) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .facilitiesCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
+                break;
             case "storage" :
+                List<ManagersEntity> managersList = managersRepository.findAllByStorageCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : managersList) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .storageCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
+                break;
             case "store" :
                 List<ManagersEntity> managerList = managersRepository.findAllByStoreIdAndIsActive(airportCode,"Y");
                 for (ManagersEntity managerEntity : managerList) {
