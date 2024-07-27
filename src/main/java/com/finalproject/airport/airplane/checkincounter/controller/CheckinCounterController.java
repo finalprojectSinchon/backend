@@ -39,7 +39,8 @@ public class CheckinCounterController {
             @ApiResponse(code = 400, message = "잘못된 입력")
     })
     @PostMapping("/checkin-counter")
-    public ResponseEntity<?> insertchkinCounter(@ModelAttribute CheckinCounterDTO chkinCounter) {
+    public ResponseEntity<?> insertChkinCounter(@RequestBody CheckinCounterDTO chkinCounter) {
+        System.out.println("chkinCounter = " + chkinCounter);
         service.insertchkinCounter(chkinCounter);
         return ResponseEntity.ok().build();
     }
