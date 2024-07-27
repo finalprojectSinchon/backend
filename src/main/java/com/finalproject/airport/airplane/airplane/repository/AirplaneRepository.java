@@ -11,4 +11,6 @@ public interface AirplaneRepository extends JpaRepository<Airplane, Integer> {
     List<Airplane> findByisActive(String y);
 
     Airplane findByairplaneCode(int airplaneCode);
+
+    Airplane findByAirplaneCode(int airplane);
 }

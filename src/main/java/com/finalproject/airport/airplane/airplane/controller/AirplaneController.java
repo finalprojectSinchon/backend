@@ -38,7 +38,7 @@ public class AirplaneController {
     @GetMapping("/airplane")
     public ResponseEntity<ResponseDTO> getAirplane() {
 
-//        airPlaneService.fetchAirplane();
+//        airPlaneService.fetchArrivalAirplane();
 //        airPlaneService.fetchDepartureAirplane();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));

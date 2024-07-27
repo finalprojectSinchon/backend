@@ -1,9 +1,12 @@
 package com.finalproject.airport.airplane.baggageclaim.service;
 
 
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
+import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
 import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.baggageclaim.repository.BaggageClaimRepository;
+import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
 import org.modelmapper.ModelMapper;
@@ -19,11 +22,13 @@ public class BaggageClaimService {
 
     private final BaggageClaimRepository repository;
     private final ModelMapper modelMapper;
+    private final AirplaneRepository airplaneRepository;
 
     @Autowired
-    public BaggageClaimService(BaggageClaimRepository repository ,ModelMapper modelMapper){
+    public BaggageClaimService(BaggageClaimRepository repository ,ModelMapper modelMapper, AirplaneRepository airplaneRepository){
         this.modelMapper = modelMapper;
         this.repository = repository;
+        this.airplaneRepository = airplaneRepository;
     }
 
     public List<BaggageClaimDTO> findAll() {
@@ -40,19 +45,25 @@ public class BaggageClaimService {
     }
 
     @Transactional
-    public String insertBaggageClaim(BaggageClaimDTO baggageClaim) {
+    public void insertBaggageClaim(BaggageClaimDTO baggageClaim) {
 
-        int result = 0;
-        try{
+        Airplane airplane = airplaneRepository.findByAirplaneCode(baggageClaim.getAirplaneCode());
 
-            BaggageClaim insertBaggageClaim = modelMapper.map(baggageClaim, BaggageClaim.class);
+        BaggageClaim insertBaggageClaim = BaggageClaim.builder()
+                .airplane(airplane) // DTO에서 가져온 비행기 정보
+                .lastInspectionDate(baggageClaim.getLastInspectionDate()) // 최근 점검 날짜
+                .location(baggageClaim.getLocation()) // 위치
+                .manager(baggageClaim.getManager()) // 담당자
+                .note(baggageClaim.getNote()) // 비고
+                .status(baggageClaim.getStatus()) // 상태
+                .type(baggageClaim.getType()) // 타입
+                .isActive("Y") // 활성화/비활성화 필드 추가
+                .build();
+
             repository.save(insertBaggageClaim);
-            result = 1;
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
 
-        return (result > 0)? "수화물 수취대 등록 성공": "수화물 수취대 등록 실패";
+
+
 
     }
 
