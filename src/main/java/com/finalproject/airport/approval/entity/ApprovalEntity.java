@@ -33,13 +33,13 @@ public class ApprovalEntity {
     @Column(name = "GATE_CODE")
     private Integer gate;
 
-    @ManyToOne
-    @JoinColumn(name = "CHECKINCOUNTER_CODE")
-    private CheckinCounter checkinCounter;
 
-    @ManyToOne
-    @JoinColumn(name = "BAGGAGECLAIM_CODE")
-    private BaggageClaim baggageClaim;
+    @Column(name = "CHECKINCOUNTER_CODE")
+    private Integer checkinCounter;
+
+
+    @Column(name = "BAGGAGECLAIM_CODE")
+    private Integer baggageClaim;
 
     @ManyToOne
     @JoinColumn(name = "STORE_ID")
@@ -56,10 +56,12 @@ public class ApprovalEntity {
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gate) {
+    public ApprovalEntity(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gate ,Integer checkinCounter,Integer baggageClaim) {
         this.approvalType = approvalType;
         this.approvalStatus = approvalStatus;
         this.gate = gate;
+        this.checkinCounter = checkinCounter;
+        this.baggageClaim = baggageClaim;
     }
 
     public void setApprovalStatus(ApprovalStatusEntity approvalStatus) {

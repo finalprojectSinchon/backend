@@ -111,10 +111,12 @@ public class GateService {
             ApprovalDTO approvalDTO = new ApprovalDTO(
                     ApprovalTypeEntity.등록,
                     ApprovalStatusEntity.N,
-                    gate.getGateCode()
+                    gate.getGateCode(),
+                    null,
+                    null
             );
             System.out.println("approvalDTO = " + approvalDTO);
-            approvalService.saveApproval(approvalDTO);
+            approvalService.saveGateApproval(approvalDTO);
 
             result = 1;
         } catch (Exception e) {

@@ -27,14 +27,15 @@ public class ApprovalDTO {
     private StorageDTO storageDTO;
     private FacilitiesDTO facilitiesDTO;
     private Integer gatecode;
+    private Integer checkincountercode;
+    private Integer baggageclaimcode;
 
-    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gateCode) {
+    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode) {
         this.approvalType = approvalType;
         this.approvalStatus = approvalStatus;
-        this.gatecode = gateCode;
+        this.gatecode = gatecode;
+        this.checkincountercode = checkincountercode;
+        this.baggageclaimcode = baggageclaimcode;
     }
 
-
-    public void save(ApprovalDTO approvalDTO) {
-    }
 }

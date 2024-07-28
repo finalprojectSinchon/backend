@@ -33,16 +33,51 @@ public class ApprovalService {
     }
 
     @Transactional
-    public void saveApproval(ApprovalDTO approvalDTO) {
+    public void saveGateApproval(ApprovalDTO approvalDTO) {
         System.out.println("approval: " + approvalDTO);
+        
 
         ApprovalEntity approvalEntity = new ApprovalEntity(
-                approvalDTO.getApprovalType(), approvalDTO.getApprovalStatus(), approvalDTO.getGatecode()
+                approvalDTO.getApprovalType(),
+                approvalDTO.getApprovalStatus(),
+                approvalDTO.getGatecode(),
+                null,
+                null
         );
 
         System.out.println("approvalEntity: " + approvalEntity);
         approvalRepository.save(approvalEntity);
     }
+
+    @Transactional
+    public void saveChkinCounterApproval(ApprovalDTO approvalDTO) {
+        System.out.println("approval: " + approvalDTO);
+
+
+        ApprovalEntity approvalEntity = new ApprovalEntity(
+                approvalDTO.getApprovalType(),
+                approvalDTO.getApprovalStatus(),
+                null,
+                approvalDTO.getCheckincountercode(),
+                null);
+
+        System.out.println("approvalEntity: " + approvalEntity);
+        approvalRepository.save(approvalEntity);
+    }
+
+    @Transactional
+    public void saveBaggageClaimApproval(ApprovalDTO approvalDTO) {
+        ApprovalEntity approvalEntity = new ApprovalEntity(
+                approvalDTO.getApprovalType(),
+                approvalDTO.getApprovalStatus(),
+                null,
+                null,
+                approvalDTO.getBaggageclaimcode());
+
+        System.out.println("approvalEntity: " + approvalEntity);
+        approvalRepository.save(approvalEntity);
+    }
+
 
     @Transactional
     public void approve(Integer approvalCode) {
@@ -79,4 +114,6 @@ public class ApprovalService {
             throw new RuntimeException("Approval not found: " + approvalCode);
         }
     }
+
+
 }
