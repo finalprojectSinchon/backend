@@ -46,9 +46,11 @@ public class GateDTO {
     @Schema(description = "출발 비행기 정보(FK)")
     private AirplaneDTO airplane;
 
-    @Schema(description = "활성/비활성화")
-    private char isActive;
+    @Schema(description = "비행기 코드")
+    private int airplaneCode;
 
+    @Schema(description = "지연 시간")
+    private Integer delayTime;
 
 
 }

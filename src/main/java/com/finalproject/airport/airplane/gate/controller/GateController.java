@@ -36,6 +36,7 @@ public class GateController {
     @Operation(summary = "탑승구 등록", description = "새로운 탑승구를 등록합니다.")
     @PostMapping("/gate")
     public ResponseEntity<?> insertGate(@RequestBody GateDTO gate){
+        System.out.println("gate = " + gate);
         gateService.insertGate(gate);
         return ResponseEntity.ok().build();
     }

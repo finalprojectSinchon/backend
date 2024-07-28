@@ -1,5 +1,8 @@
 package com.finalproject.airport.airplane.gate.service;
 
+import com.finalproject.airport.airplane.airplane.Entity.Airplane;
+import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
+import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;
@@ -24,32 +27,16 @@ public class GateService {
 
     private final ApprovalService approvalService;
 
-    public GateService(GateRepository gateRepository, ModelMapper modelMapper, ApprovalService approvalService){
+    private final AirplaneRepository airplaneRepository;
+
+    public GateService(GateRepository gateRepository, ModelMapper modelMapper, ApprovalService approvalService , AirplaneRepository airplaneRepository){
 
         this.gateRepository = gateRepository;
         this.modelMapper = modelMapper;
         this.approvalService = approvalService;
+        this.airplaneRepository = airplaneRepository;
     }
 
-//    @Transactional
-//    public String insertGate(GateDTO gate) {
-//
-//        int result = 0;
-//
-//        try{
-//
-//            Gate insertGate = modelMapper.map(gate, Gate.class);
-//
-//            gateRepository.save(insertGate);
-//
-//            result = 1;
-//        } catch (Exception e){
-//            throw new RuntimeException(e);
-//        }
-//
-//
-//        return (result > 0)? "탑승구 등록 성공": "탑승구 등록 실패";
-//    }
 
     public List<GateDTO> findAll() {
 
@@ -99,21 +86,32 @@ public class GateService {
     }
     @Transactional
     public String insertGate(GateDTO gateDTO) {
+
         int result = 0;
 
         try {
-            Gate gate = modelMapper.map(gateDTO, Gate.class);
-            gate = gate.toBuilder().isActive("N").build();
 
+            Airplane airplane = airplaneRepository.findByAirplaneCode(gateDTO.getAirplaneCode());
+
+            Gate insertGate = Gate.builder()
+                    .airplane(airplane) // DTO에서 가져온 비행기 정보
+                    .lastInspectionDate(gateDTO.getLastInspectionDate()) // 최근 점검 날짜
+                    .location(gateDTO.getLocation()) // 위치
+                    .manager(gateDTO.getManager()) // 담당자
+                    .note(gateDTO.getNote()) // 비고
+                    .status(gateDTO.getStatus()) // 상태
+                    .type(gateDTO.getGateType()) // 타입
+                    .isActive("N") // 활성화/비활성화 필드 추가
+                    .build();
+
+            Gate gate = gateRepository.save(insertGate);
             System.out.println("gate = " + gate);
-            Gate gate1 = gateRepository.save(gate);
-            System.out.println("gate1 = " + gate1);
 
             // 승인 정보 저장
             ApprovalDTO approvalDTO = new ApprovalDTO(
                     ApprovalTypeEntity.등록,
                     ApprovalStatusEntity.N,
-                    gate1.getGateCode()
+                    gate.getGateCode()
             );
             System.out.println("approvalDTO = " + approvalDTO);
             approvalService.saveApproval(approvalDTO);
@@ -124,6 +122,7 @@ public class GateService {
         }
 
         return (result > 0) ? "탑승구 승인 요청 성공" : "탑승구 승인 요청 실패";
+
     }
 
 
