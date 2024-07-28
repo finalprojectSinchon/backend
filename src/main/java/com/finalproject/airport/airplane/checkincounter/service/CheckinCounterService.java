@@ -7,6 +7,10 @@ import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.checkincounter.repository.CheckinCounterRepository;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.approval.dto.ApprovalDTO;
+import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
+import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.service.ApprovalService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +25,22 @@ public class CheckinCounterService {
     private final CheckinCounterRepository repository;
     private final AirplaneRepository airplaneRepository;
     private final ModelMapper modelMapper;
+    private final ApprovalService approvalService;
 
     @Autowired
-    public CheckinCounterService(CheckinCounterRepository repository, ModelMapper modelMapper,AirplaneRepository airplaneRepository){
+    public CheckinCounterService(CheckinCounterRepository repository, ModelMapper modelMapper,AirplaneRepository airplaneRepository, ApprovalService approvalService){
         this.repository = repository;
         this.modelMapper = modelMapper;
         this.airplaneRepository = airplaneRepository;
+        this.approvalService = approvalService;
     }
 
     @Transactional
-    public void insertchkinCounter(CheckinCounterDTO chkinCounter) {
+    public String insertchkinCounter(CheckinCounterDTO chkinCounter) {
+
+        int result = 0;
+
+        try {
 
         Airplane airplane = airplaneRepository.findByAirplaneCode(chkinCounter.getAirplaneCode());
 
@@ -42,10 +52,31 @@ public class CheckinCounterService {
                 .note(chkinCounter.getNote()) // 비고
                 .status(chkinCounter.getStatus()) // 상태
                 .type(chkinCounter.getType()) // 타입
-                .isActive("Y") // 활성화/비활성화 필드 추가
+                .isActive("N") // 활성화/비활성화 필드 추가
                 .build();
 
-        repository.save(insertchkinCounter);
+        CheckinCounter checkinCounter =  repository.save(insertchkinCounter);
+            System.out.println("checkinCounter = " + checkinCounter);
+
+            // 승인 정보 저장
+            ApprovalDTO approvalDTO = new ApprovalDTO(
+                    ApprovalTypeEntity.등록,
+                    ApprovalStatusEntity.N,
+                    null,
+                    checkinCounter.getCheckinCounterCode(),
+                    null
+            );
+
+            approvalService.saveChkinCounterApproval(approvalDTO);
+
+            result = 1;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return (result > 0) ? "체크인 카운터 승인 요청 성공" : "체크인 카운터 승인 요청 실패";
+
+
     }
 
     public List<CheckinCounterDTO> findAll() {

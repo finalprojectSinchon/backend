@@ -9,6 +9,10 @@ import com.finalproject.airport.airplane.baggageclaim.repository.BaggageClaimRep
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.approval.dto.ApprovalDTO;
+import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
+import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.service.ApprovalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +27,14 @@ public class BaggageClaimService {
     private final BaggageClaimRepository repository;
     private final ModelMapper modelMapper;
     private final AirplaneRepository airplaneRepository;
+    private final ApprovalService approvalService;
 
     @Autowired
-    public BaggageClaimService(BaggageClaimRepository repository ,ModelMapper modelMapper, AirplaneRepository airplaneRepository){
+    public BaggageClaimService(BaggageClaimRepository repository ,ModelMapper modelMapper, AirplaneRepository airplaneRepository, ApprovalService approvalService){
         this.modelMapper = modelMapper;
         this.repository = repository;
         this.airplaneRepository = airplaneRepository;
+        this.approvalService = approvalService;
     }
 
     public List<BaggageClaimDTO> findAll() {
@@ -45,7 +51,11 @@ public class BaggageClaimService {
     }
 
     @Transactional
-    public void insertBaggageClaim(BaggageClaimDTO baggageClaim) {
+    public String insertBaggageClaim(BaggageClaimDTO baggageClaim) {
+
+        int result = 0;
+
+        try {
 
         Airplane airplane = airplaneRepository.findByAirplaneCode(baggageClaim.getAirplaneCode());
 
@@ -57,10 +67,28 @@ public class BaggageClaimService {
                 .note(baggageClaim.getNote()) // 비고
                 .status(baggageClaim.getStatus()) // 상태
                 .type(baggageClaim.getType()) // 타입
-                .isActive("Y") // 활성화/비활성화 필드 추가
+                .isActive("N") // 활성화/비활성화 필드 추가
                 .build();
 
-            repository.save(insertBaggageClaim);
+            BaggageClaim baggageClaim1 = repository.save(insertBaggageClaim);
+
+            // 승인 정보 저장
+            ApprovalDTO approvalDTO = new ApprovalDTO(
+                    ApprovalTypeEntity.등록,
+                    ApprovalStatusEntity.N,
+                    null,
+                    null,
+                    baggageClaim1.getBaggageClaimCode()
+            );
+
+            approvalService.saveBaggageClaimApproval(approvalDTO);
+
+            result = 1;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return (result > 0) ? "수화물 수취대 승인 요청 성공" : "수화물 수취대 승인 요청 실패";
 
 
 
