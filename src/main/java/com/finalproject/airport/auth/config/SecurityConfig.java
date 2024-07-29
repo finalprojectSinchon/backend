@@ -33,16 +33,19 @@ public class SecurityConfig implements WebSocketConfigurer {
 
     private final JWTUtil jwtUtil;
 
+    private final WebSocketHandler webSocketHandler;
+
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, WebSocketHandler webSocketHandler) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
+        this.webSocketHandler = webSocketHandler;
     }
 
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new WebSocketHandler(), "/ws")
+        registry.addHandler(webSocketHandler, "/ws")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setAllowedOrigins("*"); // 또는 특정 도메인으로 제한
     }
