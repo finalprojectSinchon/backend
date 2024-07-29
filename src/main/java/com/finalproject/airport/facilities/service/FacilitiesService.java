@@ -1,5 +1,9 @@
 package com.finalproject.airport.facilities.service;
 
+import com.finalproject.airport.approval.dto.ApprovalDTO;
+import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
+import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.facilities.dto.FacilitiesDTO;
 import com.finalproject.airport.facilities.entity.FacilitesType;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
@@ -13,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ch.qos.logback.classic.spi.ThrowableProxyVO.build;
+
 @Service
 @RequiredArgsConstructor
 public class FacilitiesService {
@@ -21,6 +27,9 @@ public class FacilitiesService {
     private final FacilitiesRepository facilitiesRepository;
 
     private final ModelMapper modelMapper;
+    @Autowired
+    private ApprovalService approvalService;
+
     public List<FacilitiesDTO> selectAllFacilities() {
 
 
@@ -60,22 +69,44 @@ public class FacilitiesService {
       return facilitiesDTO2;
     }
 
-    public void insertFacilities(FacilitiesDTO facilitiesDTO) {
+    // 등록
+    @Transactional
+    public String insertFacilities(FacilitiesDTO facilitiesDTO) {
 
-        FacilitiesEntity insertFacilities = new FacilitiesEntity(
-                facilitiesDTO.getFacilitiesCode(),
-                facilitiesDTO.getFacilitiesStatus(),
-                facilitiesDTO.getFacilitiesLocation(),
-                facilitiesDTO.getFacilitiesName(),
-                facilitiesDTO.getFacilitiesType(),
-                facilitiesDTO.getFacilitiesManager(),
-                facilitiesDTO.getFacilitiesClass(),
-                null,
-                facilitiesDTO.getCreatedDate()
-                );
+        int result = 0;
 
-                facilitiesRepository.save(insertFacilities);
+        try {
 
+            FacilitiesEntity insertFacilities = FacilitiesEntity.builder()
+                    .facilitiesStatus(facilitiesDTO.getFacilitiesStatus())
+                    .facilitiesLocation(facilitiesDTO.getFacilitiesLocation())
+                    .facilitiesName(facilitiesDTO.getFacilitiesName())
+                    .facilitiesType(facilitiesDTO.getFacilitiesType())
+                    .facilitiesManager(facilitiesDTO.getFacilitiesManager())
+                    .facilitiesClass(facilitiesDTO.getFacilitiesClass())
+                    .isActive("N")
+                    .build();
+
+            FacilitiesEntity facilitiesEntity = facilitiesRepository.save(insertFacilities);
+            System.out.println("insertFacilities = " + insertFacilities);
+
+            ApprovalDTO approvalDTO = new ApprovalDTO(
+                    ApprovalTypeEntity.등록,
+                    ApprovalStatusEntity.N,
+                    null,
+                    null,
+                    null,
+                    null,
+                    facilitiesEntity.getFacilitiesCode()
+            );
+            System.out.println("approvalDTO = " + approvalDTO);
+            approvalService.saveFacilities(approvalDTO);
+
+            result = 1;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return (result > 0) ? "편의시설 승인 요청 성공" : "편의시설 승인 요청 실패";
 
     }
 

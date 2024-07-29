@@ -97,7 +97,7 @@ public class FacilitiesDTO {
         this.facilitiesClass = facilitiesClass;
     }
 
-    public String getIsActive() {
+    public String getIsActive(String n) {
         return isActive;
     }
 

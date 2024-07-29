@@ -42,9 +42,11 @@ public class FacilitiesController {
         }
  }
 
+ // 등록
 @PostMapping("/facilities")
     public ResponseEntity<?> insertfacilities(@RequestBody FacilitiesDTO facilitiesDTO){
 
+    System.out.println("facilitiesDTO = " + facilitiesDTO);
     facilitiesService.insertFacilities(facilitiesDTO);
 
     return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"등록에 성공했습니다." , null ));

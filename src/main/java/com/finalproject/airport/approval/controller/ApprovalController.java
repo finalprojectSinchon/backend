@@ -53,6 +53,7 @@ public class ApprovalController {
         boolean checkInCounterApproved = false;
         boolean baggageClaimApproved = false;
         boolean storageApproved = false;
+        boolean facilitiesApproved = false;
         String errorMessage = null;
 
         try {
@@ -91,16 +92,26 @@ public class ApprovalController {
             errorMessage = e.getMessage();
         }
 
-        boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved;
+        try{
+            // 편의시설 승인 처리
+            approvalService.approveFacilities(approvalCode);
+            facilitiesApproved = true;
+        } catch (RuntimeException e){
+            e.printStackTrace();
+            errorMessage = e.getMessage();
+        }
+
+        boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved || facilitiesApproved;
         HttpStatus status = anyApproved ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
         String message = anyApproved ? "승인 처리된 시설물은 다음과 같다 :  " : "승인 처리 실패";
-        
+
 
         // 승인 처리 성공한 시설물 대한 메시지 추가
         if (gateApproved) message += " (Gate)";
         if (checkInCounterApproved) message += " (Check-in Counter)";
         if (baggageClaimApproved) message += " (Baggage Claim)";
         if (storageApproved) message += " (Storage)";
+        if (facilitiesApproved) message += " (Facilities)";
 
         return ResponseEntity.status(status)
                 .body(new ResponseDTO(status, message, errorMessage));

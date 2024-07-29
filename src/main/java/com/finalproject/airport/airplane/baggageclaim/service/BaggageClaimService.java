@@ -79,6 +79,7 @@ public class BaggageClaimService {
                     null,
                     null,
                     baggageClaim1.getBaggageClaimCode(),
+                    null,
                     null
             );
 

@@ -65,6 +65,7 @@ public class CheckinCounterService {
                     null,
                     checkinCounter.getCheckinCounterCode(),
                     null,
+                    null,
                     null
             );
 

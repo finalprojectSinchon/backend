@@ -10,6 +10,8 @@ import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
+import com.finalproject.airport.facilities.entity.FacilitiesEntity;
+import com.finalproject.airport.facilities.repository.FacilitiesRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
 import org.modelmapper.ModelMapper;
@@ -29,15 +31,17 @@ public class ApprovalService {
     private final CheckinCounterRepository checkinCounterRepository;
     private final BaggageClaimRepository baggageClaimRepository;
     private final StorageRepository storageRepository;
+    private final FacilitiesRepository facilitiesRepository;
 
     @Autowired
-    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository, CheckinCounterRepository checkinCounterRepository, BaggageClaimRepository baggageClaimRepository, StorageRepository storageRepository) {
+    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository, CheckinCounterRepository checkinCounterRepository, BaggageClaimRepository baggageClaimRepository, StorageRepository storageRepository, FacilitiesRepository facilitiesRepository) {
         this.approvalRepository = repository;
         this.modelMapper = modelMapper;
         this.gateRepository = gateRepository;
         this.checkinCounterRepository = checkinCounterRepository;
         this.baggageClaimRepository = baggageClaimRepository;
         this.storageRepository = storageRepository;
+        this.facilitiesRepository = facilitiesRepository;
     }
 
     public List<ApprovalEntity> findAll() {
@@ -53,6 +57,7 @@ public class ApprovalService {
                 approvalDTO.getApprovalType(),
                 approvalDTO.getApprovalStatus(),
                 approvalDTO.getGateCode(),
+                null,
                 null,
                 null,
                 null
@@ -73,6 +78,7 @@ public class ApprovalService {
                 null,
                 approvalDTO.getCheckinCounterCode(),
                 null,
+                null,
                 null
         );
 
@@ -88,7 +94,10 @@ public class ApprovalService {
                 null,
                 null,
                 null,
-                approvalDTO.getBaggageClaimCode());
+                approvalDTO.getBaggageClaimCode(),
+                null
+
+        );
 
         System.out.println("approvalEntity: " + approvalEntity);
         approvalRepository.save(approvalEntity);
@@ -102,8 +111,25 @@ public class ApprovalService {
                 null,
                 null,
                 null,
-                approvalDTO.getStorageCode());
+                approvalDTO.getStorageCode(),
+                null
+        );
 
+        System.out.println("approvalEntity = " + approvalEntity);
+        approvalRepository.save(approvalEntity);
+    }
+
+    @Transactional
+    public void saveFacilities(ApprovalDTO approvalDTO){
+        ApprovalEntity approvalEntity = new ApprovalEntity(
+                approvalDTO.getApprovalType(),
+                approvalDTO.getApprovalStatus(),
+                null,
+                null,
+                null,
+                null,
+                approvalDTO.getFacilitiesCode()
+        );
         System.out.println("approvalEntity = " + approvalEntity);
         approvalRepository.save(approvalEntity);
     }
@@ -216,6 +242,23 @@ public class ApprovalService {
     }
 
 
+    public void approveFacilities(Integer approvalCode) {
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
+        Integer facilitiesCode = approvalEntity.getFacilities();
+        if(facilitiesCode == null){
+            throw new IllegalArgumentException("Facilities code must not be null");
+        }
 
+        Optional<FacilitiesEntity> facilitiesEntityOptional = facilitiesRepository.findById(facilitiesCode);
+        if(facilitiesEntityOptional.isPresent()){
+            FacilitiesEntity facilitiesEntity = facilitiesEntityOptional.get();
+            if ("N".equals(facilitiesEntity.getIsActive())) {
+                facilitiesEntity.setIsActive("Y");
+                facilitiesRepository.save(facilitiesEntity);
+            }
+        }else {
+            throw new RuntimeException("Facilities not found: " + facilitiesCode);
+        }
+    }
 }

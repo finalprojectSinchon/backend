@@ -114,6 +114,7 @@ public class GateService {
                     gate.getGateCode(),
                     null,
                     null,
+                    null,
                     null
             );
             System.out.println("approvalDTO = " + approvalDTO);
