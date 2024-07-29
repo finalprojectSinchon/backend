@@ -64,6 +64,7 @@ public class StorageController {
                     content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
             @ApiResponse(responseCode = "500", description = "등록 중 서버 오류 발생")
     })
+
     @PostMapping("/storage")    // 등록
     public ResponseEntity<?> addStorage(@RequestBody StorageRegistDTO storageRegistDTO) {
         try{

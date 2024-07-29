@@ -113,6 +113,7 @@ public class GateService {
                     ApprovalStatusEntity.N,
                     gate.getGateCode(),
                     null,
+                    null,
                     null
             );
             System.out.println("approvalDTO = " + approvalDTO);

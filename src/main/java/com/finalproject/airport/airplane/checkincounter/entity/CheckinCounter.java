@@ -55,6 +55,27 @@ public class CheckinCounter extends BaseTimeEntity {
     private String isActive;
 
 
-    protected CheckinCounter(){}
 
+
+
+    // Getter and Setter
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+
+
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+    }
+
+    protected CheckinCounter(){}
 }

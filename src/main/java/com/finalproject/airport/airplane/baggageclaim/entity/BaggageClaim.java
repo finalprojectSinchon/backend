@@ -50,6 +50,23 @@ public class BaggageClaim extends BaseTimeEntity {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
+    // Getter and Setter
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+//
+//    @PrePersist
+//    private void ensureIsActiveDefault() {
+//        if (this.isActive == null) {
+//            this.isActive = "Y";
+//        }
+//    }
+
 
     protected BaggageClaim(){}
 }

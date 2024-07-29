@@ -78,7 +78,8 @@ public class BaggageClaimService {
                     ApprovalStatusEntity.N,
                     null,
                     null,
-                    baggageClaim1.getBaggageClaimCode()
+                    baggageClaim1.getBaggageClaimCode(),
+                    null
             );
 
             approvalService.saveBaggageClaimApproval(approvalDTO);

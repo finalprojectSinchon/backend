@@ -1,10 +1,8 @@
 package com.finalproject.airport.approval.controller;
 
-import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.common.ResponseDTO;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,7 +23,7 @@ public class ApprovalController {
     private final ApprovalService approvalService;
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService){
+    public ApprovalController(ApprovalService approvalService) {
         this.approvalService = approvalService;
     }
 
@@ -44,7 +42,6 @@ public class ApprovalController {
                 .body(new ResponseDTO(HttpStatus.OK, "승인 전체 조회 성공", approvalMap));
     }
 
-    // 승인 isActive 를 N을 Y로 바꿔주기
     @PutMapping("/approve/{approvalCode}")
     public ResponseEntity<ResponseDTO> approve(@PathVariable Integer approvalCode) {
         if (approvalCode == null) {
@@ -52,15 +49,67 @@ public class ApprovalController {
                     .body(new ResponseDTO(HttpStatus.BAD_REQUEST, "Approval code must not be null", null));
         }
 
+        boolean gateApproved = false;
+        boolean checkInCounterApproved = false;
+        boolean baggageClaimApproved = false;
+        boolean storageApproved = false;
+        String errorMessage = null;
+
         try {
-            approvalService.approve(approvalCode);
-            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "승인 처리 성공", null));
+            // 게이트 코드 승인처리
+            approvalService.approveGate(approvalCode);
+            gateApproved = true;
         } catch (RuntimeException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "승인 처리 실패", e.getMessage()));
+            errorMessage = e.getMessage();
         }
+
+        try {
+            // 체크인 카운트 승인처리
+            approvalService.approveCheckInCounter(approvalCode);
+            checkInCounterApproved = true;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            errorMessage = e.getMessage();
+        }
+
+        try {
+            // 수하물 수취대 승인처리
+            approvalService.approveBaggageClaim(approvalCode);
+            baggageClaimApproved = true;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            errorMessage = e.getMessage();
+        }
+
+        try {
+            // 창고 승인처리
+            approvalService.approveStorage(approvalCode);
+            storageApproved = true;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            errorMessage = e.getMessage();
+        }
+
+        boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved;
+        HttpStatus status = anyApproved ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        String message = anyApproved ? "승인 처리된 시설물은 다음과 같다 :  " : "승인 처리 실패";
+        
+
+        // 승인 처리 성공한 시설물 대한 메시지 추가
+        if (gateApproved) message += " (Gate)";
+        if (checkInCounterApproved) message += " (Check-in Counter)";
+        if (baggageClaimApproved) message += " (Baggage Claim)";
+        if (storageApproved) message += " (Storage)";
+
+        return ResponseEntity.status(status)
+                .body(new ResponseDTO(status, message, errorMessage));
     }
+}
+
+
+
+
 
 //    // 승인 isActive 를 N을 Y로 바꿔주기 11
 //    @PutMapping("/approve/{approvalCode}")
@@ -106,4 +155,4 @@ public class ApprovalController {
 //    }
 
 
-}
+
