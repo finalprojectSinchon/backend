@@ -41,6 +41,7 @@ public class InspectionController {
 
     @PostMapping("/inspection")
     public ResponseEntity<?> addInspection(InspectionDTO inspectionDTO ) {
+
         try {
             inspectionService.addInspection(inspectionDTO);
 
@@ -80,6 +81,14 @@ public class InspectionController {
             return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, " 삭제에 실패했습니다.", null));
 
         }
+    }
+    // 점검 등록
+    @PostMapping("/inspectionRegist")
+
+    public ResponseEntity<?>insertInspection(@RequestBody InspectionDTO inspectionDTO) {
+
+        inspectionService.insertInspection(inspectionDTO);
+        return ResponseEntity.ok().build();
     }
 
 

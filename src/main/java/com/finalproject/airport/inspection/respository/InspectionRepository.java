@@ -13,5 +13,5 @@ public interface InspectionRepository extends JpaRepository<InspectionEntity, In
 
     InspectionEntity findByinspectionCode(int inspectionCode);
 
-    List<InspectionEntity> findByIsActive(String y);
+    List<InspectionEntity> findByIsActive(String Y);
 }

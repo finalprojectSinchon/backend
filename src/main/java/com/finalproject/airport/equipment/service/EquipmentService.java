@@ -3,6 +3,8 @@ package com.finalproject.airport.equipment.service;
 import com.finalproject.airport.equipment.dto.EquipmentDTO;
 import com.finalproject.airport.equipment.entity.EquipmentEntity;
 import com.finalproject.airport.equipment.repository.EquipmentRepository;
+import com.finalproject.airport.inspection.dto.InspectionDTO;
+import com.finalproject.airport.inspection.entity.InspectionEntity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +26,19 @@ public class EquipmentService {
     private ModelMapper modelMapper;
 
     public List<EquipmentDTO> findAllEquipment() {
-        List<EquipmentEntity> equipmentList = equipmentRepository.findAll();
+
+        List<EquipmentDTO> equipmentDTOList = new ArrayList<>();
+        List<EquipmentEntity> equipmentDTOList1 = equipmentRepository.findByIsActive("Y");
+        equipmentDTOList1.forEach(equipmentEntity -> {equipmentDTOList.add(modelMapper.map(equipmentEntity, EquipmentDTO.class));});
 
 
-        return equipmentList.stream().map(equipmentEntity ->
-                modelMapper.map(equipmentEntity, EquipmentDTO.class)).collect(Collectors.toList());
+        return equipmentDTOList;
+
+
+//        List<EquipmentEntity> equipmentList = equipmentRepository.findAll();
+//
+//        return equipmentList.stream().map(equipmentEntity ->
+//                modelMapper.map(equipmentEntity, EquipmentDTO.class)).collect(Collectors.toList());
     }
 
     public EquipmentDTO findByCode(int equipmentCode) {
@@ -46,7 +56,7 @@ public class EquipmentService {
 
     public void updateEquipment(int equipmentCode, EquipmentDTO equipmentDTO) {
         equipmentDTO.setEquipmentCode(equipmentCode);
-        equipmentDTO.setEquipmentStatus("Y");
+//        equipmentDTO.setEquipmentStatus("Y");
         EquipmentEntity equipment = modelMapper.map(equipmentDTO, EquipmentEntity.class);
         equipmentRepository.save(equipment);
     }
@@ -54,7 +64,7 @@ public class EquipmentService {
 
     public void softDeleteEquipment(int equipmentCode) {
         EquipmentEntity equipment = equipmentRepository.findById(equipmentCode).orElseThrow(IllegalArgumentException::new);
-        equipment = equipment.toBuilder().equipmentStatus("N").build();
+        equipment = equipment.toBuilder().isActive("N").build();
         equipmentRepository.save(equipment);
     }
 }

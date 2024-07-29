@@ -18,8 +18,6 @@ public class EquipmentEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
-
     private int equipmentCode;
 
     //장비 이름
@@ -38,9 +36,20 @@ public class EquipmentEntity extends BaseTimeEntity {
     private String equipmentManager;
 
     // 상태
+    @Column(name ="equipmentStatus" )
     private String equipmentStatus;
 
 
+    @Column(name = "ISACTIVE", length = 1, nullable = false)
+    @Setter
+    private String isActive;
+
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+    }
 
 
 

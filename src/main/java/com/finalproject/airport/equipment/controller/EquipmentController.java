@@ -21,8 +21,9 @@ public class EquipmentController {
     @GetMapping("/equipment")
     public ResponseEntity<?> findAllEquipment() {
 
+
         List<EquipmentDTO> equipmentList = equipmentService.findAllEquipment();
-        System.out.println("equipmentList = " + equipmentList);
+
         if(equipmentList.isEmpty()){
             return ResponseEntity.noContent().build();
         } else {
@@ -53,7 +54,8 @@ public class EquipmentController {
     }
 
     @PutMapping("/equipment/{equipmentCode}/update")
-    public ResponseEntity<?> updateEquipment(EquipmentDTO equipmentDTO, @PathVariable int equipmentCode) {
+    public ResponseEntity<?> updateEquipment(@RequestBody  EquipmentDTO equipmentDTO, @PathVariable int equipmentCode) {
+        System.out.println("equipmentDTO = " + equipmentDTO);
         try {
             equipmentService.updateEquipment(equipmentCode,equipmentDTO);
 
