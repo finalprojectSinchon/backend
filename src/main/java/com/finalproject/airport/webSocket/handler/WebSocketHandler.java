@@ -1,14 +1,25 @@
 package com.finalproject.airport.webSocket.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.finalproject.airport.webSocket.dto.ChatMessageDTO;
+import com.finalproject.airport.member.repository.UserRepository;
+import com.finalproject.airport.webSocket.chat.dto.ChatMessageDTO;
+import com.finalproject.airport.webSocket.chat.service.ChatService;
+import com.google.cloud.Timestamp;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.PingMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +32,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final Map<String, WebSocketSession> userSessions = new ConcurrentHashMap<>();
     // ConcurrentHashMap  멀티 쓰레드 환경에 좋음
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ChatService chatService;
+    private final UserRepository userRepository;
+
+    public WebSocketHandler(ChatService chatService, UserRepository userRepository){
+        this.chatService = chatService;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -43,20 +61,41 @@ public class WebSocketHandler extends TextWebSocketHandler {
         session.close();
     }
 
-
+    @Scheduled(fixedRate = 30000) // 30초마다 실행
+    public void sendPingMessages() {
+        for (WebSocketSession session : userSessions.values()) {
+            try {
+                if (session.isOpen()) {
+                    PingMessage pingMessage = new PingMessage(ByteBuffer.wrap("Ping".getBytes()));
+                    session.sendMessage(pingMessage);
+                }
+            } catch (IOException e) {
+                System.err.println("Error sending ping message: " + e.getMessage());
+                userSessions.remove(session.getId());
+            }
+        }
+    }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("전송한 메시지 : " + message.getPayload());
-        ChatMessageDTO messageDTO = objectMapper.readValue(message.getPayload(), ChatMessageDTO.class); // JSON 파싱
-        String to = messageDTO.getTo(); // 누구에게 보낼꺼니
+        System.out.println("Received message: " + message.getPayload());
+        ChatMessageDTO messageDTO = objectMapper.readValue(message.getPayload(), ChatMessageDTO.class);
 
-        // 수신자에게 메시지 전송
+        // 현재 시간을 LocalDateTime으로 설정
+        messageDTO.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        // 수신자에게 메시지 전송 (JSON 포맷으로 전송)
+        String to = messageDTO.getTo();
         WebSocketSession sessionTo = userSessions.get(to);
         if (sessionTo != null) {
-            sessionTo.sendMessage(new TextMessage(messageDTO.getMessage()));
+            String jsonMessage = objectMapper.writeValueAsString(messageDTO);
+            sessionTo.sendMessage(new TextMessage(jsonMessage));
         }
+
+        // 메시지 저장
+        chatService.saveMessage(messageDTO);
     }
+
 
 
     @Override
