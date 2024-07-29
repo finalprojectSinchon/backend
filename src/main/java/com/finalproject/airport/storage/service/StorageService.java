@@ -73,7 +73,8 @@ public class StorageService {
                     null,
                     null,
                     null,
-                    storageEntity.getStorageCode()
+                    storageEntity.getStorageCode(),
+                    null
             );
             System.out.println("approvalDTO = " + approvalDTO);
             approvalService.saveStorageApproval(approvalDTO);

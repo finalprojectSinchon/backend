@@ -30,14 +30,16 @@ public class ApprovalDTO {
     private Integer checkinCounterCode;
     private Integer baggageClaimCode;
     private Integer storageCode;
+    private Integer facilitiesCode;
 
-    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode) {
+    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode) {
         this.approvalType = approvalType;
         this.approvalStatus = approvalStatus;
         this.gateCode = gatecode;
         this.checkinCounterCode = checkincountercode;
         this.baggageClaimCode = baggageclaimcode;
         this.storageCode = storageCode;
+        this.facilitiesCode = facilitiesCode;
     }
 
 }

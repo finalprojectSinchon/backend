@@ -49,20 +49,20 @@ public class ApprovalEntity {
     @Column(name = "STORAGE_CODE")
     private Integer storage;
 
-    @ManyToOne
-    @JoinColumn(name = "FACILITY_CODE")
-    private FacilitiesEntity facilitiesEntity;
+    @Column(name = "FACILITY_CODE")
+    private Integer facilities;
 
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gate ,Integer checkinCounter,Integer baggageClaim, Integer storage) {
+    public ApprovalEntity(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gate ,Integer checkinCounter,Integer baggageClaim, Integer storage, Integer facilities) {
         this.approvalType = approvalType;
         this.approvalStatus = approvalStatus;
         this.gate = gate;
         this.checkinCounter = checkinCounter;
         this.baggageClaim = baggageClaim;
         this.storage = storage;
+        this.facilities = facilities;
     }
 
     public void setApprovalStatus(ApprovalStatusEntity approvalStatus) {
