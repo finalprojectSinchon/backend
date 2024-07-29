@@ -10,6 +10,8 @@ import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
+import com.finalproject.airport.storage.entity.StorageEntity;
+import com.finalproject.airport.storage.repository.StorageRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,14 +28,16 @@ public class ApprovalService {
     private final GateRepository gateRepository;
     private final CheckinCounterRepository checkinCounterRepository;
     private final BaggageClaimRepository baggageClaimRepository;
+    private final StorageRepository storageRepository;
 
     @Autowired
-    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository, CheckinCounterRepository checkinCounterRepository, BaggageClaimRepository baggageClaimRepository) {
+    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository, CheckinCounterRepository checkinCounterRepository, BaggageClaimRepository baggageClaimRepository, StorageRepository storageRepository) {
         this.approvalRepository = repository;
         this.modelMapper = modelMapper;
         this.gateRepository = gateRepository;
         this.checkinCounterRepository = checkinCounterRepository;
         this.baggageClaimRepository = baggageClaimRepository;
+        this.storageRepository = storageRepository;
     }
 
     public List<ApprovalEntity> findAll() {
@@ -48,7 +52,8 @@ public class ApprovalService {
         ApprovalEntity approvalEntity = new ApprovalEntity(
                 approvalDTO.getApprovalType(),
                 approvalDTO.getApprovalStatus(),
-                approvalDTO.getGatecode(),
+                approvalDTO.getGateCode(),
+                null,
                 null,
                 null
         );
@@ -66,8 +71,10 @@ public class ApprovalService {
                 approvalDTO.getApprovalType(),
                 approvalDTO.getApprovalStatus(),
                 null,
-                approvalDTO.getCheckincountercode(),
-                null);
+                approvalDTO.getCheckinCounterCode(),
+                null,
+                null
+        );
 
         System.out.println("approvalEntity: " + approvalEntity);
         approvalRepository.save(approvalEntity);
@@ -80,9 +87,24 @@ public class ApprovalService {
                 approvalDTO.getApprovalStatus(),
                 null,
                 null,
-                approvalDTO.getBaggageclaimcode());
+                null,
+                approvalDTO.getBaggageClaimCode());
 
         System.out.println("approvalEntity: " + approvalEntity);
+        approvalRepository.save(approvalEntity);
+    }
+
+    @Transactional
+    public void saveStorageApproval(ApprovalDTO approvalDTO){
+        ApprovalEntity approvalEntity = new ApprovalEntity(
+                approvalDTO.getApprovalType(),
+                approvalDTO.getApprovalStatus(),
+                null,
+                null,
+                null,
+                approvalDTO.getStorageCode());
+
+        System.out.println("approvalEntity = " + approvalEntity);
         approvalRepository.save(approvalEntity);
     }
 
@@ -169,6 +191,27 @@ public class ApprovalService {
             }
         } else {
             throw new RuntimeException("Baggage claim not found: " + baggageClaimCode);
+        }
+    }
+
+    @Transactional
+    public void approveStorage(Integer approvalCode){
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+
+        Integer storageCode = approvalEntity.getStorage();
+        if(storageCode == null){
+            throw new IllegalArgumentException("Storage code must not be null");
+        }
+
+        Optional<StorageEntity> storageEntityOptional = storageRepository.findById(storageCode);
+        if(storageEntityOptional.isPresent()){
+            StorageEntity storageEntity = storageEntityOptional.get();
+            if("N".equals(storageEntity.getIsActive())){
+                storageEntity.setIsActive("Y");
+                storageRepository.save(storageEntity);
+            }
+        }else {
+            throw new RuntimeException("Storage not found:" + storageCode);
         }
     }
 

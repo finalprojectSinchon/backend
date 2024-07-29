@@ -64,6 +64,7 @@ public class CheckinCounterService {
                     ApprovalStatusEntity.N,
                     null,
                     checkinCounter.getCheckinCounterCode(),
+                    null,
                     null
             );
 

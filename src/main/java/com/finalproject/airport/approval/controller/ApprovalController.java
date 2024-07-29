@@ -23,7 +23,7 @@ public class ApprovalController {
     private final ApprovalService approvalService;
 
     @Autowired
-    public ApprovalController(ApprovalService approvalService){
+    public ApprovalController(ApprovalService approvalService) {
         this.approvalService = approvalService;
     }
 
@@ -41,6 +41,7 @@ public class ApprovalController {
                 .headers(headers)
                 .body(new ResponseDTO(HttpStatus.OK, "승인 전체 조회 성공", approvalMap));
     }
+
     @PutMapping("/approve/{approvalCode}")
     public ResponseEntity<ResponseDTO> approve(@PathVariable Integer approvalCode) {
         if (approvalCode == null) {
@@ -50,6 +51,9 @@ public class ApprovalController {
 
         boolean gateApproved = false;
         boolean checkInCounterApproved = false;
+        boolean baggageClaimApproved = false;
+        boolean storageApproved = false;
+        String errorMessage = null;
 
         try {
             // 게이트 코드 승인처리
@@ -57,7 +61,7 @@ public class ApprovalController {
             gateApproved = true;
         } catch (RuntimeException e) {
             e.printStackTrace();
-            // 게이트 승인 처리 실패
+            errorMessage = e.getMessage();
         }
 
         try {
@@ -66,32 +70,43 @@ public class ApprovalController {
             checkInCounterApproved = true;
         } catch (RuntimeException e) {
             e.printStackTrace();
-            // 체크인 카운터 승인 처리 실패
+            errorMessage = e.getMessage();
         }
 
         try {
             // 수하물 수취대 승인처리
             approvalService.approveBaggageClaim(approvalCode);
-            if (gateApproved && checkInCounterApproved) {
-                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "게이트, 체크인 카운터 및 수하물 수취대 승인 처리 성공", null));
-            } else if (gateApproved) {
-                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "게이트 및 수하물 수취대 승인 처리 성공", null));
-            } else if (checkInCounterApproved) {
-                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "체크인 카운터 및 수하물 수취대 승인 처리 성공", null));
-            } else {
-                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "수하물 수취대 승인 처리 성공", null));
-            }
+            baggageClaimApproved = true;
         } catch (RuntimeException e) {
             e.printStackTrace();
-            if (gateApproved || checkInCounterApproved) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "게이트 또는 체크인 카운터 승인 처리 성공, 수하물 수취대 승인 처리 실패", e.getMessage()));
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "모든 승인 처리 실패", e.getMessage()));
-            }
+            errorMessage = e.getMessage();
         }
+
+        try {
+            // 창고 승인처리
+            approvalService.approveStorage(approvalCode);
+            storageApproved = true;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            errorMessage = e.getMessage();
+        }
+
+        boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved;
+        HttpStatus status = anyApproved ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+        String message = anyApproved ? "승인 처리된 시설물은 다음과 같다 :  " : "승인 처리 실패";
+        
+
+        // 승인 처리 성공한 시설물 대한 메시지 추가
+        if (gateApproved) message += " (Gate)";
+        if (checkInCounterApproved) message += " (Check-in Counter)";
+        if (baggageClaimApproved) message += " (Baggage Claim)";
+        if (storageApproved) message += " (Storage)";
+
+        return ResponseEntity.status(status)
+                .body(new ResponseDTO(status, message, errorMessage));
     }
+}
+
 
 
 
@@ -140,4 +155,4 @@ public class ApprovalController {
 //    }
 
 
-}
+

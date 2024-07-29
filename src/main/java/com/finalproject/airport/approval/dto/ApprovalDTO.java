@@ -26,16 +26,18 @@ public class ApprovalDTO {
     private StoreDTO storeDTO;
     private StorageDTO storageDTO;
     private FacilitiesDTO facilitiesDTO;
-    private Integer gatecode;
-    private Integer checkincountercode;
-    private Integer baggageclaimcode;
+    private Integer gateCode;
+    private Integer checkinCounterCode;
+    private Integer baggageClaimCode;
+    private Integer storageCode;
 
-    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode) {
+    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode) {
         this.approvalType = approvalType;
         this.approvalStatus = approvalStatus;
-        this.gatecode = gatecode;
-        this.checkincountercode = checkincountercode;
-        this.baggageclaimcode = baggageclaimcode;
+        this.gateCode = gatecode;
+        this.checkinCounterCode = checkincountercode;
+        this.baggageClaimCode = baggageclaimcode;
+        this.storageCode = storageCode;
     }
 
 }
