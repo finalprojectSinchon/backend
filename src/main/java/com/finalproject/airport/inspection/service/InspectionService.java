@@ -4,6 +4,7 @@ import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.inspection.dto.InspectionDTO;
 import com.finalproject.airport.inspection.entity.InspectionEntity;
 import com.finalproject.airport.inspection.respository.InspectionRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ public class InspectionService {
     //점검 전체 조회
     public List<InspectionDTO> getInspectionList() {
 
-//        List<InspectionEntity> inspectionList = inspectionRepository.findAll();
         List<InspectionDTO> inspectionDTOList = new ArrayList<>();
         List<InspectionEntity> inspectionList1 = inspectionRepository.findByIsActive("Y");
         inspectionList1.forEach(inspectionEntity -> {inspectionDTOList.add(modelMapper.map(inspectionEntity, InspectionDTO.class));});
@@ -51,9 +51,12 @@ public class InspectionService {
 
     // 점검 수정
     public void updateInspection(int inspectionCode, InspectionDTO inspectionDTO) {
-        inspectionDTO.setInspectionCode(inspectionCode);
-        InspectionEntity inspectionEntity = inspectionRepository.findById(Integer.valueOf(inspectionCode)).orElse(null);
-        inspectionEntity =modelMapper.map(inspectionDTO, InspectionEntity.class);
+
+        InspectionEntity inspectionEntity = inspectionRepository.findByinspectionCode(inspectionCode);
+
+
+        System.out.println("inspectionEntity = " + inspectionEntity);
+        inspectionEntity = modelMapper.map(inspectionDTO, InspectionEntity.class);
         inspectionRepository.save(inspectionEntity);
 
     }
@@ -66,5 +69,21 @@ public class InspectionService {
 
         inspectionRepository.save(inspectionEntity);
 
+    }
+
+    @Transactional
+    public String insertInspection(InspectionDTO inspectionDTO) {
+
+        int result = 0;
+        try {
+            InspectionEntity insertInspection =modelMapper.map(inspectionDTO, InspectionEntity.class);
+            inspectionRepository.save(insertInspection);
+
+            result = 1;
+
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return(result > 0)? "정비 등록 성공": "정비 등록 실패";
     }
 }

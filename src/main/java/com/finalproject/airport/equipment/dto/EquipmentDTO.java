@@ -32,6 +32,9 @@ public class EquipmentDTO {
     // 상태
     private String equipmentStatus;
 
+    private String isActive;
+
+
 
 
 

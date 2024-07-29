@@ -12,21 +12,19 @@ import java.util.Date;
 
 public class InspectionDTO {
 
-    private int inspectionCode;
+    private Integer inspectionCode;
 
     private String manager;
 
     private String location;
 
-    private String regularInspectionDate;
+    private Date regularInspectionDate;
 
     private String type;
 
     private String status;
 
-    private String isActive;
-
-    private int phone;
+    private Integer phone;
 
     private String text;
 
