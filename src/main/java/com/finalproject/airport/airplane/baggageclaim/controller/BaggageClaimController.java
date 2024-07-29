@@ -88,4 +88,5 @@ public class BaggageClaimController {
         service.softDelete(baggageClaimCode);
         return ResponseEntity.ok().build();
     }
+
 }

@@ -1,10 +1,8 @@
 package com.finalproject.airport.approval.controller;
 
-import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.common.ResponseDTO;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,8 +41,6 @@ public class ApprovalController {
                 .headers(headers)
                 .body(new ResponseDTO(HttpStatus.OK, "승인 전체 조회 성공", approvalMap));
     }
-
-    // 승인 isActive 를 N을 Y로 바꿔주기
     @PutMapping("/approve/{approvalCode}")
     public ResponseEntity<ResponseDTO> approve(@PathVariable Integer approvalCode) {
         if (approvalCode == null) {
@@ -52,15 +48,53 @@ public class ApprovalController {
                     .body(new ResponseDTO(HttpStatus.BAD_REQUEST, "Approval code must not be null", null));
         }
 
+        boolean gateApproved = false;
+        boolean checkInCounterApproved = false;
+
         try {
-            approvalService.approve(approvalCode);
-            return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "승인 처리 성공", null));
+            // 게이트 코드 승인처리
+            approvalService.approveGate(approvalCode);
+            gateApproved = true;
         } catch (RuntimeException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "승인 처리 실패", e.getMessage()));
+            // 게이트 승인 처리 실패
+        }
+
+        try {
+            // 체크인 카운트 승인처리
+            approvalService.approveCheckInCounter(approvalCode);
+            checkInCounterApproved = true;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            // 체크인 카운터 승인 처리 실패
+        }
+
+        try {
+            // 수하물 수취대 승인처리
+            approvalService.approveBaggageClaim(approvalCode);
+            if (gateApproved && checkInCounterApproved) {
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "게이트, 체크인 카운터 및 수하물 수취대 승인 처리 성공", null));
+            } else if (gateApproved) {
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "게이트 및 수하물 수취대 승인 처리 성공", null));
+            } else if (checkInCounterApproved) {
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "체크인 카운터 및 수하물 수취대 승인 처리 성공", null));
+            } else {
+                return ResponseEntity.ok(new ResponseDTO(HttpStatus.OK, "수하물 수취대 승인 처리 성공", null));
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            if (gateApproved || checkInCounterApproved) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "게이트 또는 체크인 카운터 승인 처리 성공, 수하물 수취대 승인 처리 실패", e.getMessage()));
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR, "모든 승인 처리 실패", e.getMessage()));
+            }
         }
     }
+
+
+
 
 //    // 승인 isActive 를 N을 Y로 바꿔주기 11
 //    @PutMapping("/approve/{approvalCode}")

@@ -1,5 +1,9 @@
 package com.finalproject.airport.approval.service;
 
+import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
+import com.finalproject.airport.airplane.baggageclaim.repository.BaggageClaimRepository;
+import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
+import com.finalproject.airport.airplane.checkincounter.repository.CheckinCounterRepository;
 import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import com.finalproject.airport.approval.dto.ApprovalDTO;
@@ -20,12 +24,16 @@ public class ApprovalService {
     private final ApprovalRepository approvalRepository;
     private final ModelMapper modelMapper;
     private final GateRepository gateRepository;
+    private final CheckinCounterRepository checkinCounterRepository;
+    private final BaggageClaimRepository baggageClaimRepository;
 
     @Autowired
-    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository) {
+    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository, CheckinCounterRepository checkinCounterRepository, BaggageClaimRepository baggageClaimRepository) {
         this.approvalRepository = repository;
         this.modelMapper = modelMapper;
         this.gateRepository = gateRepository;
+        this.checkinCounterRepository = checkinCounterRepository;
+        this.baggageClaimRepository = baggageClaimRepository;
     }
 
     public List<ApprovalEntity> findAll() {
@@ -78,9 +86,7 @@ public class ApprovalService {
         approvalRepository.save(approvalEntity);
     }
 
-
-    @Transactional
-    public void approve(Integer approvalCode) {
+    private ApprovalEntity approveCommon(Integer approvalCode) {
         if (approvalCode == null) {
             throw new IllegalArgumentException("Approval code must not be null");
         }
@@ -94,26 +100,79 @@ public class ApprovalService {
             approvalEntity.setApprovalStatus(ApprovalStatusEntity.Y);
             approvalRepository.save(approvalEntity);
 
-            Integer gateCode = approvalEntity.getGate();
-            if (gateCode == null) {
-                throw new IllegalArgumentException("Gate code must not be null");
-            }
-
-            // 게이트 엔티티 조회 및 수정
-            Optional<Gate> gateEntityOptional = gateRepository.findById(gateCode);
-            if (gateEntityOptional.isPresent()) {
-                Gate gate = gateEntityOptional.get();
-                if ("N".equals(gate.getIsActive())) { // 현재 상태가 N인 경우에만 변경
-                    gate.setIsActive("Y"); // isActive를 N에서 Y로 변경
-                    gateRepository.save(gate);
-                }
-            } else {
-                throw new RuntimeException("Gate not found: " + gateCode);
-            }
+            return approvalEntity;
         } else {
             throw new RuntimeException("Approval not found: " + approvalCode);
         }
     }
+
+    @Transactional
+    public void approveGate(Integer approvalCode) {
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+
+        Integer gateCode = approvalEntity.getGate();
+        if (gateCode == null) {
+            throw new IllegalArgumentException("Gate code must not be null");
+        }
+
+        // 게이트 엔티티 조회 및 수정
+        Optional<Gate> gateEntityOptional = gateRepository.findById(gateCode);
+        if (gateEntityOptional.isPresent()) {
+            Gate gate = gateEntityOptional.get();
+            if ("N".equals(gate.getIsActive())) { // 현재 상태가 N인 경우에만 변경
+                gate.setIsActive("Y"); // isActive를 N에서 Y로 변경
+                gateRepository.save(gate);
+            }
+        } else {
+            throw new RuntimeException("Gate not found: " + gateCode);
+        }
+    }
+
+    @Transactional
+    public void approveCheckInCounter(Integer approvalCode) {
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+
+        Integer checkinCounterCode = approvalEntity.getCheckinCounter();
+        if (checkinCounterCode == null) {
+            throw new IllegalArgumentException("CheckinCounter code must not be null");
+        }
+
+        // 체크인 카운터 엔티티 조회 및 수정
+        Optional<CheckinCounter> checkinCounterEntityOptional = checkinCounterRepository.findById(checkinCounterCode);
+        if (checkinCounterEntityOptional.isPresent()) {
+            CheckinCounter checkinCounter = checkinCounterEntityOptional.get();
+            if ("N".equals(checkinCounter.getIsActive())) { // 현재 상태가 N인 경우에만 변경
+                checkinCounter.setIsActive("Y"); // isActive를 N에서 Y로 변경
+                checkinCounterRepository.save(checkinCounter);
+            }
+        } else {
+            throw new RuntimeException("CheckinCounter not found: " + checkinCounterCode);
+        }
+    }
+
+    @Transactional
+    public void approveBaggageClaim(Integer approvalCode) {
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+
+        Integer baggageClaimCode = approvalEntity.getBaggageClaim();
+        if (baggageClaimCode == null) {
+            throw new IllegalArgumentException("Baggage claim code must not be null");
+        }
+
+        //수하물 수취대 엔티티 조회 및 수정
+        Optional<BaggageClaim> baggageClaimEntityOptional = baggageClaimRepository.findById(baggageClaimCode);
+        if (baggageClaimEntityOptional.isPresent()) {
+            BaggageClaim baggageClaim = baggageClaimEntityOptional.get();
+            if ("N".equals(baggageClaim.getIsActive())) {
+                baggageClaim.setIsActive("Y");
+                baggageClaimRepository.save(baggageClaim);
+            }
+        } else {
+            throw new RuntimeException("Baggage claim not found: " + baggageClaimCode);
+        }
+    }
+
+
 
 
 }
