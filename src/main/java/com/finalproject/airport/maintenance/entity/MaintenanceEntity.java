@@ -35,7 +35,8 @@ public class MaintenanceEntity extends BaseTimeEntity {
 
     //상태
     @Column(name = "maintenance_status")
-    private String maintenanceStatus;
+    @Enumerated(EnumType.STRING)
+    private MaintenanceStatus maintenanceStatus;
 
     //담당자
     @Column(name = "maintenance_manager")

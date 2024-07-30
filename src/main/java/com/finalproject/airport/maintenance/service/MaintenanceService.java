@@ -1,5 +1,7 @@
 package com.finalproject.airport.maintenance.service;
 
+import com.finalproject.airport.airplane.gate.repository.GateRepository;
+import com.finalproject.airport.airplane.gate.service.GateService;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
 import com.finalproject.airport.maintenance.entity.MaintenanceEntity;
 import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
@@ -17,11 +19,15 @@ public class MaintenanceService {
 
     private final MaintenanceRepository maintenanceRepository;
     private final ModelMapper modelMapper;
+    private final GateService gateService;
+    private final GateRepository gateRepository;
 
     @Autowired
-    public MaintenanceService(MaintenanceRepository maintenanceRepository , ModelMapper modelMapper) {
+    public MaintenanceService(MaintenanceRepository maintenanceRepository , ModelMapper modelMapper, GateService gateService, GateRepository gateRepository) {
         this.maintenanceRepository = maintenanceRepository;
         this.modelMapper = modelMapper;
+        this.gateService = gateService;
+        this.gateRepository = gateRepository;
     }
 
     // 정비 전체 조회
@@ -90,4 +96,20 @@ public class MaintenanceService {
         return(result > 0)? "정비 등록 성공": "정비 등록 실패";
     }
 
+    public List<Integer> findlocation(String structure) {
+        System.out.println("structure = " + structure);
+
+        List<Integer> locationList = new ArrayList<>();
+        if(structure.equals("gate")){
+           List<Integer> locations  = gateService.findAlllocations();
+            System.out.println("locations = " + locations);
+           for(Integer location : locations){
+               locationList.add(location);
+           }
+        }
+
+        System.out.println("locationList = " + locationList);
+
+        return locationList;
+    }
 }

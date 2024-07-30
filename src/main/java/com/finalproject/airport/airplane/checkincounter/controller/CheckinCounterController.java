@@ -97,7 +97,7 @@ public class CheckinCounterController {
             @ApiParam(value = "수정할 체크인 카운터 코드", required = true)
             @PathVariable int checkinCounterCode,
             @RequestBody CheckinCounterDTO modifyCheckinCounter) {
-
+        System.out.println("modifyCheckinCounter = " + modifyCheckinCounter);
         service.modifyCheckinCounter(checkinCounterCode, modifyCheckinCounter);
         return ResponseEntity.created(URI.create("/checkin-counter/" + checkinCounterCode)).build();
     }
