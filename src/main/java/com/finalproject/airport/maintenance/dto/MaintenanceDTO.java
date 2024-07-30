@@ -1,5 +1,6 @@
 package com.finalproject.airport.maintenance.dto;
 
+import com.finalproject.airport.maintenance.entity.MaintenanceStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -35,5 +36,5 @@ public class MaintenanceDTO {
 
     private String manager;
 
-    private String status;
+    private MaintenanceStatus status;
 }

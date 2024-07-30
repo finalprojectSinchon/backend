@@ -104,8 +104,8 @@ public class CheckinCounterService {
 
 
         checkinCounter =  checkinCounter.toBuilder()
-//                .location(modifyCheckinCounter.getLocation())
-//                .type(modifyCheckinCounter.getType())
+                .location(modifyCheckinCounter.getLocation())
+                .type(modifyCheckinCounter.getType())
                 .status(modifyCheckinCounter.getStatus())
                 .registrationDate(modifyCheckinCounter.getRegistrationDate())
                 .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())

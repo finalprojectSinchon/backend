@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.util.Date;
 
-@Entity
+@Entity(name = "gate")
 @Table(name = "TBL_GATE")
 @AllArgsConstructor
 @Getter

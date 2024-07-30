@@ -93,4 +93,18 @@ public class MaintenanceController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/structure")
+    public ResponseEntity<ResponseDTO> getStructureLocation(@RequestParam String structure) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        List<Integer> locationList = maintenanceService.findlocation(structure);
+        Map<String, Object> response = new HashMap<>();
+        response.put("locationList", locationList);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK,"위치 조회", response));
+    }
 }
