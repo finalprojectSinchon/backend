@@ -1,11 +1,12 @@
 package com.finalproject.airport.webSocket.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.finalproject.airport.member.repository.UserRepository;
 import com.finalproject.airport.webSocket.chat.dto.ChatMessageDTO;
 import com.finalproject.airport.webSocket.chat.service.ChatService;
-import com.google.cloud.Timestamp;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -17,7 +18,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
 
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
@@ -55,12 +54,60 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
                     // 사용자 온라인 상태를 모든 클라이언트에게 알림
                     sendUserStatusUpdate(userCode, "online");
+
+                    // 연결된 클라이언트에게 모든 사용자의 현재 상태 전송
+                    sendAllUserStatuses(session);
                     return;
                 }
             }
         }
         System.err.println("쿼리스트링으로 유저코드 담아야함!!");
         session.close();
+    }
+
+    @Scheduled(fixedRate = 30000) // 30초마다 실행
+    public void sendPingMessages() {
+        for (WebSocketSession session : userSessions.values()) {
+            try {
+                if (session.isOpen()) {
+                    PingMessage pingMessage = new PingMessage(ByteBuffer.wrap("Ping".getBytes()));
+                    session.sendMessage(pingMessage);
+                }
+            } catch (IOException e) {
+                System.err.println("Error sending ping message: " + e.getMessage());
+                userSessions.remove(session.getId());
+            }
+        }
+    }
+
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        System.out.println("Received message: " + message.getPayload());
+        JsonNode jsonMessage = objectMapper.readTree(message.getPayload());
+
+        JsonNode typeNode = jsonMessage.get("type");
+        if (typeNode == null) {
+            return;
+        }
+
+        String messageType = typeNode.asText();
+        if ("REQUEST_ALL_STATUSES".equals(messageType)) {
+
+            sendAllUserStatuses(session);
+        } else {
+            ChatMessageDTO messageDTO = objectMapper.readValue(message.getPayload(), ChatMessageDTO.class);
+
+            messageDTO.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            String to = messageDTO.getTo();
+            WebSocketSession sessionTo = userSessions.get(to);
+            if (sessionTo != null) {
+                String jsonMessageStr = objectMapper.writeValueAsString(messageDTO);
+                sessionTo.sendMessage(new TextMessage(jsonMessageStr));
+            }
+
+            // 메시지 저장
+            chatService.saveMessage(messageDTO);
+        }
     }
 
     @Override
@@ -88,33 +135,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 .collect(Collectors.toMap(pair -> pair[0], pair -> pair[1]));
     }
 
-    private void sendUserStatusUpdate(String userCode, String status) {
-        Map<String, String> userStatusMap = new HashMap<>();
-        userStatusMap.put(userCode, status);
-
-        sendBatchUserStatusUpdate(userStatusMap);
-    }
-
-    private void sendBatchUserStatusUpdate(Map<String, String> userStatusMap) {
-        Map<String, Object> statusUpdate = new HashMap<>();
-        statusUpdate.put("type", "USER_STATUS_UPDATE");
-        statusUpdate.put("statusUpdates", userStatusMap.entrySet().stream()
-                .map(entry -> {
-                    Map<String, String> update = new HashMap<>();
-                    update.put("userCode", entry.getKey());
-                    update.put("status", entry.getValue());
-                    return update;
-                })
-                .collect(Collectors.toList())
-        );
-
-        String jsonMessage = null;
-        try {
-            jsonMessage = objectMapper.writeValueAsString(statusUpdate);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+    private void sendUserStatusUpdate(String userCode, String status) throws JsonProcessingException {
+        Map<String, String> allStatuses = new HashMap<>();
+        for (Map.Entry<String, WebSocketSession> entry : userSessions.entrySet()) {
+            allStatuses.put(entry.getKey(), "online");
         }
+        allStatuses.put(userCode, status);  // 업데이트된 사용자 상태
 
+        ObjectNode statusUpdate = objectMapper.createObjectNode();
+        statusUpdate.put("type", "USER_STATUS_UPDATE");
+        statusUpdate.set("statusUpdates", objectMapper.valueToTree(allStatuses));
+
+        String jsonMessage = objectMapper.writeValueAsString(statusUpdate);
         for (WebSocketSession session : userSessions.values()) {
             if (session.isOpen()) {
                 try {
@@ -124,5 +156,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
         }
+    }
+
+    private void sendAllUserStatuses(WebSocketSession session) throws IOException {
+        Map<String, String> allStatuses = new HashMap<>();
+        for (Map.Entry<String, WebSocketSession> entry : userSessions.entrySet()) {
+            allStatuses.put(entry.getKey(), "online");
+        }
+
+        ObjectNode response = objectMapper.createObjectNode();
+        response.put("type", "INITIAL_STATUS");
+        response.set("statuses", objectMapper.valueToTree(allStatuses));
+        System.out.println("response = " + response);
+        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
     }
 }
