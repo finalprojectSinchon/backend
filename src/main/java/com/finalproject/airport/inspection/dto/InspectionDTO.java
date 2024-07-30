@@ -28,5 +28,6 @@ public class InspectionDTO {
 
     private String text;
 
+    private String isActive;
 
 }

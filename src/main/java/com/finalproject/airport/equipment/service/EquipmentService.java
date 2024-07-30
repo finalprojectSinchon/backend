@@ -5,6 +5,7 @@ import com.finalproject.airport.equipment.entity.EquipmentEntity;
 import com.finalproject.airport.equipment.repository.EquipmentRepository;
 import com.finalproject.airport.inspection.dto.InspectionDTO;
 import com.finalproject.airport.inspection.entity.InspectionEntity;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,20 @@ public class EquipmentService {
         EquipmentEntity equipment = equipmentRepository.findById(equipmentCode).orElseThrow(IllegalArgumentException::new);
         equipment = equipment.toBuilder().isActive("N").build();
         equipmentRepository.save(equipment);
+    }
+
+    @Transactional
+    public String insertEquipment(EquipmentDTO equipmentDTO) {
+        int result =0;
+
+        try {
+            EquipmentEntity insertEquipment = modelMapper.map(equipmentDTO, EquipmentEntity.class);
+            equipmentRepository.save(insertEquipment);
+
+            result=1;
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return(result>0)?"등록 성공":"등록 실패";
     }
 }

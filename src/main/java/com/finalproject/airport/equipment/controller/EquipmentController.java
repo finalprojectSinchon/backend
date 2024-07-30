@@ -4,6 +4,7 @@ package com.finalproject.airport.equipment.controller;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.equipment.dto.EquipmentDTO;
 import com.finalproject.airport.equipment.service.EquipmentService;
+import com.finalproject.airport.inspection.dto.InspectionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,6 +77,13 @@ public class EquipmentController {
 
             return ResponseEntity.badRequest().build();
         }
+    }
+    @PostMapping("/equipmentRegist")
+
+    public ResponseEntity<?>insertEquipment(@RequestBody EquipmentDTO equipmentDTO  ) {
+        System.out.println("equipmentDTO = " + equipmentDTO);
+        equipmentService.insertEquipment(equipmentDTO);
+        return ResponseEntity.ok().build();
     }
 
 
