@@ -24,11 +24,11 @@ public class ApprovalEntity {
 
     @Column(name = "APPROVAL_TYPE")
     @Enumerated(EnumType.STRING)
-    private ApprovalTypeEntity approvalType;
+    private ApprovalTypeEntity type;
 
     @Column(name = "APPROVAL_STATUS")
     @Enumerated(EnumType.STRING)
-    private ApprovalStatusEntity approvalStatus;
+    private ApprovalStatusEntity status;
 
     @Column(name = "GATE_CODE")
     private Integer gate;
@@ -55,9 +55,9 @@ public class ApprovalEntity {
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gate ,Integer checkinCounter,Integer baggageClaim, Integer storage, Integer facilities) {
-        this.approvalType = approvalType;
-        this.approvalStatus = approvalStatus;
+    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gate ,Integer checkinCounter,Integer baggageClaim, Integer storage, Integer facilities) {
+        this.type = type;
+        this.status = status;
         this.gate = gate;
         this.checkinCounter = checkinCounter;
         this.baggageClaim = baggageClaim;
@@ -65,7 +65,7 @@ public class ApprovalEntity {
         this.facilities = facilities;
     }
 
-    public void setApprovalStatus(ApprovalStatusEntity approvalStatus) {
-        this.approvalStatus = approvalStatus;
+    public void setApprovalStatus(ApprovalStatusEntity status) {
+        this.status = status;
     }
 }

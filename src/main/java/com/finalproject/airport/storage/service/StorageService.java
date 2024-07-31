@@ -51,9 +51,10 @@ public class StorageService {
         try {
 
             StorageEntity insertStorage = StorageEntity.builder()
-                    .storageType(storageRegistDTO.getType())
-                    .storageStatus(storageRegistDTO.getStatus())
-                    .storageLocation(storageRegistDTO.getLocation())
+                    .type(storageRegistDTO.getType())
+                    .status(storageRegistDTO.getStatus())
+                    .location(
+                            storageRegistDTO.getLocation())
                     .category(storageRegistDTO.getCategory())
                     .department(storageRegistDTO.getDepartment())
                     .manager(storageRegistDTO.getManager())

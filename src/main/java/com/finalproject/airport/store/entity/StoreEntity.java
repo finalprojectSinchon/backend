@@ -37,11 +37,11 @@ public class StoreEntity extends BaseTimeEntity {
     private String storeItems;
 
     // 상태
-    private String storeStatus;
+    private String status;
 
     // 타입
     @Enumerated(EnumType.STRING)
-    private StoreType storeType;
+    private StoreType type;
 
     // 담당자
     private String storeManager;
@@ -59,14 +59,14 @@ public class StoreEntity extends BaseTimeEntity {
         }
     }
 
-    public StoreEntity(String storeName, StoreWork storeWork, String storeContact, String storeOperatingTime, String storeItems, String storeStatus, StoreType storeType, String storeManager) {
+    public StoreEntity(String storeName, StoreWork storeWork, String storeContact, String storeOperatingTime, String storeItems, String status, StoreType type, String storeManager) {
         this.storeName = storeName;
         this.storeWork = storeWork;
         this.storeContact = storeContact;
         this.storeOperatingTime = storeOperatingTime;
         this.storeItems = storeItems;
-        this.storeStatus = storeStatus;
-        this.storeType = storeType;
+        this.status = status;
+        this.type = type;
         this.storeManager = storeManager;
     }
 }

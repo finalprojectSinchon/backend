@@ -27,20 +27,20 @@ public class MaintenanceEntity extends BaseTimeEntity {
 
     //시설물 타입
     @Column(name = "maintenance_type")
-    private String maintenanceType;
+    private String type;
 
     //위치
     @Column(name = "maintenance_location")
-    private String maintenanceLocation;
+    private String location;
 
     //상태
     @Column(name = "maintenance_status")
     @Enumerated(EnumType.STRING)
-    private MaintenanceStatus maintenanceStatus;
+    private MaintenanceStatus status;
 
     //담당자
     @Column(name = "maintenance_manager")
-    private String maintenanceManager;
+    private String manager;
 
     //정비 시작일
     @Temporal(TemporalType.DATE)
