@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 @ToString
 public class ChatMessageDTO {
+    private String type;
     private String from;
     private String to;
     private String message;

@@ -91,17 +91,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
 
         String messageType = typeNode.asText();
+        System.out.println("messageType = " + messageType);
         if ("REQUEST_ALL_STATUSES".equals(messageType)) {
-
+            System.out.println("왜 여기로 넘어가니");
             sendAllUserStatuses(session);
-        } else {
+        } else if ("CHAT_MESSAGE".equals(messageType)) { // 채팅 메시지 타입 처리
             ChatMessageDTO messageDTO = objectMapper.readValue(message.getPayload(), ChatMessageDTO.class);
-
+            System.out.println("채팅으로 넘어감");
             messageDTO.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             String to = messageDTO.getTo();
             WebSocketSession sessionTo = userSessions.get(to);
             if (sessionTo != null) {
-                String jsonMessageStr = objectMapper.writeValueAsString(messageDTO);
+                // 채팅 메시지에 타입 추가
+                ((ObjectNode) jsonMessage).put("type", "CHAT_MESSAGE");
+                String jsonMessageStr = objectMapper.writeValueAsString(jsonMessage);
                 sessionTo.sendMessage(new TextMessage(jsonMessageStr));
             }
 
@@ -168,6 +171,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         response.put("type", "INITIAL_STATUS");
         response.set("statuses", objectMapper.valueToTree(allStatuses));
         System.out.println("response = " + response);
-        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
+        try {
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
+        } catch (IOException e) {
+            System.out.println("err" + e.getMessage());
+        }
+
     }
 }
