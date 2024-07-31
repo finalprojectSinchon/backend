@@ -17,16 +17,16 @@ public class FacilitiesEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int facilitiesCode; // 편의시설 시설물코드
 
-    private String facilitiesStatus;  // 시설물상태  ex) 사용 , 점검중 , 중단
+    private String status;  // 시설물상태  ex) 사용 , 점검중 , 중단
 
-    private String facilitiesLocation;  // 위치   ex) 이동수단
+    private String location;  // 위치   ex) 이동수단
 
     private String facilitiesName;   // 시설물이름   ex)이동수단 = 2층 화장실 , 편의시설 = 화장실 남,여
 
     @Enumerated(EnumType.STRING)
     private FacilitesType facilitiesType; // 시설물종류  ex)이동수단 = 엘베,에스컬, 무빙워크  , 편의시설 = 화장실
 
-    private String facilitiesManager;  // 담당자
+    private String manager;  // 담당자
 
     private String facilitiesClass; // 편의시설 구분   ex) 편의시설 , 이동수단
 
@@ -58,13 +58,13 @@ public class FacilitiesEntity extends BaseTimeEntity {
     public FacilitiesEntity() {
     }
 
-    public FacilitiesEntity(int facilitiesCode, String facilitiesStatus, String facilitiesLocation, String facilitiesName, FacilitesType facilitiesType, String facilitiesManager, String facilitiesClass, String isActive, LocalDateTime createdDate) {
+    public FacilitiesEntity(int facilitiesCode, String status, String location, String facilitiesName, FacilitesType facilitiesType, String manager, String facilitiesClass, String isActive, LocalDateTime createdDate) {
         this.facilitiesCode = facilitiesCode;
-        this.facilitiesStatus = facilitiesStatus;
-        this.facilitiesLocation = facilitiesLocation;
+        this.status = status;
+        this.location = location;
         this.facilitiesName = facilitiesName;
         this.facilitiesType = facilitiesType;
-        this.facilitiesManager = facilitiesManager;
+        this.manager = manager;
         this.facilitiesClass = facilitiesClass;
         this.isActive = isActive;
         this.createdDate = createdDate;

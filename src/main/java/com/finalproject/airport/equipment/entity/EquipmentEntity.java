@@ -30,14 +30,14 @@ public class EquipmentEntity extends BaseTimeEntity {
     private int equipmentQuantity;
 
     //장비 위치
-    private String equipmentLocation;
+    private String location;
 
     //담당자
-    private String equipmentManager;
+    private String manager;
 
     // 상태
     @Column(name ="equipmentStatus" )
-    private String equipmentStatus;
+    private String status;
 
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)

@@ -66,10 +66,11 @@ public class MaintenanceService {
 
         maintenanceEntity = maintenanceEntity.toBuilder()
                 .maintenanceStructure(maintenanceDTO.getStructure())
-                .maintenanceType(maintenanceDTO.getType())
-                .maintenanceLocation(maintenanceDTO.getLocation())
-                .maintenanceStatus(maintenanceDTO.getStatus())
-                .maintenanceManager(maintenanceDTO.getManager())
+                .type(maintenanceDTO.getType())
+                .location(maintenanceDTO.getLocation())
+                .status(maintenanceDTO.getStatus())
+                .manager(
+                        maintenanceDTO.getManager())
                 .maintenanceEquipment(maintenanceDTO.getEquipment())
                 .maintenanceNumber(maintenanceDTO.getNumber())
                 .maintenanceExpense(maintenanceDTO.getExpense())

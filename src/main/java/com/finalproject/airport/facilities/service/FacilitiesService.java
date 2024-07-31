@@ -57,11 +57,11 @@ public class FacilitiesService {
 
         FacilitiesDTO facilitiesDTO2 = new FacilitiesDTO(
                 facilitiesCode,
-                findfacilities.getFacilitiesStatus(),
-                findfacilities.getFacilitiesLocation(),
+                findfacilities.getStatus(),
+                findfacilities.getLocation(),
                 findfacilities.getFacilitiesName(),
                 findfacilities.getFacilitiesType(),
-                findfacilities.getFacilitiesManager(),
+                findfacilities.getManager(),
                 findfacilities.getFacilitiesClass(),
                 findfacilities.getIsActive(),
                 findfacilities.getCreatedDate()
@@ -78,11 +78,11 @@ public class FacilitiesService {
         try {
 
             FacilitiesEntity insertFacilities = FacilitiesEntity.builder()
-                    .facilitiesStatus(facilitiesDTO.getStatus())
-                    .facilitiesLocation(facilitiesDTO.getLocation())
+                    .status(facilitiesDTO.getStatus())
+                    .location(facilitiesDTO.getLocation())
                     .facilitiesName(facilitiesDTO.getFacilitiesName())
                     .facilitiesType(facilitiesDTO.getType())
-                    .facilitiesManager(facilitiesDTO.getManager())
+                    .manager(facilitiesDTO.getManager())
                     .facilitiesClass(facilitiesDTO.getFacilitiesClass())
                     .isActive("N")
                     .build();
@@ -121,11 +121,11 @@ public class FacilitiesService {
        FacilitiesEntity update = findUpdateFacilities.toBuilder()
 //                .facilitiesCode(facilitiesCode)
                 .facilitiesClass(facilitiesDTO.getFacilitiesClass())
-                .facilitiesLocation(facilitiesDTO.getLocation())
+                .location(facilitiesDTO.getLocation())
                 .facilitiesName(facilitiesDTO.getFacilitiesName())
-                .facilitiesManager(facilitiesDTO.getManager())
+                .manager(facilitiesDTO.getManager())
                 .facilitiesType(facilitiesDTO.getType())
-                .facilitiesStatus(facilitiesDTO.getStatus()).build();
+                .status(facilitiesDTO.getStatus()).build();
     System.out.println( findUpdateFacilities + "11111111111111111111111111 ");
 //    System.out.println( update + " ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         facilitiesRepository.save(update);

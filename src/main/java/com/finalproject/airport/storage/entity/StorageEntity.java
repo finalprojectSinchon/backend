@@ -22,14 +22,14 @@ public class StorageEntity extends BaseTimeEntity {
     private int storageCode;
 
     // 창고 위치
-    private String storageLocation;
+    private String location;
 
     // 창고 상태
-    private String storageStatus;
+    private String status;
 
     // 창고 타입
     @Enumerated(EnumType.STRING)
-    private StorageType storageType;
+    private StorageType type;
 
     // 대분류
     private String category;
