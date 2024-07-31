@@ -29,7 +29,7 @@ public class StorageService {
 
     public List<StorageDTO> selectAllStorage() {
 
-        List<StorageEntity> storage = storageRepository.findAll();
+        List<StorageEntity> storage = storageRepository.findByisActive("Y");
 
         return storage.stream()
                 .map(fact -> modelMapper.map(fact, StorageDTO.class)
