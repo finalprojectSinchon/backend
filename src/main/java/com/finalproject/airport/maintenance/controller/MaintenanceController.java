@@ -88,7 +88,7 @@ public class MaintenanceController {
     //정비 등록
     @PostMapping("/maintenance")
     public ResponseEntity<?> insertMaintenance(@RequestBody MaintenanceDTO maintenanceDTO) {
-
+        System.out.println("maintenanceDTO = " + maintenanceDTO);
         maintenanceService.insertMaintenance(maintenanceDTO);
         return ResponseEntity.ok().build();
     }

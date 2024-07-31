@@ -101,12 +101,5 @@ public class MaintenanceEntity extends BaseTimeEntity {
     @Column(name = "FACILITY_CODE")
     private Integer facilities;
 
-    public MaintenanceEntity(Integer gate,Integer checkinCounter, Integer baggageClaim, Integer store, Integer storage, Integer facilities){
-        this.gate=gate;
-        this.checkinCounter=checkinCounter;
-        this.baggageClaim=baggageClaim;
-        this.store=store;
-        this.storage=storage;
-        this.facilities=facilities;
-    }
+
 }
