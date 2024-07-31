@@ -37,4 +37,11 @@ public class MaintenanceDTO {
     private String manager;
 
     private MaintenanceStatus status;
+
+    private Integer gateCode;
+    private Integer checkinCounterCode;
+    private Integer baggageClaimCode;
+    private Integer storageCode;
+    private Integer facilitiesCode;
+    private Integer storeCode;
 }

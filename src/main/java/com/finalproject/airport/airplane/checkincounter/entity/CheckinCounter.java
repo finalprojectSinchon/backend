@@ -10,7 +10,7 @@ import lombok.ToString;
 
 import java.util.Date;
 
-@Entity
+@Entity(name = "checkincounter")
 @Table(name = "TBL_CHECKIN_COUNTER")
 @AllArgsConstructor
 @Getter

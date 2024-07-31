@@ -1,6 +1,7 @@
 package com.finalproject.airport.maintenance.entity;
 
 import com.finalproject.airport.common.BaseTimeEntity;
+import com.finalproject.airport.store.entity.StoreEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -76,5 +77,36 @@ public class MaintenanceEntity extends BaseTimeEntity {
         if (this.isActive == null) {
             this.isActive = "Y";
         }
+    }
+
+    @Column(name = "GATE_CODE")
+    private Integer gate;
+
+
+    @Column(name = "CHECKINCOUNTER_CODE")
+    private Integer checkinCounter;
+
+
+    @Column(name = "BAGGAGECLAIM_CODE")
+    private Integer baggageClaim;
+
+
+    @Column(name = "STORE_ID")
+    private Integer store;
+
+
+    @Column(name = "STORAGE_CODE")
+    private Integer storage;
+
+    @Column(name = "FACILITY_CODE")
+    private Integer facilities;
+
+    public MaintenanceEntity(Integer gate,Integer checkinCounter, Integer baggageClaim, Integer store, Integer storage, Integer facilities){
+        this.gate=gate;
+        this.checkinCounter=checkinCounter;
+        this.baggageClaim=baggageClaim;
+        this.store=store;
+        this.storage=storage;
+        this.facilities=facilities;
     }
 }

@@ -7,7 +7,7 @@ import lombok.*;
 
 import java.util.Date;
 
-@Entity
+@Entity(name = "baggageclamim")
 @Table(name = "TBL_BAGGAGECLAIM")
 @AllArgsConstructor
 @Getter
