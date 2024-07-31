@@ -44,7 +44,7 @@ public class StoreEntity extends BaseTimeEntity {
     private StoreType type;
 
     // 담당자
-    private String storeManager;
+    private String manager;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
@@ -59,7 +59,7 @@ public class StoreEntity extends BaseTimeEntity {
         }
     }
 
-    public StoreEntity(String storeName, StoreWork storeWork, String storeContact, String storeOperatingTime, String storeItems, String status, StoreType type, String storeManager) {
+    public StoreEntity(String storeName, StoreWork storeWork, String storeContact, String storeOperatingTime, String storeItems, String status, StoreType type, String manager) {
         this.storeName = storeName;
         this.storeWork = storeWork;
         this.storeContact = storeContact;
@@ -67,6 +67,6 @@ public class StoreEntity extends BaseTimeEntity {
         this.storeItems = storeItems;
         this.status = status;
         this.type = type;
-        this.storeManager = storeManager;
+        this.manager = manager;
     }
 }
