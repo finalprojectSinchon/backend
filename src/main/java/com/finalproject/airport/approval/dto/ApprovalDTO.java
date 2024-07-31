@@ -18,8 +18,8 @@ import lombok.*;
 public class ApprovalDTO {
 
     private int approvalCode;
-    private ApprovalTypeEntity approvalType;
-    private ApprovalStatusEntity approvalStatus;
+    private ApprovalTypeEntity type;
+    private ApprovalStatusEntity status;
     private GateDTO gateDTO;
     private CheckinCounterDTO checkinCounterDTO;
     private BaggageClaimDTO baggageClaimDTO;
@@ -32,9 +32,9 @@ public class ApprovalDTO {
     private Integer storageCode;
     private Integer facilitiesCode;
 
-    public ApprovalDTO(ApprovalTypeEntity approvalType, ApprovalStatusEntity approvalStatus, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode) {
-        this.approvalType = approvalType;
-        this.approvalStatus = approvalStatus;
+    public ApprovalDTO(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode) {
+        this.type = type;
+        this.status = status;
         this.gateCode = gatecode;
         this.checkinCounterCode = checkincountercode;
         this.baggageClaimCode = baggageclaimcode;

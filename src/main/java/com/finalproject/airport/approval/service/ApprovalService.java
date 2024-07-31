@@ -54,8 +54,8 @@ public class ApprovalService {
         
 
         ApprovalEntity approvalEntity = new ApprovalEntity(
-                approvalDTO.getApprovalType(),
-                approvalDTO.getApprovalStatus(),
+                approvalDTO.getType(),
+                approvalDTO.getStatus(),
                 approvalDTO.getGateCode(),
                 null,
                 null,
@@ -73,8 +73,8 @@ public class ApprovalService {
 
 
         ApprovalEntity approvalEntity = new ApprovalEntity(
-                approvalDTO.getApprovalType(),
-                approvalDTO.getApprovalStatus(),
+                approvalDTO.getType(),
+                approvalDTO.getStatus(),
                 null,
                 approvalDTO.getCheckinCounterCode(),
                 null,
@@ -89,8 +89,8 @@ public class ApprovalService {
     @Transactional
     public void saveBaggageClaimApproval(ApprovalDTO approvalDTO) {
         ApprovalEntity approvalEntity = new ApprovalEntity(
-                approvalDTO.getApprovalType(),
-                approvalDTO.getApprovalStatus(),
+                approvalDTO.getType(),
+                approvalDTO.getStatus(),
                 null,
                 null,
                 null,
@@ -106,8 +106,8 @@ public class ApprovalService {
     @Transactional
     public void saveStorageApproval(ApprovalDTO approvalDTO){
         ApprovalEntity approvalEntity = new ApprovalEntity(
-                approvalDTO.getApprovalType(),
-                approvalDTO.getApprovalStatus(),
+                approvalDTO.getType(),
+                approvalDTO.getStatus(),
                 null,
                 null,
                 null,
@@ -122,8 +122,8 @@ public class ApprovalService {
     @Transactional
     public void saveFacilities(ApprovalDTO approvalDTO){
         ApprovalEntity approvalEntity = new ApprovalEntity(
-                approvalDTO.getApprovalType(),
-                approvalDTO.getApprovalStatus(),
+                approvalDTO.getType(),
+                approvalDTO.getStatus(),
                 null,
                 null,
                 null,

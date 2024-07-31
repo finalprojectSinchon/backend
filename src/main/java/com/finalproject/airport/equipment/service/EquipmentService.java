@@ -48,7 +48,7 @@ public class EquipmentService {
     }
 
     public void addEquipment(EquipmentDTO equipmentDTO) {
-        equipmentDTO.setEquipmentStatus("Y");   // 상태
+
         System.out.println("equipmentDTO = " + equipmentDTO);
         EquipmentEntity equipmentEntity = modelMapper.map(equipmentDTO, EquipmentEntity.class);
         System.out.println("equipmentEntity = " + equipmentEntity);
