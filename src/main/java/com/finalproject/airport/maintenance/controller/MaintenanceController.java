@@ -94,12 +94,12 @@ public class MaintenanceController {
     }
 
     @GetMapping("/structure")
-    public ResponseEntity<ResponseDTO> getStructureLocation(@RequestParam String structure) {
+    public ResponseEntity<ResponseDTO> getStructureLocation(@RequestParam("structure") String structure) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<Integer> locationList = maintenanceService.findlocation(structure);
+        List<Object> locationList = maintenanceService.findlocation(structure);
         Map<String, Object> response = new HashMap<>();
         response.put("locationList", locationList);
 

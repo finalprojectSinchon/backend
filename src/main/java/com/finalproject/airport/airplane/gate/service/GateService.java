@@ -11,13 +11,11 @@ import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.service.ApprovalService;
-import io.swagger.models.auth.In;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,13 +133,13 @@ public class GateService {
 
     public List<Integer> findAlllocations() {
 
-        List<Gate> locationList = gateRepository.findAlllocations();
+        List<Integer> locationList = gateRepository.findAlllocations();
         System.out.println("locationList = " + locationList);
 
         List<Integer> locations = new ArrayList<>();
 
-        for(Gate gate : locationList){
-            locations.add(gate.getLocation());
+        for(Integer gate : locationList){
+            locations.add(gate);
         }
 
         System.out.println("locations = " + locations);
