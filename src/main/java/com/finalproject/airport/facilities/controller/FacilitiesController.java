@@ -29,6 +29,7 @@ public class FacilitiesController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "편의 시설 목록 조회 성공", facilitiesList));
     }
 
+    // 조회
  @GetMapping("/facilities/{facilitiesCode}")
     public ResponseEntity<?> findFacilities(@PathVariable int facilitiesCode) {
 
@@ -51,6 +52,8 @@ public class FacilitiesController {
 
     return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"등록에 성공했습니다." , null ));
 }
+
+// 수정
 @PutMapping("/facilities/{facilitiesCode}")
     public ResponseEntity<?> updateFacilities(@RequestBody FacilitiesDTO facilitiesDTO , @PathVariable int facilitiesCode) {
 
@@ -61,6 +64,7 @@ public class FacilitiesController {
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK , "수정 완료되었습니다" , null));
 }
 
+// 삭제
 @PutMapping("/facilities/{facilitiesCode}/delete")
     public ResponseEntity<?> deleteFacilities(@PathVariable int facilitiesCode) {
 
