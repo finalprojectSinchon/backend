@@ -1,6 +1,7 @@
 package com.finalproject.airport.airplane.baggageclaim.repository;
 
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
+import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimLocation;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,6 @@ public interface BaggageClaimRepository  extends CrudRepository<BaggageClaim, In
 
     BaggageClaim findBybaggageClaimCode(int baggageClaimCode);
 
-    @Query("SELECT baggageClaimCode FROM baggageclamim WHERE location = location")
-    Integer findbylocation(String location);
+    @Query("SELECT baggageClaimCode FROM baggageclamim WHERE location = :location")
+    Integer findbylocation(BaggageClaimLocation location);
 }
