@@ -78,11 +78,11 @@ public class FacilitiesService {
         try {
 
             FacilitiesEntity insertFacilities = FacilitiesEntity.builder()
-                    .facilitiesStatus(facilitiesDTO.getFacilitiesStatus())
-                    .facilitiesLocation(facilitiesDTO.getFacilitiesLocation())
+                    .facilitiesStatus(facilitiesDTO.getStatus())
+                    .facilitiesLocation(facilitiesDTO.getLocation())
                     .facilitiesName(facilitiesDTO.getFacilitiesName())
-                    .facilitiesType(facilitiesDTO.getFacilitiesType())
-                    .facilitiesManager(facilitiesDTO.getFacilitiesManager())
+                    .facilitiesType(facilitiesDTO.getType())
+                    .facilitiesManager(facilitiesDTO.getManager())
                     .facilitiesClass(facilitiesDTO.getFacilitiesClass())
                     .isActive("N")
                     .build();
@@ -121,11 +121,11 @@ public class FacilitiesService {
        FacilitiesEntity update = findUpdateFacilities.toBuilder()
 //                .facilitiesCode(facilitiesCode)
                 .facilitiesClass(facilitiesDTO.getFacilitiesClass())
-                .facilitiesLocation(facilitiesDTO.getFacilitiesLocation())
+                .facilitiesLocation(facilitiesDTO.getLocation())
                 .facilitiesName(facilitiesDTO.getFacilitiesName())
-                .facilitiesManager(facilitiesDTO.getFacilitiesManager())
-                .facilitiesType(facilitiesDTO.getFacilitiesType())
-                .facilitiesStatus(facilitiesDTO.getFacilitiesStatus()).build();
+                .facilitiesManager(facilitiesDTO.getManager())
+                .facilitiesType(facilitiesDTO.getType())
+                .facilitiesStatus(facilitiesDTO.getStatus()).build();
     System.out.println( findUpdateFacilities + "11111111111111111111111111 ");
 //    System.out.println( update + " ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         facilitiesRepository.save(update);

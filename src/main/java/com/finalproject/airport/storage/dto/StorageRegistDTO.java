@@ -15,13 +15,13 @@ public class StorageRegistDTO {
     private int storageCode;
 
     // 창고위치
-    private String storageLocation;
+    private String location;
 
     // 창고상태
-    private String storageStatus;
+    private String status;
 
     // 창고타입
-    private StorageType storageType;
+    private StorageType type;
 
     // 대분류
     private String category;

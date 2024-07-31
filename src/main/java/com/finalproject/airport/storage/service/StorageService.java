@@ -51,9 +51,9 @@ public class StorageService {
         try {
 
             StorageEntity insertStorage = StorageEntity.builder()
-                    .storageType(storageRegistDTO.getStorageType())
-                    .storageStatus(storageRegistDTO.getStorageStatus())
-                    .storageLocation(storageRegistDTO.getStorageLocation())
+                    .storageType(storageRegistDTO.getType())
+                    .storageStatus(storageRegistDTO.getStatus())
+                    .storageLocation(storageRegistDTO.getLocation())
                     .category(storageRegistDTO.getCategory())
                     .department(storageRegistDTO.getDepartment())
                     .manager(storageRegistDTO.getManager())
@@ -134,7 +134,7 @@ public class StorageService {
 
     public void updateStorage(int storageCode, StorageDTO storageDTO) {
         storageDTO.setStorageCode(storageCode);
-        storageDTO.setStorageStatus("Y");
+        storageDTO.setStatus("Y");
         StorageEntity storageEntity = modelMapper.map(storageDTO, StorageEntity.class);
         storageRepository.save(storageEntity);
     }

@@ -28,11 +28,11 @@ public class StoreRegistDTO {
     private String storeItems;
 
     @Schema(description = "상태", example = "운영중")
-    private String storeStatus;
+    private String status;
 
     @Schema(description = "타입", example = "점포")
-    private StoreType storeType;
+    private StoreType type;
 
     @Schema(description = "담당자", example = "홍길동")
-    private String storeManager;
+    private String manager;
 }

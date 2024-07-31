@@ -24,13 +24,13 @@ public class EquipmentDTO {
     private int equipmentQuantity;
 
     //장비 위치
-    private String equipmentLocation;
+    private String location;
 
     //담당자
-    private String equipmentManager;
+    private String manager;
 
     // 상태
-    private String equipmentStatus;
+    private String status;
 
     private String isActive;
 
