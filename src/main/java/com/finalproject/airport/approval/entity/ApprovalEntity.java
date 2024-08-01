@@ -2,11 +2,13 @@ package com.finalproject.airport.approval.entity;
 
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
+import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.store.entity.StoreEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -15,6 +17,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class ApprovalEntity {
 
     @Id
@@ -30,32 +33,34 @@ public class ApprovalEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatusEntity status;
 
-    @Column(name = "GATE_CODE")
-    private Integer gate;
+    @ManyToOne
+    @JoinColumn(name = "GATE_CODE")
+    private Gate gate;
 
+    @ManyToOne
+    @JoinColumn(name = "CHECKINCOUNTER_CODE")
+    private CheckinCounter checkinCounter;
 
-    @Column(name = "CHECKINCOUNTER_CODE")
-    private Integer checkinCounter;
-
-
-    @Column(name = "BAGGAGECLAIM_CODE")
-    private Integer baggageClaim;
+    @ManyToOne
+    @JoinColumn(name = "BAGGAGECLAIM_CODE")
+    private BaggageClaim baggageClaim;
 
     @ManyToOne
     @JoinColumn(name = "STORE_ID")
     private StoreEntity store;
 
+    @ManyToOne
+    @JoinColumn(name = "STORAGE_CODE")
+    private StorageEntity storage;
 
-    @Column(name = "STORAGE_CODE")
-    private Integer storage;
-
-    @Column(name = "FACILITY_CODE")
-    private Integer facilities;
+    @ManyToOne
+    @JoinColumn(name = "FACILITY_CODE")
+    private FacilitiesEntity facilities;
 
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gate ,Integer checkinCounter,Integer baggageClaim, Integer storage, Integer facilities) {
+    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities) {
         this.type = type;
         this.status = status;
         this.gate = gate;

@@ -11,6 +11,10 @@ public interface StorageRepository extends JpaRepository<StorageEntity, Integer>
 
     List<StorageEntity> findByisActive(String y);
 
+
+    StorageEntity findBystorageCode(Integer storageCode);
+
     @Query("SELECT location FROM storage WHERE location = :location ")
     Integer findbylocation(String location);
+
 }

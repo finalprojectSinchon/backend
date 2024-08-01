@@ -14,6 +14,9 @@ public interface FacilitiesRepository  extends JpaRepository<FacilitiesEntity, I
     @Query("SELECT location FROM facilities")
     List<String> findAlllocations();
 
+    FacilitiesEntity findByfacilitiesCode(Integer facilitiesCode);
+
+//    Integer findbylocation(String location);
 
     @Query("SELECT location FROM facilities WHERE location = :location ")
     Integer findbylocation(String location);
