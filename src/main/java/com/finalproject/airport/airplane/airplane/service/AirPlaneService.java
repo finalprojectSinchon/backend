@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 
@@ -50,12 +51,19 @@ public class AirPlaneService {
 
     public void fetchArrivalAirplane() {
 
-        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" ;
+        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=1000" ;
         System.out.println("requestUrl = " + requestUrl);
+
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
+                .build();
 
         // WebClient는 Builder 패턴 처럼 사용
         WebClient webClient = WebClient.builder()
+                .exchangeStrategies(exchangeStrategies)
                 .build();
+
+
 
         ArrivalAirplaneDTO arrivalAirplaneDTO = webClient.get()
                 .uri(requestUrl)

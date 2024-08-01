@@ -64,7 +64,8 @@ public class StoreService {
         List<StoreEntity> storeEntityList = new ArrayList<>();
         for(StoreAPIDTO storeAPIDTO : storeDTO) {
             StoreEntity storeEntity = new StoreEntity(storeAPIDTO.getEntrpskoreannm(),null,storeAPIDTO.getTel(),
-                    storeAPIDTO.getServicetime(),storeAPIDTO.getTrtmntprdlstkoreannm(),"운영중", StoreType.점포,"담당자");
+                    storeAPIDTO.getServicetime(),storeAPIDTO.getTrtmntprdlstkoreannm(),"운영중", StoreType.점포,"담당자",
+                    storeAPIDTO.getLckoreannm());
             storeEntityList.add(storeEntity);
         }
 
