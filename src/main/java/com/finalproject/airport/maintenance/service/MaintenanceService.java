@@ -83,9 +83,6 @@ public class MaintenanceService {
                 .status(maintenanceDTO.getStatus())
                 .manager(
                         maintenanceDTO.getManager())
-                .maintenanceEquipment(maintenanceDTO.getEquipment())
-                .maintenanceNumber(maintenanceDTO.getNumber())
-                .maintenanceExpense(maintenanceDTO.getExpense())
                 .maintenanceStartDate(maintenanceDTO.getMaintenanceStartDate())
                 .maintenanceEndDate(maintenanceDTO.getMaintenanceEndDate())
                 .maintenanceDetails(maintenanceDTO.getMaintenanceDetails())

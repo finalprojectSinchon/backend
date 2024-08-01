@@ -58,17 +58,7 @@ public class MaintenanceEntity extends BaseTimeEntity {
     @Column(name = "maintenance_end_date")
     private Date maintenanceEndDate;
 
-    //정비 할 때, 사용 장비
-    @Column(name = "maintenance_equipment")
-    private String maintenanceEquipment;
 
-    //정비할 때, 사용장비 갯수
-    @Column(name = "maintenance_number")
-    private Long maintenanceNumber;
-
-    //정비할 때 쓰는 장비 비용
-    @Column(name = "maintenance_expense")
-    private int maintenanceExpense;
 
     //정비 내용
     @Column(name = "maintenance_details")
@@ -108,6 +98,5 @@ public class MaintenanceEntity extends BaseTimeEntity {
     @JoinColumn(name = "FACILITY_CODE")
     private FacilitiesEntity facilities;
 
-    @Column(name = "QUANTITY")
-    private Integer quantity;
+
 }
