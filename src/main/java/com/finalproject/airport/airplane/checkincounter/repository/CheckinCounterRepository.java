@@ -17,6 +17,6 @@ public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, 
 
     List<CheckinCounter> findByisActive(String y);
 
-    @Query("SELECT checkinCounterCode FROM checkincounter WHERE location = :location")
-    Integer findbylocation(@Param("location") CheckinCounterLocation  location);
+
+    CheckinCounter findByLocation(CheckinCounterLocation  location);
 }

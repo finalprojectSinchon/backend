@@ -15,6 +15,5 @@ public interface BaggageClaimRepository  extends CrudRepository<BaggageClaim, In
 
     BaggageClaim findBybaggageClaimCode(int baggageClaimCode);
 
-    @Query("SELECT baggageClaimCode FROM baggageclamim WHERE location = :location")
-    Integer findbylocation(BaggageClaimLocation location);
+    BaggageClaim findByLocation(BaggageClaimLocation location);
 }

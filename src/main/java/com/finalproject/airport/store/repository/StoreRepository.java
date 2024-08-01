@@ -10,6 +10,6 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Integer> {
 
     List<StoreEntity> findByIsActive(String y);
 
-//    @Query("SELECT location FROM store WHERE location = :location")
-//    Integer findbylocation(String location);
+
+//    Store findByLocation(String location);
 }
