@@ -1,8 +1,10 @@
 package com.finalproject.airport.airplane.checkincounter.repository;
 
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
+import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterLocation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +17,6 @@ public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, 
 
     List<CheckinCounter> findByisActive(String y);
 
-    @Query("SELECT checkinCounterCode FROM checkincounter WHERE location = location")
-    Integer findbylocation(String location);
+    @Query("SELECT checkinCounterCode FROM checkincounter WHERE location = :location")
+    Integer findbylocation(@Param("location") CheckinCounterLocation  location);
 }

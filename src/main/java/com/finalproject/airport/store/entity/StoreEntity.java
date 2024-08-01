@@ -7,7 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 
-@Entity
+@Entity(name = "store")
 @Table(name = "tbl_store")
 @NoArgsConstructor
 @AllArgsConstructor
