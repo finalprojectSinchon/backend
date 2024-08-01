@@ -44,4 +44,7 @@ public class StoreDTO {
 
     @Schema(description = "비고", example = "특별 행사 중")
     private String storeExtra;
+
+    @Schema(description = "위치", example = "1터미널 2층 면세점")
+    private String storeLocation;
 }
