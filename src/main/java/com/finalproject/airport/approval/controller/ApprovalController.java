@@ -34,6 +34,7 @@ public class ApprovalController {
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
         List<ApprovalEntity> approvalEntityList = approvalService.findAll();
+        System.out.println("approvalEntityList = " + approvalEntityList);
         Map<String, Object> approvalMap = new HashMap<>();
         approvalMap.put("approvalList", approvalEntityList);
 
@@ -116,6 +117,8 @@ public class ApprovalController {
         return ResponseEntity.status(status)
                 .body(new ResponseDTO(status, message, errorMessage));
     }
+
+
 }
 
 

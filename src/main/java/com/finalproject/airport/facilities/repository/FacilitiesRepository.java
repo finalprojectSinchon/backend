@@ -11,8 +11,10 @@ import java.util.List;
 public interface FacilitiesRepository  extends JpaRepository<FacilitiesEntity, Integer> {
     List<FacilitiesEntity> findAllByIsActive(String y);
 
-    @Query("SELECT facilitiesLocation FROM facilities")
+    @Query("SELECT location FROM facilities")
     List<String> findAlllocations();
 
-    Integer findbylocation(String location);
+    FacilitiesEntity findByfacilitiesCode(Integer facilitiesCode);
+
+//    Integer findbylocation(String location);
 }

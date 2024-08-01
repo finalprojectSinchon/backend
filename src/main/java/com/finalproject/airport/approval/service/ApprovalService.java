@@ -51,12 +51,12 @@ public class ApprovalService {
     @Transactional
     public void saveGateApproval(ApprovalDTO approvalDTO) {
         System.out.println("approval: " + approvalDTO);
-        
+        Gate gate = gateRepository.findBygateCode(approvalDTO.getGateCode());
 
         ApprovalEntity approvalEntity = new ApprovalEntity(
                 approvalDTO.getType(),
                 approvalDTO.getStatus(),
-                approvalDTO.getGateCode(),
+                gate,
                 null,
                 null,
                 null,
@@ -64,19 +64,20 @@ public class ApprovalService {
         );
 
         System.out.println("approvalEntity: " + approvalEntity);
-        approvalRepository.save(approvalEntity);
+       approvalRepository.save(approvalEntity);
+
     }
 
     @Transactional
     public void saveChkinCounterApproval(ApprovalDTO approvalDTO) {
         System.out.println("approval: " + approvalDTO);
-
+        CheckinCounter checkinCounter = checkinCounterRepository.findBycheckinCounterCode(approvalDTO.getCheckinCounterCode());
 
         ApprovalEntity approvalEntity = new ApprovalEntity(
                 approvalDTO.getType(),
                 approvalDTO.getStatus(),
                 null,
-                approvalDTO.getCheckinCounterCode(),
+                checkinCounter,
                 null,
                 null,
                 null
@@ -88,13 +89,15 @@ public class ApprovalService {
 
     @Transactional
     public void saveBaggageClaimApproval(ApprovalDTO approvalDTO) {
+
+        BaggageClaim baggageClaim = baggageClaimRepository.findBybaggageClaimCode(approvalDTO.getBaggageClaimCode());
         ApprovalEntity approvalEntity = new ApprovalEntity(
                 approvalDTO.getType(),
                 approvalDTO.getStatus(),
                 null,
                 null,
+                baggageClaim,
                 null,
-                approvalDTO.getBaggageClaimCode(),
                 null
 
         );
@@ -105,13 +108,15 @@ public class ApprovalService {
 
     @Transactional
     public void saveStorageApproval(ApprovalDTO approvalDTO){
+
+        StorageEntity storage = storageRepository.findBystorageCode(approvalDTO.getStorageCode());
         ApprovalEntity approvalEntity = new ApprovalEntity(
                 approvalDTO.getType(),
                 approvalDTO.getStatus(),
                 null,
                 null,
                 null,
-                approvalDTO.getStorageCode(),
+                storage,
                 null
         );
 
@@ -121,6 +126,8 @@ public class ApprovalService {
 
     @Transactional
     public void saveFacilities(ApprovalDTO approvalDTO){
+
+        FacilitiesEntity facilities = facilitiesRepository.findByfacilitiesCode( approvalDTO.getFacilitiesCode());
         ApprovalEntity approvalEntity = new ApprovalEntity(
                 approvalDTO.getType(),
                 approvalDTO.getStatus(),
@@ -128,7 +135,7 @@ public class ApprovalService {
                 null,
                 null,
                 null,
-                approvalDTO.getFacilitiesCode()
+                facilities
         );
         System.out.println("approvalEntity = " + approvalEntity);
         approvalRepository.save(approvalEntity);
@@ -158,7 +165,7 @@ public class ApprovalService {
     public void approveGate(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer gateCode = approvalEntity.getGate();
+        Integer gateCode = approvalEntity.getGate().getGateCode();
         if (gateCode == null) {
             throw new IllegalArgumentException("Gate code must not be null");
         }
@@ -180,7 +187,7 @@ public class ApprovalService {
     public void approveCheckInCounter(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer checkinCounterCode = approvalEntity.getCheckinCounter();
+        Integer checkinCounterCode = approvalEntity.getCheckinCounter().getCheckinCounterCode();
         if (checkinCounterCode == null) {
             throw new IllegalArgumentException("CheckinCounter code must not be null");
         }
@@ -202,7 +209,7 @@ public class ApprovalService {
     public void approveBaggageClaim(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer baggageClaimCode = approvalEntity.getBaggageClaim();
+        Integer baggageClaimCode = approvalEntity.getBaggageClaim().getBaggageClaimCode();
         if (baggageClaimCode == null) {
             throw new IllegalArgumentException("Baggage claim code must not be null");
         }
@@ -224,7 +231,7 @@ public class ApprovalService {
     public void approveStorage(Integer approvalCode){
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer storageCode = approvalEntity.getStorage();
+        Integer storageCode = approvalEntity.getStorage().getStorageCode();
         if(storageCode == null){
             throw new IllegalArgumentException("Storage code must not be null");
         }
@@ -245,7 +252,7 @@ public class ApprovalService {
     public void approveFacilities(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer facilitiesCode = approvalEntity.getFacilities();
+        Integer facilitiesCode = approvalEntity.getFacilities().getFacilitiesCode();
         if(facilitiesCode == null){
             throw new IllegalArgumentException("Facilities code must not be null");
         }
