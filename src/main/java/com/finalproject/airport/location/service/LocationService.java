@@ -1,6 +1,7 @@
 package com.finalproject.airport.location.service;
 
 
+import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.location.dto.LocationAPIDTO;
 import com.finalproject.airport.location.entity.LocationEntity;
 import com.finalproject.airport.location.entity.ZoneEntity;
@@ -12,6 +13,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -24,7 +27,7 @@ import io.netty.channel.ChannelOption;
 import reactor.core.publisher.Mono;
 
 
-import java.util.Arrays;
+import java.util.*;
 
 @Service
 public class LocationService {
@@ -104,5 +107,68 @@ public class LocationService {
         } else {
             System.out.println("데이터 못불러옴!");
         }
+    }
+
+    public ResponseEntity<?> getRegion() {
+        try {
+            List<ZoneEntity> regionList = zoneRepository.findAll();
+            Set<String> uniqueRegions = new HashSet<>();
+            List<Map<String, Object>> regions = new ArrayList<>();
+
+            for (ZoneEntity region : regionList) {
+                if (uniqueRegions.add(region.getRegion())) {
+                    Map<String, Object> regionMap = new HashMap<>();
+                    regionMap.put("region", region.getRegion());
+                    regions.add(regionMap);
+                }
+            }
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정상적으로 지역을 조회 하였습니다.", regions));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> getFloor(String region) {
+
+        try {
+            List<ZoneEntity> zoneList = zoneRepository.findAllByRegion(region);
+
+            Set<String> uniqueFloors = new HashSet<>();
+            List<Map<String, Object>> floors = new ArrayList<>();
+
+            for (ZoneEntity zone : zoneList) {
+                if (uniqueFloors.add(zone.getFloor())) {
+                    Map<String, Object> floorMap = new HashMap<>();
+                    floorMap.put("floor", zone.getFloor());
+                    floors.add(floorMap);
+                }
+            }
+
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "층수 불러오기에 성공하였습니다.", floors));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> getLocation(String region, String floor) {
+
+        try {
+            List<ZoneEntity> zoneList = zoneRepository.findAllByRegionAndFloor(region, floor);
+
+            Set<String> uniqueLocations = new HashSet<>();
+            List<Map<String, Object>> locations = new ArrayList<>();
+            for (ZoneEntity zone : zoneList) {
+                if (uniqueLocations.add(zone.getLocation())) {
+                    Map<String, Object> locationMap = new HashMap<>();
+                    locationMap.put("locationOne", zone.getLocation());
+                    locations.add(locationMap);
+                }
+            }
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "위치 불러오기에 성공하였습니다.", locations));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
     }
 }
