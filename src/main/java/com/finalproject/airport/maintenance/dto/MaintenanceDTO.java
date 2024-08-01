@@ -1,6 +1,14 @@
 package com.finalproject.airport.maintenance.dto;
 
+import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
+import com.finalproject.airport.airplane.checkincounter.dto.CheckinCounterDTO;
+import com.finalproject.airport.airplane.gate.dto.GateDTO;
+import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.facilities.dto.FacilitiesDTO;
 import com.finalproject.airport.maintenance.entity.MaintenanceStatus;
+import com.finalproject.airport.storage.dto.StorageDTO;
+import com.finalproject.airport.storage.entity.StorageEntity;
+import com.finalproject.airport.store.dto.StoreDTO;
 import lombok.*;
 
 import java.util.Date;
@@ -36,7 +44,14 @@ public class MaintenanceDTO {
 
     private String manager;
 
+    private Integer quantity;
     private MaintenanceStatus status;
+    private GateDTO gate;
+    private CheckinCounterDTO checkinCounter;
+    private BaggageClaimDTO baggageClaim;
+    private StorageDTO storage;
+    private FacilitiesDTO facilities;
+    private StoreDTO store;
 
     private Integer gateCode;
     private Integer checkinCounterCode;

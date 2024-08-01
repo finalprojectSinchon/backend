@@ -1,16 +1,21 @@
 package com.finalproject.airport.maintenance.service;
 
+import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimLocation;
 import com.finalproject.airport.airplane.baggageclaim.repository.BaggageClaimRepository;
+import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterLocation;
 import com.finalproject.airport.airplane.checkincounter.repository.CheckinCounterRepository;
+import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import com.finalproject.airport.airplane.gate.service.GateService;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
+import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
 import com.finalproject.airport.maintenance.entity.MaintenanceEntity;
 import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
+import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
 import com.finalproject.airport.store.repository.StoreRepository;
 import org.modelmapper.ModelMapper;
@@ -107,43 +112,48 @@ public class MaintenanceService {
         MaintenanceEntity maintenanceEntitySaved = maintenanceRepository.save(maintenanceEntity);
 
         if (maintenanceDTO.getStructure().equals("gate")) {
-            Integer getCode = gateRepository.findbylocation(maintenanceDTO.getLocation());
+            Gate gate = gateRepository.findByLocation(Integer.valueOf(maintenanceDTO.getLocation()));
 
-            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().gate(getCode).build();
+            System.out.println("gate = " + gate);
+            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().gate(gate).build();
 
+
+            System.out.println("maintenanceEntitySaved = " + maintenanceEntitySaved);
 
         } else if (maintenanceDTO.getStructure().equals("baggageClaim")) {
 
             BaggageClaimLocation location = BaggageClaimLocation.valueOf(maintenanceDTO.getLocation());
-            Integer getCode = baggageClaimRepository.findbylocation(location);
+            BaggageClaim baggageClaim = baggageClaimRepository.findByLocation(location);
 
-            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().baggageClaim(getCode).build();
+            System.out.println("baggageClaim = " + baggageClaim);
+            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().baggageClaim(baggageClaim).build();
+            System.out.println("maintenanceEntitySaved = " + maintenanceEntitySaved);
 
         } else if (maintenanceDTO.getStructure().equals("checkinCounter")) {
 
             CheckinCounterLocation location = CheckinCounterLocation.valueOf(maintenanceDTO.getLocation());
+            CheckinCounter checkinCounter = checkinCounterRepository.findByLocation(location);
 
-            Integer getCode = checkinCounterRepository.findbylocation(location);
-            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().checkinCounter(getCode).build();
+            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().checkinCounter(checkinCounter).build();
 
         }else if (maintenanceDTO.getStructure().equals("facilities")) {
-            Integer getCode = facilitiesRepository.findbylocation(maintenanceDTO.getLocation());
+            FacilitiesEntity facilities = facilitiesRepository.findByLocation(maintenanceDTO.getLocation());
 
-            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().facilities(getCode).build();
+            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().facilities(facilities).build();
 
         }
 //        else if(maintenanceDTO.getStructure().equals("store")){
-//            Integer getCode = storeRepository.findbylocation(maintenanceDTO.getLocation());
+//            Store store = storeRepository.findByLocation(maintenanceDTO.getLocation());
 //
-//            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().store(getCode).build();
+//            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().store(store).build();
 //        }
         else if(maintenanceDTO.getStructure().equals("storage")){
-            Integer getCode = storageRepository.findbylocation(maintenanceDTO.getLocation());
+            StorageEntity storage = storageRepository.findByLocation(maintenanceDTO.getLocation());
 
-            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().store(getCode).build();
+            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().storage(storage).build();
         }
 
-
+        maintenanceRepository.save(maintenanceEntitySaved);
 
         return "정비 등록 성공";
         }
