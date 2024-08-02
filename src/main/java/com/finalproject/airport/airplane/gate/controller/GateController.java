@@ -45,10 +45,12 @@ public class GateController {
     @Operation(summary = "탑승구 전체 조회", description = "모든 탑승구의 목록을 조회합니다.")
     @GetMapping("/gate")
     public ResponseEntity<ResponseDTO> getGate(){
+        System.out.println("왜 안돼는거야 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
         List<GateDTO> gateList = gateService.findAll();
+        System.out.println(gateList);
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("gateList", gateList);
 

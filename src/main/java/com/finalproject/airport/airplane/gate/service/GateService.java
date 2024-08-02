@@ -41,8 +41,14 @@ public class GateService {
 
     public List<GateDTO> findAll() {
 
-        List<Gate> gateList = gateRepository.findByisActive("Y");
+        for (int i = 6;  i <= 132;  i++ ){
+        List<Airplane> airplane =  airplaneRepository.findByGatenumber(i);
+        System.out.println(airplane);}
 
+        System.out.println("왜 안돼는거야 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ12ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        List<Gate> gateList = gateRepository.findByisActive("N");
+
+        System.out.println(gateList + "왜 안돼는거야 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         return gateList.stream()
                 .map(gate -> modelMapper.map(gate,GateDTO.class))
                 .collect(Collectors.toList());

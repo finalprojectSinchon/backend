@@ -11,9 +11,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,12 +52,21 @@ public class AirPlaneService {
 
     public void fetchArrivalAirplane() {
 
-        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" ;
+        Long a  =  System.currentTimeMillis();
+        System.out.println(a + "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" +"&numOfRows=10000" + "&searchday=20240801";
         System.out.println("requestUrl = " + requestUrl);
 
         // WebClient는 Builder 패턴 처럼 사용
-        WebClient webClient = WebClient.builder()
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
                 .build();
+
+        // WebClient는 Builder 패턴 처럼 사용
+        WebClient webClient = WebClient.builder()
+                .exchangeStrategies(exchangeStrategies)
+                .build();
+
 
         ArrivalAirplaneDTO arrivalAirplaneDTO = webClient.get()
                 .uri(requestUrl)
@@ -67,6 +78,9 @@ public class AirPlaneService {
 
         if (arrivalAirplaneDTO != null) {
             insertArrivalAirplaneItems(arrivalAirplaneDTO);
+            Long b  =  System.currentTimeMillis();
+            System.out.println(b + "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+            System.out.println((b - a) / 1000);
         } else {
             System.out.println("No data received");
         }
