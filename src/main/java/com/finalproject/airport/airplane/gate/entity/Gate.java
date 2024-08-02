@@ -4,6 +4,7 @@ import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity(name = "gate")
@@ -16,7 +17,7 @@ public class Gate {
 
     @Id
     @Column(name = "GATE_CODE")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer gateCode;
 
     @Column(name = "LOCATION")
@@ -45,6 +46,11 @@ public class Gate {
     @JoinColumn(name = "AIRPLANE_CODE")
     private Airplane airplane;
 
+    @Column(name = "SCHEDULE_DATE_TIME")
+    private Timestamp scheduleDateTime;
+
+    @Column(name = "AIRLINE")
+    private String airline;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;

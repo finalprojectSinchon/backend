@@ -69,5 +69,4 @@ public class AirplaneDTO {
         this.chkinrange = chkinrange;
         this.isActive = "Y";
     }
-
 }

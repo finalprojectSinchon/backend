@@ -22,4 +22,7 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
 
 
     Gate findByLocation(Integer location);
+
+
+    Gate findAllBygateCode(int i);
 }
