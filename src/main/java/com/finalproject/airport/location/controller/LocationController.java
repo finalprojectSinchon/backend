@@ -1,14 +1,12 @@
 package com.finalproject.airport.location.controller;
 
 import com.finalproject.airport.common.ResponseDTO;
+import com.finalproject.airport.location.dto.ZoneDTO;
 import com.finalproject.airport.location.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -48,5 +46,25 @@ public class LocationController {
 
         return response;
     }
+
+    @PostMapping("/location")
+    public ResponseEntity<?> addLocation(@RequestBody ZoneDTO zone) {
+        System.out.println("zone = " + zone);
+        ResponseEntity<?> response = locationService.addLocation(zone);
+
+
+        return response;
+    }
+
+
+    @GetMapping("/location/{type}/{code}")
+    public ResponseEntity<?> getLocation(@PathVariable(value = "type") String type,
+                                         @PathVariable(value = "code") int code) {
+
+        ResponseEntity<?> response = locationService.getTypeOfLocation(type,code);
+
+        return response;
+    }
+
 
 }

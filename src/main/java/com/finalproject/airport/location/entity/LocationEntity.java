@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @ToString
+@Builder(toBuilder = true)
 public class LocationEntity {
 
     @Id

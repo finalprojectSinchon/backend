@@ -126,10 +126,8 @@ public class FacilitiesService {
                 .manager(facilitiesDTO.getManager())
                 .facilitiesType(facilitiesDTO.getType())
                 .status(facilitiesDTO.getStatus()).build();
-    System.out.println( findUpdateFacilities + "11111111111111111111111111 ");
-//    System.out.println( update + " ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
-        facilitiesRepository.save(update);
 
+        facilitiesRepository.save(update);
     }
 
     public void deleteFacilities(int facilitiesCode) {

@@ -47,7 +47,6 @@ public class FacilitiesController {
 @PostMapping("/facilities")
     public ResponseEntity<?> insertfacilities(@RequestBody FacilitiesDTO facilitiesDTO){
 
-    System.out.println("facilitiesDTO = " + facilitiesDTO);
     facilitiesService.insertFacilities(facilitiesDTO);
 
     return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"등록에 성공했습니다." , null ));
@@ -57,8 +56,6 @@ public class FacilitiesController {
 @PutMapping("/facilities/{facilitiesCode}")
     public ResponseEntity<?> updateFacilities(@RequestBody FacilitiesDTO facilitiesDTO , @PathVariable int facilitiesCode) {
 
-    System.out.println(facilitiesCode + " 11111111111111111111111111111111111111111111111111111111111111111111111111111111111");
-    System.out.println(facilitiesDTO + " 12231231323213125446564545646564564546564564564564545456454545454564646545646465");
         facilitiesService.updateFacilities(facilitiesCode , facilitiesDTO);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK , "수정 완료되었습니다" , null));
