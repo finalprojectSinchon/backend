@@ -78,12 +78,19 @@ public class EquipmentController {
             return ResponseEntity.badRequest().build();
         }
     }
-    @PostMapping("/equipmentRegist")
 
+
+    @PostMapping("/equipmentRegist")
     public ResponseEntity<?>insertEquipment(@RequestBody EquipmentDTO equipmentDTO  ) {
-        System.out.println("equipmentDTO = " + equipmentDTO);
-        equipmentService.insertEquipment(equipmentDTO);
-        return ResponseEntity.ok().build();
+
+        try {
+            equipmentService.insertEquipment(equipmentDTO);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공!.",null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+
     }
 
 

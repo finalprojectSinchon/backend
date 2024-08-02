@@ -43,7 +43,6 @@ public class LocationController {
 
         ResponseEntity<?> response = locationService.getLocation(region,floor);
 
-
         return response;
     }
 
@@ -62,6 +61,14 @@ public class LocationController {
                                          @PathVariable(value = "code") int code) {
 
         ResponseEntity<?> response = locationService.getTypeOfLocation(type,code);
+
+        return response;
+    }
+
+    @GetMapping("/location/storage")
+    public ResponseEntity<?> getStorageLocation(){
+
+        ResponseEntity<?> response = locationService.getStorageLocation();
 
         return response;
     }

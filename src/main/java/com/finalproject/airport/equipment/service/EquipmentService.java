@@ -5,6 +5,7 @@ import com.finalproject.airport.equipment.entity.EquipmentEntity;
 import com.finalproject.airport.equipment.repository.EquipmentRepository;
 import com.finalproject.airport.inspection.dto.InspectionDTO;
 import com.finalproject.airport.inspection.entity.InspectionEntity;
+import com.finalproject.airport.location.service.LocationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,11 +21,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EquipmentService {
 
-    @Autowired
+
     private final EquipmentRepository equipmentRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+
+    private final ModelMapper modelMapper;
+
+    private final LocationService locationService;
 
     public List<EquipmentDTO> findAllEquipment() {
 
@@ -69,18 +72,18 @@ public class EquipmentService {
         equipmentRepository.save(equipment);
     }
 
-    @Transactional
-    public String insertEquipment(EquipmentDTO equipmentDTO) {
-        int result =0;
 
+    public void insertEquipment(EquipmentDTO equipmentDTO) {
         try {
             EquipmentEntity insertEquipment = modelMapper.map(equipmentDTO, EquipmentEntity.class);
-            equipmentRepository.save(insertEquipment);
+            EquipmentEntity savedEquipment = equipmentRepository.save(insertEquipment);
 
-            result=1;
-        }catch (Exception e) {
-            throw new RuntimeException(e);
+            Integer equipmentId = savedEquipment.getEquipmentCode();
+            locationService.registEquipment(equipmentId,equipmentDTO.getZoneCode());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error inserting equipment", e);
         }
-        return(result>0)?"등록 성공":"등록 실패";
     }
+
 }

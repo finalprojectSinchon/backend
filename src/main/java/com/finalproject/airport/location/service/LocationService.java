@@ -213,7 +213,30 @@ public class LocationService {
                             .zone(zoneEntity)
                             .facilitiesCode(zone.getAirportCode())
                             .build();
-                    System.out.println("locationEntity = " + locationEntity);
+                    locationRepository.save(locationEntity);
+                }
+                break;
+            case "storage" :
+                Boolean isStorage = locationRepository.existsByStorageCode(zone.getAirportCode());
+                if (isStorage) {
+                    LocationEntity locationEntity = locationRepository.findByStorageCode(zone.getAirportCode());
+                    if (locationEntity != null) {
+                        ZoneEntity zoneEntity1 = new ZoneEntity(null, zone.getRegion(), zone.getFloor(), zone.getLocation());
+                        locationEntity.toBuilder()
+                                .zone(zoneEntity1)
+                                .build();
+
+                        locationRepository.save(locationEntity);
+                    } else {
+                        return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"위치를 찾을 수 없음",null));
+                    }
+                } else {
+                    LocationEntity locationEntity = new LocationEntity();
+                    locationEntity = locationEntity.toBuilder()
+                            .storageCode(zone.getAirportCode())
+                            .zone(zoneEntity)
+                            .build();
+                    System.out.println("locationEntity123123 = " + locationEntity);
                     locationRepository.save(locationEntity);
                 }
                 break;
@@ -225,14 +248,48 @@ public class LocationService {
 
     public ResponseEntity<?> getTypeOfLocation(String type, int code) {
 
+        FindZoneDTO zone = null;
         switch (type){
             case "facilities" :
                 LocationEntity location = locationRepository.findByFacilitiesCode(code);
-                FindZoneDTO zone = modelMapper.map(location.getZone(), FindZoneDTO.class);
-                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",zone));
+                zone = modelMapper.map(location.getZone(), FindZoneDTO.class);
+                break;
+            case "storage" :
+                LocationEntity location1 = locationRepository.findByStorageCode(code);
+                zone = modelMapper.map(location1.getZone(), FindZoneDTO.class);
+                break;
         }
 
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",zone));
+    }
+
+    public ResponseEntity<?> getStorageLocation() {
+
+        List<LocationEntity> locations = locationRepository.findAllWithStorageCode();
+
+        List<Map<String,Object>> zones = new ArrayList<>();
+        for(LocationEntity location : locations) {
+            String zone = location.getZone().getRegion() + " " + location.getZone().getFloor() + " " + location.getZone().getLocation();
+            int zoneCode = location.getZone().getZoneCode();
+            Map<String, Object> locationMap = new HashMap<>();
+            locationMap.put("zoneCode", zoneCode);
+            locationMap.put("zone", zone);
+            zones.add(locationMap);
+        }
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"창고 조회 성공",zones));
+    }
+
+    public void registEquipment(Integer equipmentId, int zoneCode) {
+        ZoneEntity zone = zoneRepository.findById(zoneCode).orElseThrow();
+
+        LocationEntity locationEntity = new LocationEntity();
+        locationEntity = locationEntity.toBuilder()
+                .equipmentCode(equipmentId)
+                .zone(zone)
+                .build();
+
+        locationRepository.save(locationEntity);
     }
 }

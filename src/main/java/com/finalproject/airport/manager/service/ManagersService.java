@@ -70,6 +70,14 @@ public class ManagersService {
                     findUserList.add(userFindManagerDTO);
                 };
                 break;
+            case "equipment" :
+                List<ManagersEntity> findUserCodeForEquipment = managersRepository.findAllByEquipmentCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForEquipment) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                };
+                break;
             case "inspection" :
             case "baggageClaim" :
             case "gate" :
@@ -156,6 +164,20 @@ public class ManagersService {
                             .user(user)
                             .build();
                     managersRepository.save(managerEntity);
+                }
+                break;
+            case "equipment" :
+                List<ManagersEntity> managerList2 = managersRepository.findAllByEquipmentCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : managerList2) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .equipmentCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
                 }
                 break;
             case "inspection" :
