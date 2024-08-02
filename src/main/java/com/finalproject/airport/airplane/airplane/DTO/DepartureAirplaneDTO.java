@@ -136,7 +136,7 @@ public class DepartureAirplaneDTO {
                 @Schema(description = "공항", example = "Incheon International Airport")
                 private String airport;
 
-                @Schema(description = "체크인 범위", example = "08:00-10:00")
+                @Schema(description = "체크인 카운터 위치")
                 private String chkinrange;
 
                 @Schema(description = "게이트 번호", example = "A12")
