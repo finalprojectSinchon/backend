@@ -2,7 +2,9 @@ package com.finalproject.airport.location.service;
 
 
 import com.finalproject.airport.common.ResponseDTO;
+import com.finalproject.airport.location.dto.FindZoneDTO;
 import com.finalproject.airport.location.dto.LocationAPIDTO;
+import com.finalproject.airport.location.dto.ZoneDTO;
 import com.finalproject.airport.location.entity.LocationEntity;
 import com.finalproject.airport.location.entity.ZoneEntity;
 import com.finalproject.airport.location.repository.LocationRepository;
@@ -12,6 +14,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,19 +43,21 @@ public class LocationService {
 
     private final String apiKey;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public LocationService(LocationRepository locationRepository, ZoneRepository zoneRepository){
+    public LocationService(LocationRepository locationRepository, ZoneRepository zoneRepository, ModelMapper modelMapper){
         this.locationRepository = locationRepository;
         this.zoneRepository = zoneRepository;
         Dotenv dotenv = Dotenv.load();
         this.storeApiUrl = dotenv.get("STORE_API_URL");
         this.apiKey = dotenv.get("API_KEY2");
+        this.modelMapper = modelMapper;
     }
 
     public void newLocation() {
 
         String requestUrl = storeApiUrl + "serviceKey=" + apiKey + "&type=json" + "&numOfRows=3000";
-        System.out.println("requestUrl = " + requestUrl);
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory();
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
@@ -99,7 +104,6 @@ public class LocationService {
                 String region = parts[0];  // 제1여객터미널 등
                 String floor = parts[1];   // 1층, 2층, 3층 등
                 String location = String.join(" ", Arrays.copyOfRange(parts, 2, parts.length)); // 나머지 부분을 위치로 간주
-                System.out.println("지역 : \n" + region + "\n 층수 : \n" + floor + "\n 위치 : \n" + location);
                 ZoneEntity zone = new ZoneEntity(null, region, floor, location);
                 zoneRepository.save(zone);
             }
@@ -170,5 +174,65 @@ public class LocationService {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
 
+    }
+
+    public ResponseEntity<?> addLocation(ZoneDTO zone) {
+
+        System.out.println("zone = " + zone);
+        String zoneType = zone.getZoneType();
+        List<ZoneEntity> zoneEntities = zoneRepository.findByRegionAndFloorAndLocation(zone.getRegion(), zone.getFloor(), zone.getLocation());
+
+
+        ZoneEntity zoneEntity;
+        if (zoneEntities.size() == 1) {
+            zoneEntity = zoneEntities.get(0);
+        } else if (zoneEntities.isEmpty()) {
+            return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"위치 코드를 찾을 수 없음",null));
+        } else {
+            zoneEntity = zoneEntities.get(0);
+        }
+
+
+        switch (zoneType) {
+            case "facilities" :
+                Boolean isFacilities = locationRepository.existsByFacilitiesCode(zone.getAirportCode());
+                if (isFacilities) {
+                    LocationEntity locationEntity = locationRepository.findByFacilitiesCode(zone.getAirportCode());
+                    if (locationEntity != null) {
+                        ZoneEntity zoneEntity1 = new ZoneEntity(null, zone.getRegion(), zone.getFloor(), zone.getLocation());
+                        locationEntity = locationEntity.toBuilder()
+                                .zone(zoneEntity1)
+                                .build();
+                        locationRepository.save(locationEntity);
+                    } else {
+                        return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"위치를 찾을 수 없음",null));
+                    }
+                } else {
+                    LocationEntity locationEntity = new LocationEntity();
+                    locationEntity = locationEntity.toBuilder()
+                            .zone(zoneEntity)
+                            .facilitiesCode(zone.getAirportCode())
+                            .build();
+                    System.out.println("locationEntity = " + locationEntity);
+                    locationRepository.save(locationEntity);
+                }
+                break;
+        }
+
+
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<?> getTypeOfLocation(String type, int code) {
+
+        switch (type){
+            case "facilities" :
+                LocationEntity location = locationRepository.findByFacilitiesCode(code);
+                FindZoneDTO zone = modelMapper.map(location.getZone(), FindZoneDTO.class);
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",zone));
+        }
+
+
+        return ResponseEntity.ok().build();
     }
 }

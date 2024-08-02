@@ -16,7 +16,7 @@ public class ZoneEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer zone_code;
+    private Integer zoneCode;
 
     private String region;
 

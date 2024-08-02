@@ -10,9 +10,13 @@ import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import com.finalproject.airport.airplane.gate.service.GateService;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
+import com.finalproject.airport.equipment.entity.EquipmentEntity;
+import com.finalproject.airport.equipment.repository.EquipmentRepository;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
+import com.finalproject.airport.maintenance.dto.EquipmentQuantityDTO;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
+import com.finalproject.airport.maintenance.dto.MaintenanceEquipmentDTO;
 import com.finalproject.airport.maintenance.entity.MaintenanceEntity;
 import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
@@ -40,9 +44,10 @@ public class MaintenanceService {
     private final CheckinCounterRepository checkinCounterRepository;
     private final StorageRepository storageRepository;
     private final StoreRepository storeRepository;
+    private final EquipmentRepository equipmentRepository;
 
     @Autowired
-    public MaintenanceService(MaintenanceRepository maintenanceRepository , ModelMapper modelMapper, GateService gateService, GateRepository gateRepository, BaggageClaimRepository baggageClaimRepository, FacilitiesRepository facilitiesRepository, CheckinCounterRepository checkinCounterRepository, StorageRepository storageRepository, StoreRepository storeRepository) {
+    public MaintenanceService(MaintenanceRepository maintenanceRepository , ModelMapper modelMapper, GateService gateService, GateRepository gateRepository, BaggageClaimRepository baggageClaimRepository, FacilitiesRepository facilitiesRepository, CheckinCounterRepository checkinCounterRepository, StorageRepository storageRepository, StoreRepository storeRepository, EquipmentRepository equipmentRepository) {
         this.maintenanceRepository = maintenanceRepository;
         this.modelMapper = modelMapper;
         this.gateService = gateService;
@@ -52,6 +57,7 @@ public class MaintenanceService {
         this.checkinCounterRepository = checkinCounterRepository;
         this.storageRepository = storageRepository;
         this.storeRepository = storeRepository;
+        this.equipmentRepository = equipmentRepository;
     }
 
     // 정비 전체 조회
@@ -194,5 +200,26 @@ public class MaintenanceService {
 
 
         return locations;
+    }
+
+    @Transactional
+    public void maintenanceEquipment(MaintenanceEquipmentDTO maintenanceEquipment) {
+
+
+        List<EquipmentQuantityDTO> equipment = maintenanceEquipment.getEquipment();
+
+        for(EquipmentQuantityDTO equip : equipment){
+            EquipmentEntity equipmentEntity =  equipmentRepository.findByequipmentCode(equip.getEquipment());
+                equipmentEntity = equipmentEntity.toBuilder()
+                        .equipmentQuantity(equipmentEntity.getEquipmentQuantity() - equip.getQuantity())
+                        .build();
+
+                equipmentRepository.save(equipmentEntity);
+
+        }
+
+
+
+
     }
 }
