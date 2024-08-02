@@ -16,6 +16,7 @@ public class MaintenanceEquipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MAINTENANCEEQUIPMENT_CODE")
     private Long maintenanceEquipmentCode;
 
     @ManyToOne
@@ -29,6 +30,4 @@ public class MaintenanceEquipment {
     @Column(name = "QUANTITY")
     private Integer quantity;
 
-    @Column(name = "price")
-    private Integer price;
 }
