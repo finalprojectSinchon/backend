@@ -117,6 +117,14 @@ public class MaintenanceController {
 
         maintenanceService.maintenanceEquipment(maintenanceEquipment);
 
+    }
 
+    @GetMapping("/maintenanceEquipment")
+    public int getMaintenanceEquipment(@RequestParam("maintenanceCode") String maintenanceCode) {
+
+        System.out.println("maintenanceCode = " + maintenanceCode);
+        int result = maintenanceService.getMaintenanceEquipment(Integer.parseInt(maintenanceCode));
+
+        return result;
     }
 }

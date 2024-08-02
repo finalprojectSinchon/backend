@@ -18,6 +18,8 @@ import com.finalproject.airport.maintenance.dto.EquipmentQuantityDTO;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
 import com.finalproject.airport.maintenance.dto.MaintenanceEquipmentDTO;
 import com.finalproject.airport.maintenance.entity.MaintenanceEntity;
+import com.finalproject.airport.maintenance.entity.MaintenanceEquipment;
+import com.finalproject.airport.maintenance.repository.MaintenanceEquipmentRepository;
 import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
@@ -45,9 +47,10 @@ public class MaintenanceService {
     private final StorageRepository storageRepository;
     private final StoreRepository storeRepository;
     private final EquipmentRepository equipmentRepository;
+    private final MaintenanceEquipmentRepository maintenanceEquipmentRepository;
 
     @Autowired
-    public MaintenanceService(MaintenanceRepository maintenanceRepository , ModelMapper modelMapper, GateService gateService, GateRepository gateRepository, BaggageClaimRepository baggageClaimRepository, FacilitiesRepository facilitiesRepository, CheckinCounterRepository checkinCounterRepository, StorageRepository storageRepository, StoreRepository storeRepository, EquipmentRepository equipmentRepository) {
+    public MaintenanceService(MaintenanceRepository maintenanceRepository , ModelMapper modelMapper, GateService gateService, GateRepository gateRepository, BaggageClaimRepository baggageClaimRepository, FacilitiesRepository facilitiesRepository, CheckinCounterRepository checkinCounterRepository, StorageRepository storageRepository, StoreRepository storeRepository, EquipmentRepository equipmentRepository, MaintenanceEquipmentRepository maintenanceEquipmentRepository) {
         this.maintenanceRepository = maintenanceRepository;
         this.modelMapper = modelMapper;
         this.gateService = gateService;
@@ -58,6 +61,7 @@ public class MaintenanceService {
         this.storageRepository = storageRepository;
         this.storeRepository = storeRepository;
         this.equipmentRepository = equipmentRepository;
+        this.maintenanceEquipmentRepository = maintenanceEquipmentRepository;
     }
 
     // 정비 전체 조회
@@ -205,21 +209,61 @@ public class MaintenanceService {
     @Transactional
     public void maintenanceEquipment(MaintenanceEquipmentDTO maintenanceEquipment) {
 
-
         List<EquipmentQuantityDTO> equipment = maintenanceEquipment.getEquipment();
+        MaintenanceEntity maintenance = maintenanceRepository.findBymaintenanceCode(maintenanceEquipment.getMaintenance().getMaintenanceCode());
 
-        for(EquipmentQuantityDTO equip : equipment){
-            EquipmentEntity equipmentEntity =  equipmentRepository.findByequipmentCode(equip.getEquipment());
-                equipmentEntity = equipmentEntity.toBuilder()
-                        .equipmentQuantity(equipmentEntity.getEquipmentQuantity() - equip.getQuantity())
-                        .build();
+        for (EquipmentQuantityDTO equip : equipment) {
+            EquipmentEntity equipmentEntity = equipmentRepository.findByequipmentCode(equip.getEquipment());
 
-                equipmentRepository.save(equipmentEntity);
 
+            int newQuantity = equipmentEntity.getEquipmentQuantity() - equip.getQuantity();
+
+            equipmentEntity = equipmentEntity.toBuilder()
+                    .equipmentQuantity(newQuantity)
+                    .build();
+
+            equipmentRepository.save(equipmentEntity);
+
+
+            EquipmentEntity equipment1 = equipmentRepository.findByequipmentCode(equip.getEquipment());
+
+            MaintenanceEquipment maintenanceEquip = new MaintenanceEquipment();
+            maintenanceEquip = maintenanceEquip.toBuilder()
+                    .maintenance(maintenance)
+                    .equipment(equipment1)
+                    .quantity(equip.getQuantity()).build();
+
+
+            maintenanceEquipmentRepository.save(maintenanceEquip);
         }
 
+        List<MaintenanceEquipment> maintenanceEquipments = maintenanceEquipmentRepository.findBymaintenance(maintenance);
 
+        System.out.println("111 = " + maintenanceEquipments);
+        int price = 0;
+        for (MaintenanceEquipment maintenanceEquip : maintenanceEquipments) {
+            int total = maintenanceEquip.getQuantity() * maintenanceEquip.getEquipment().getEquipmentPrice();
 
+            price += total;
 
+            MaintenanceEntity maintenance1 = maintenanceRepository.findBymaintenanceCode(maintenanceEquip.getMaintenance().getMaintenanceCode());
+
+            maintenance1 = maintenance1.toBuilder().price(price).build();
+            maintenanceRepository.save(maintenance1);
+        }
+    }
+
+    public int getMaintenanceEquipment(int maintenanceCode) {
+
+        int result = 0;
+
+        MaintenanceEntity maintenance = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
+
+        List<MaintenanceEquipment> me =  maintenanceEquipmentRepository.findBymaintenance(maintenance);
+
+        if(me.size() > 0){
+            result = 1;
+        }
+        return result;
     }
 }
