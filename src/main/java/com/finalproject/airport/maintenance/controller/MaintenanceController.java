@@ -96,6 +96,7 @@ public class MaintenanceController {
     @GetMapping("/structure")
     public ResponseEntity<ResponseDTO> getStructureLocation(@RequestParam("structure") String structure) {
 
+        System.out.println("structure = " + structure);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 

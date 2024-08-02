@@ -20,6 +20,6 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
     @Query("SELECT location FROM gate")
     List<Integer> findAlllocations();
 
-    @Query("SELECT gateCode FROM gate WHERE location = :location")
-    Integer findbylocation(String location);
+
+    Gate findByLocation(Integer location);
 }

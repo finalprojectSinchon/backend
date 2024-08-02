@@ -39,6 +39,9 @@ public class StoreEntity extends BaseTimeEntity {
     // 상태
     private String status;
 
+    // 위치
+    private String storeLocation;
+
     // 타입
     @Enumerated(EnumType.STRING)
     private StoreType type;
@@ -59,7 +62,7 @@ public class StoreEntity extends BaseTimeEntity {
         }
     }
 
-    public StoreEntity(String storeName, StoreWork storeWork, String storeContact, String storeOperatingTime, String storeItems, String status, StoreType type, String manager) {
+    public StoreEntity(String storeName, StoreWork storeWork, String storeContact, String storeOperatingTime, String storeItems, String status, StoreType type, String manager, String storeLocation) {
         this.storeName = storeName;
         this.storeWork = storeWork;
         this.storeContact = storeContact;
@@ -68,5 +71,6 @@ public class StoreEntity extends BaseTimeEntity {
         this.status = status;
         this.type = type;
         this.manager = manager;
+        this.storeLocation = storeLocation;
     }
 }

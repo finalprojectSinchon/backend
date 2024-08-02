@@ -1,6 +1,11 @@
 package com.finalproject.airport.maintenance.entity;
 
+import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
+import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
+import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.common.BaseTimeEntity;
+import com.finalproject.airport.facilities.entity.FacilitiesEntity;
+import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.store.entity.StoreEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,17 +58,7 @@ public class MaintenanceEntity extends BaseTimeEntity {
     @Column(name = "maintenance_end_date")
     private Date maintenanceEndDate;
 
-    //정비 할 때, 사용 장비
-    @Column(name = "maintenance_equipment")
-    private String maintenanceEquipment;
 
-    //정비할 때, 사용장비 갯수
-    @Column(name = "maintenance_number")
-    private Long maintenanceNumber;
-
-    //정비할 때 쓰는 장비 비용
-    @Column(name = "maintenance_expense")
-    private int maintenanceExpense;
 
     //정비 내용
     @Column(name = "maintenance_details")
@@ -79,27 +74,29 @@ public class MaintenanceEntity extends BaseTimeEntity {
         }
     }
 
-    @Column(name = "GATE_CODE")
-    private Integer gate;
+    @ManyToOne
+    @JoinColumn(name = "GATE_CODE")
+    private Gate gate;
 
+    @ManyToOne
+    @JoinColumn(name = "CHECKINCOUNTER_CODE")
+    private CheckinCounter checkinCounter;
 
-    @Column(name = "CHECKINCOUNTER_CODE")
-    private Integer checkinCounter;
+    @ManyToOne
+    @JoinColumn(name = "BAGGAGECLAIM_CODE")
+    private BaggageClaim baggageClaim;
 
+    @ManyToOne
+    @JoinColumn(name = "STORE_ID")
+    private StoreEntity store;
 
-    @Column(name = "BAGGAGECLAIM_CODE")
-    private Integer baggageClaim;
+    @ManyToOne
+    @JoinColumn(name = "STORAGE_CODE")
+    private StorageEntity storage;
 
-
-    @Column(name = "STORE_ID")
-    private Integer store;
-
-
-    @Column(name = "STORAGE_CODE")
-    private Integer storage;
-
-    @Column(name = "FACILITY_CODE")
-    private Integer facilities;
+    @ManyToOne
+    @JoinColumn(name = "FACILITY_CODE")
+    private FacilitiesEntity facilities;
 
 
 }

@@ -116,4 +116,12 @@ public class AirplaneController {
         return ResponseEntity.ok().build();
 
     }
+
+    @GetMapping("/airplane/test")
+    public ResponseEntity<?> getAirplaneAPI() {
+
+        airPlaneService.fetchArrivalAirplane();
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"api 요청 성공",null));
+    }
 }
