@@ -191,4 +191,15 @@ public class GateService {
         System.out.println("locations = " + locations);
         return locations;
     }
+
+    public void getTest() {
+        for(int i = 6; i <= 132; i++){
+            Gate gate = new Gate();
+            gate = gate.toBuilder()
+                    .gateCode(i)
+                    .build();
+            gateRepository.save(gate);
+        }
+
+    }
 }

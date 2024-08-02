@@ -91,4 +91,10 @@ public class GateController {
         gateService.softDelete(gateCode);
         return ResponseEntity.ok().build();
     }
+
+
+    @GetMapping("/gate/test")
+    public void getTest() {
+        gateService.getTest();
+    }
 }

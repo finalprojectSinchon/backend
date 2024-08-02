@@ -10,6 +10,7 @@ import java.util.Date;
 @Entity(name = "gate")
 @Table(name = "TBL_GATE")
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @ToString
 @Builder(toBuilder = true)
@@ -73,6 +74,6 @@ public class Gate {
             this.isActive = "Y";
         }
     }
-    protected Gate(){}
+
 
 }
