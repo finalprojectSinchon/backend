@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -51,7 +52,10 @@ public class AirPlaneService {
 
     public void fetchArrivalAirplane() {
 
-        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=1000" ;
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = today.format(formatter);
+        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate; ;
         System.out.println("requestUrl = " + requestUrl);
 
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
@@ -111,7 +115,10 @@ public class AirPlaneService {
             List<ArrivalAirplaneDTO.Response.Body.Item> items = dto.getResponse().getBody().getItems();
             if (items != null && !items.isEmpty()) {
                 for (ArrivalAirplaneDTO.Response.Body.Item item : items) {
-                    System.out.println(item.getScheduleDateTime());
+
+                    if (item.getGatenumber() != null || item.getGatenumber().isEmpty()){
+                        item.setGatenumber("999");
+                    }
                     // 원본 문자열을 LocalDateTime으로 변환하기 위한 포맷터
                     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
