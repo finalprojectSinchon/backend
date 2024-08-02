@@ -12,4 +12,6 @@ public interface EquipmentRepository extends JpaRepository<EquipmentEntity, Inte
 
 
     List<EquipmentEntity> findByIsActive(String y);
+
+    EquipmentEntity findByequipmentCode(Integer equipment);
 }

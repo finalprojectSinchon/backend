@@ -3,6 +3,7 @@ package com.finalproject.airport.maintenance.controller;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.maintenance.dto.MaintenanceDTO;
+import com.finalproject.airport.maintenance.dto.MaintenanceEquipmentDTO;
 import com.finalproject.airport.maintenance.service.MaintenanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,5 +108,15 @@ public class MaintenanceController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(new ResponseDTO(HttpStatus.OK,"위치 조회", response));
+    }
+
+    @PutMapping("/maintenanceEquipment")
+    public void maintenanceEquipment(@RequestBody  MaintenanceEquipmentDTO maintenanceEquipment) {
+
+        System.out.println("maintenanceEquipment = " + maintenanceEquipment);
+
+        maintenanceService.maintenanceEquipment(maintenanceEquipment);
+
+
     }
 }
