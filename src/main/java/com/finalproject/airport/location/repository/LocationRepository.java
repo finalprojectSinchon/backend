@@ -27,4 +27,8 @@ public interface LocationRepository extends JpaRepository<LocationEntity, Intege
     Boolean existsByBaggageClaimCode(Integer airportCode);
 
     LocationEntity findByBaggageClaimCode(Integer airportCode);
+
+    LocationEntity findByCheckinCounterCode(int code);
+
+    Boolean existsByCheckinCounterCode(Integer airportCode);
 }
