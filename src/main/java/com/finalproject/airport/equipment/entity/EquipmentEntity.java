@@ -36,7 +36,7 @@ public class EquipmentEntity extends BaseTimeEntity {
     private String manager;
 
     // 상태
-    @Column(name ="equipmentStatus" )
+    @Column(name ="equipment_status" )
     private String status;
 
 

@@ -1,5 +1,6 @@
 package com.finalproject.airport.location.entity;
 
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @Getter
 @ToString
 @Builder(toBuilder = true)
-public class LocationEntity {
+public class LocationEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +35,9 @@ public class LocationEntity {
 
     @Column(nullable = true)
     private Integer inspectionCode;
+
+    @Column(nullable = true)
+    private Integer equipmentCode;
 
     @Column(nullable = true)
     private Integer baggageClaimCode;

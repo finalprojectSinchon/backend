@@ -43,13 +43,12 @@ public class LocationController {
 
         ResponseEntity<?> response = locationService.getLocation(region,floor);
 
-
         return response;
     }
 
     @PostMapping("/location")
     public ResponseEntity<?> addLocation(@RequestBody ZoneDTO zone) {
-        System.out.println("zone = " + zone);
+
         ResponseEntity<?> response = locationService.addLocation(zone);
 
 
@@ -62,6 +61,14 @@ public class LocationController {
                                          @PathVariable(value = "code") int code) {
 
         ResponseEntity<?> response = locationService.getTypeOfLocation(type,code);
+
+        return response;
+    }
+
+    @GetMapping("/location/storage")
+    public ResponseEntity<?> getStorageLocation(){
+
+        ResponseEntity<?> response = locationService.getStorageLocation();
 
         return response;
     }

@@ -46,6 +46,9 @@ public class ManagersEntity extends BaseTimeEntity {
     @Column(nullable = true)
     private Integer gateCode;
 
+    @Column(nullable = true)
+    private Integer equipmentCode;
+
     @ManyToOne
     @JoinColumn(name = "user_code")
     private UserEntity user;
