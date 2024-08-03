@@ -86,6 +86,12 @@ public class ManagersService {
                 };
                 break;
             case "checkinCounter" :
+                List<ManagersEntity> findUserCodeForCheckinCounter = managersRepository.findAllByCheckinCounterCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForCheckinCounter) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                }
             case "inspection" :
             case "gate" :
         }
@@ -200,6 +206,18 @@ public class ManagersService {
                     managersRepository.save(managersEntity);
                 }
             case "checkinCounter" :
+                List<ManagersEntity> managerForCheckinCounterList = managersRepository.findAllByCheckinCounterCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : managerForCheckinCounterList) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .checkinCounterCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
             case "inspection" :
             case "gate" :
         }
