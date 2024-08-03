@@ -48,7 +48,7 @@ public class LocationController {
 
     @PostMapping("/location")
     public ResponseEntity<?> addLocation(@RequestBody ZoneDTO zone) {
-        System.out.println("zone = " + zone);
+
         ResponseEntity<?> response = locationService.addLocation(zone);
 
 

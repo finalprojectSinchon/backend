@@ -24,4 +24,7 @@ public interface LocationRepository extends JpaRepository<LocationEntity, Intege
     @Query("SELECT l FROM LocationEntity l WHERE l.storageCode IS NOT NULL")
     List<LocationEntity> findAllWithStorageCode();
 
+    Boolean existsByBaggageClaimCode(Integer airportCode);
+
+    LocationEntity findByBaggageClaimCode(Integer airportCode);
 }

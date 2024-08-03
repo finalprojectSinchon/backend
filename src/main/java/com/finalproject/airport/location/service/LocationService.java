@@ -178,7 +178,6 @@ public class LocationService {
 
     public ResponseEntity<?> addLocation(ZoneDTO zone) {
 
-        System.out.println("zone = " + zone);
         String zoneType = zone.getZoneType();
         List<ZoneEntity> zoneEntities = zoneRepository.findByRegionAndFloorAndLocation(zone.getRegion(), zone.getFloor(), zone.getLocation());
 
@@ -222,7 +221,7 @@ public class LocationService {
                     LocationEntity locationEntity = locationRepository.findByStorageCode(zone.getAirportCode());
                     if (locationEntity != null) {
                         ZoneEntity zoneEntity1 = new ZoneEntity(null, zone.getRegion(), zone.getFloor(), zone.getLocation());
-                        locationEntity.toBuilder()
+                        locationEntity = locationEntity.toBuilder()
                                 .zone(zoneEntity1)
                                 .build();
 
@@ -236,7 +235,32 @@ public class LocationService {
                             .storageCode(zone.getAirportCode())
                             .zone(zoneEntity)
                             .build();
-                    System.out.println("locationEntity123123 = " + locationEntity);
+                    locationRepository.save(locationEntity);
+                }
+                break;
+            case "baggageClaim" :
+                Boolean isBaggageClaim = locationRepository.existsByBaggageClaimCode(zone.getAirportCode());
+                if (isBaggageClaim) {
+                    LocationEntity locationEntity = locationRepository.findByBaggageClaimCode(zone.getAirportCode());
+                    if (locationEntity != null) {
+
+                        ZoneEntity zoneEntity1 = new ZoneEntity(null, zone.getRegion(), zone.getFloor(), zone.getLocation());
+
+                        ZoneEntity savedZoneEntity = zoneRepository.save(zoneEntity1);
+
+                        locationEntity = locationEntity.toBuilder()
+                                .zone(savedZoneEntity)
+                                .build();
+
+                        locationRepository.save(locationEntity);
+                    } else {
+                        return ResponseEntity.internalServerError().body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"위치를 찾을 수 없음",null));
+                    }
+                } else {
+                    LocationEntity locationEntity = LocationEntity.builder()
+                            .baggageClaimCode(zone.getAirportCode())
+                            .zone(zoneEntity)
+                            .build();
                     locationRepository.save(locationEntity);
                 }
                 break;
@@ -251,12 +275,16 @@ public class LocationService {
         FindZoneDTO zone = null;
         switch (type){
             case "facilities" :
-                LocationEntity location = locationRepository.findByFacilitiesCode(code);
-                zone = modelMapper.map(location.getZone(), FindZoneDTO.class);
+                LocationEntity locationForFacilities = locationRepository.findByFacilitiesCode(code);
+                zone = modelMapper.map(locationForFacilities.getZone(), FindZoneDTO.class);
                 break;
             case "storage" :
-                LocationEntity location1 = locationRepository.findByStorageCode(code);
-                zone = modelMapper.map(location1.getZone(), FindZoneDTO.class);
+                LocationEntity locationForStorage = locationRepository.findByStorageCode(code);
+                zone = modelMapper.map(locationForStorage.getZone(), FindZoneDTO.class);
+                break;
+            case "baggageClaim" :
+                LocationEntity locationForBaggageClaim = locationRepository.findByBaggageClaimCode(code);
+                zone = modelMapper.map(locationForBaggageClaim.getZone(), FindZoneDTO.class);
                 break;
         }
 
