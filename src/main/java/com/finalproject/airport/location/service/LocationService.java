@@ -294,30 +294,35 @@ public class LocationService {
     }
 
     public ResponseEntity<?> getTypeOfLocation(String type, int code) {
-
         FindZoneDTO zone = null;
-        switch (type){
-            case "facilities" :
-                LocationEntity locationForFacilities = locationRepository.findByFacilitiesCode(code);
-                zone = modelMapper.map(locationForFacilities.getZone(), FindZoneDTO.class);
+        LocationEntity locationEntity = null;
+
+        switch (type) {
+            case "facilities":
+                locationEntity = locationRepository.findByFacilitiesCode(code);
                 break;
-            case "storage" :
-                LocationEntity locationForStorage = locationRepository.findByStorageCode(code);
-                zone = modelMapper.map(locationForStorage.getZone(), FindZoneDTO.class);
+            case "storage":
+                locationEntity = locationRepository.findByStorageCode(code);
                 break;
-            case "baggageClaim" :
-                LocationEntity locationForBaggageClaim = locationRepository.findByBaggageClaimCode(code);
-                zone = modelMapper.map(locationForBaggageClaim.getZone(), FindZoneDTO.class);
+            case "baggageClaim":
+                locationEntity = locationRepository.findByBaggageClaimCode(code);
                 break;
-            case "checkinCounter" :
-                LocationEntity locationForCheckinCounterCode = locationRepository.findByCheckinCounterCode(code);
-                zone = modelMapper.map(locationForCheckinCounterCode.getZone(), FindZoneDTO.class);
+            case "checkinCounter":
+                locationEntity = locationRepository.findByCheckinCounterCode(code);
                 break;
+            default:
+                return ResponseEntity.badRequest().body(new ResponseDTO(HttpStatus.BAD_REQUEST, "잘못된 타입", null));
         }
 
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공",zone));
+        if (locationEntity != null && locationEntity.getZone() != null) {
+            zone = modelMapper.map(locationEntity.getZone(), FindZoneDTO.class);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회 성공", zone));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(HttpStatus.NOT_FOUND, "위치나 구역을 찾을 수 없음", null));
+        }
     }
+
 
     public ResponseEntity<?> getStorageLocation() {
 
