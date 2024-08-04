@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,15 +68,26 @@ public class GateService {
             System.out.println("가장 가까운 비행기 시간: " + closestAirplane.getScheduleDateTime());
             System.out.println("항공사: " + closestAirplane.getAirline());
 
-            Gate gate = Gate.builder()
-                    .airplane(closestAirplane)
-                    .scheduleDateTime(closestAirplane.getScheduleDateTime())
-                    .gateCode(gateNumber)
-                    .airline(closestAirplane.getAirline())
-                    .isActive("Y") // 해당 게이트에 비행기가 있을 경우 활성화
-                    .manager("전준규")
-                    .build();
+            // 데이터베이스에서 gateNumber와 일치하는 Gate 객체 찾기
+            Optional<Gate> optionalGate = gateRepository.findByGateCode(gateNumber);
 
+            Gate gate;
+            if (optionalGate.isPresent()) {
+                gate = optionalGate.get();
+                // 기존 Gate 객체 업데이트
+                gate.updateGate(closestAirplane, closestAirplane.getScheduleDateTime(), closestAirplane.getAirline(), "Y");
+            } else {
+                // 새로운 Gate 객체 생성
+                gate = Gate.builder()
+                        .airplane(closestAirplane)
+                        .scheduleDateTime(closestAirplane.getScheduleDateTime())
+                        .gateCode(gateNumber)
+                        .airline(closestAirplane.getAirline())
+                        .isActive("Y") // 해당 게이트에 비행기가 있을 경우 활성화
+                        .build();
+            }
+
+            // Gate 객체 저장
             gateRepository.save(gate);
         });
 

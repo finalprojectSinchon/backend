@@ -76,4 +76,6 @@ public class Gate {
     }
 
 
+    public void updateGate(Airplane closestAirplane, Timestamp scheduleDateTime, String airline, String y) {
+    }
 }
