@@ -45,7 +45,6 @@ public class ManagersService {
         List<UserFindManagerDTO> findUserList = new ArrayList<>();
         // 담당 직원 DTO
         switch (airportType) {
-            case "checkinCounter" :
             case "facilities" :
                 List<ManagersEntity> findUserCodeForFacilities = managersRepository.findAllByFacilitiesCodeAndIsActive(pk,"Y");
                 for (ManagersEntity manager : findUserCodeForFacilities) {
@@ -70,8 +69,30 @@ public class ManagersService {
                     findUserList.add(userFindManagerDTO);
                 };
                 break;
-            case "inspection" :
+            case "equipment" :
+                List<ManagersEntity> findUserCodeForEquipment = managersRepository.findAllByEquipmentCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForEquipment) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                };
+                break;
             case "baggageClaim" :
+                List<ManagersEntity> findUserCodeForBaggageClaim = managersRepository.findAllByBaggageClaimCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForBaggageClaim) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                };
+                break;
+            case "checkinCounter" :
+                List<ManagersEntity> findUserCodeForCheckinCounter = managersRepository.findAllByCheckinCounterCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForCheckinCounter) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                }
+            case "inspection" :
             case "gate" :
         }
 
@@ -115,7 +136,6 @@ public class ManagersService {
         int airportCode = managerUpdateDTO.get(0).getAirportCode();
 
         switch (airportType) {
-            case "checkinCounter" :
             case "facilities" :
                 List<ManagersEntity> facilitiesManagerList = managersRepository.findAllByFacilitiesCodeAndIsActive(airportCode,"Y");
                 for(ManagersEntity manager : facilitiesManagerList) {
@@ -158,8 +178,47 @@ public class ManagersService {
                     managersRepository.save(managerEntity);
                 }
                 break;
-            case "inspection" :
+            case "equipment" :
+                List<ManagersEntity> managerList2 = managersRepository.findAllByEquipmentCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : managerList2) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .equipmentCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
+                break;
             case "baggageClaim" :
+                List<ManagersEntity> managersForBaggageClaimList = managersRepository.findAllByBaggageClaimCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : managersForBaggageClaimList) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .baggageClaimCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
+            case "checkinCounter" :
+                List<ManagersEntity> managerForCheckinCounterList = managersRepository.findAllByCheckinCounterCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : managerForCheckinCounterList) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .checkinCounterCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
+            case "inspection" :
             case "gate" :
         }
 

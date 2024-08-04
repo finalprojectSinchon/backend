@@ -32,11 +32,8 @@ public class EquipmentDTO {
     // 상태
     private String status;
 
-    private String isActive;
-
-
-
-
+    // location PK
+    private int zoneCode;
 
 
 }

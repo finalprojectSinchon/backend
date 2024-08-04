@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,26 +52,21 @@ public class AirPlaneService {
 
     public void fetchArrivalAirplane() {
 
-        Long startTime = System.currentTimeMillis();
-
-
-
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
-
-
-        String requestUrl = ArrivalApiUrl + "serviceKey=" + apiKey + "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate;
+        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate; ;
         System.out.println("requestUrl = " + requestUrl);
 
-
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // 메모리 크기 제한 해제
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
                 .build();
 
+        // WebClient는 Builder 패턴 처럼 사용
         WebClient webClient = WebClient.builder()
                 .exchangeStrategies(exchangeStrategies)
                 .build();
+
 
 
         ArrivalAirplaneDTO arrivalAirplaneDTO = webClient.get()
@@ -82,10 +76,9 @@ public class AirPlaneService {
                 .bodyToMono(ArrivalAirplaneDTO.class)
                 .block();
 
+
         if (arrivalAirplaneDTO != null) {
             insertArrivalAirplaneItems(arrivalAirplaneDTO);
-            Long endTime = System.currentTimeMillis();
-            System.out.println((endTime - startTime) / 1000);
         } else {
             System.out.println("No data received");
         }
@@ -122,9 +115,8 @@ public class AirPlaneService {
             List<ArrivalAirplaneDTO.Response.Body.Item> items = dto.getResponse().getBody().getItems();
             if (items != null && !items.isEmpty()) {
                 for (ArrivalAirplaneDTO.Response.Body.Item item : items) {
-                    System.out.println(item.getScheduleDateTime());
 
-                    if(item.getGatenumber() == null || item.getGatenumber().isEmpty()){
+                    if (item.getGatenumber() != null || item.getGatenumber().isEmpty()){
                         item.setGatenumber("999");
                     }
                     // 원본 문자열을 LocalDateTime으로 변환하기 위한 포맷터
@@ -167,7 +159,6 @@ public class AirPlaneService {
             if (items != null && !items.isEmpty()) {
                 for (DepartureAirplaneDTO.Response.Body.Item item : items) {
                     System.out.println(item.getScheduleDateTime());
-                    System.out.println(item);
                     // 원본 문자열을 LocalDateTime으로 변환하기 위한 포맷터
                     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 

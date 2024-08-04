@@ -16,4 +16,10 @@ public interface ManagersRepository extends JpaRepository<ManagersEntity, Intege
     List<ManagersEntity> findAllByFacilitiesCodeAndIsActive(int pk, String y);
 
     List<ManagersEntity> findAllByStorageCodeAndIsActive(int pk, String y);
+
+    List<ManagersEntity> findAllByEquipmentCodeAndIsActive(int airportCode, String y);
+
+    List<ManagersEntity> findAllByBaggageClaimCodeAndIsActive(int pk, String y);
+
+    List<ManagersEntity> findAllByCheckinCounterCodeAndIsActive(int pk, String y);
 }

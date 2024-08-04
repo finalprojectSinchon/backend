@@ -67,6 +67,9 @@ public class MaintenanceEntity extends BaseTimeEntity {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
+    @Column(name = "PRICE")
+    private Integer price;
+
     @PrePersist
     private void ensureIsActiveDefault() {
         if (this.isActive == null) {

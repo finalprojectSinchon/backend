@@ -13,6 +13,7 @@ java {
     }
 }
 
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -63,6 +64,11 @@ dependencies {
 
     // dns
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
+
+    implementation('com.mashape.unirest:unirest-java:1.4.9') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+
 }
 
 tasks.named('test') {

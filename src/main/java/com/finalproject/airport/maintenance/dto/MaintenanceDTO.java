@@ -34,17 +34,12 @@ public class MaintenanceDTO {
 
     private Date maintenanceEndDate;
 
-    private String equipment;
-
-    private long number;
-
-    private int expense;
+    private Integer price;
 
     private String maintenanceDetails;
 
     private String manager;
 
-    private Integer quantity;
     private MaintenanceStatus status;
     private GateDTO gate;
     private CheckinCounterDTO checkinCounter;
@@ -53,10 +48,5 @@ public class MaintenanceDTO {
     private FacilitiesDTO facilities;
     private StoreDTO store;
 
-    private Integer gateCode;
-    private Integer checkinCounterCode;
-    private Integer baggageClaimCode;
-    private Integer storageCode;
-    private Integer facilitiesCode;
-    private Integer storeCode;
+
 }

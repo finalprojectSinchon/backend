@@ -1,5 +1,6 @@
 package com.finalproject.airport.location.entity;
 
+import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class ZoneEntity {
+public class ZoneEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
