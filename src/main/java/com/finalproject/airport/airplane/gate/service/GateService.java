@@ -15,8 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,13 +41,66 @@ public class GateService {
 
 
     public List<GateDTO> findAll() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thirtyMinutesBeforeNow = now.minusMinutes(30);
 
+        // 게이트마다 가장 가까운 비행기를 저장할 맵
+        Map<Integer, Airplane> closestAirplanes = new HashMap<>();
+        Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
+
+        for (int i = 6; i <= 132; i++) {
+            List<Airplane> airplaneList = airplaneRepository.findByGatenumber(i);
+
+            for (Airplane airplane : airplaneList) {
+                LocalDateTime scheduleTime = airplane.getScheduleDateTime().toLocalDateTime();
+                if (scheduleTime.isAfter(thirtyMinutesBeforeNow)) {
+                    if (!closestTimes.containsKey(i) || scheduleTime.isBefore(closestTimes.get(i))) {
+                        closestAirplanes.put(i, airplane);
+                        closestTimes.put(i, scheduleTime);
+                    }
+                }
+            }
+        }
+
+        // 저장된 가장 가까운 비행기 정보로 Gate 엔티티를 업데이트하거나 저장
+        closestAirplanes.forEach((gateNumber, closestAirplane) -> {
+            System.out.println("게이트 번호: " + gateNumber);
+            System.out.println("가장 가까운 비행기 시간: " + closestAirplane.getScheduleDateTime());
+            System.out.println("항공사: " + closestAirplane.getAirline());
+
+            // 데이터베이스에서 gateNumber와 일치하는 Gate 객체 찾기
+            Optional<Gate> optionalGate = gateRepository.findByGateCode(gateNumber);
+
+            Gate gate;
+            if (optionalGate.isPresent()) {
+                gate = optionalGate.get();
+                // 기존 Gate 객체 업데이트
+                gate.updateGate(closestAirplane, closestAirplane.getScheduleDateTime(), closestAirplane.getAirline(), "Y");
+            } else {
+                // 새로운 Gate 객체 생성
+                gate = Gate.builder()
+                        .airplane(closestAirplane)
+                        .scheduleDateTime(closestAirplane.getScheduleDateTime())
+                        .gateCode(gateNumber)
+                        .airline(closestAirplane.getAirline())
+                        .isActive("Y") // 해당 게이트에 비행기가 있을 경우 활성화
+                        .build();
+            }
+
+            // Gate 객체 저장
+            gateRepository.save(gate);
+        });
+
+        // 활성화된 게이트들을 반환
         List<Gate> gateList = gateRepository.findByisActive("Y");
 
         return gateList.stream()
-                .map(gate -> modelMapper.map(gate,GateDTO.class))
+                .map(gate -> modelMapper.map(gate, GateDTO.class))
                 .collect(Collectors.toList());
     }
+
+
+
 
     public GateDTO findBygateCode(int gateCode) {
 
@@ -144,5 +198,16 @@ public class GateService {
 
         System.out.println("locations = " + locations);
         return locations;
+    }
+
+    public void getTest() {
+        for(int i = 6; i <= 132; i++){
+            Gate gate = new Gate();
+            gate = gate.toBuilder()
+                    .gateCode(i)
+                    .build();
+            gateRepository.save(gate);
+        }
+
     }
 }

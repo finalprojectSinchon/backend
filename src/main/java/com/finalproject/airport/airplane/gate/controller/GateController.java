@@ -49,6 +49,7 @@ public class GateController {
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
         List<GateDTO> gateList = gateService.findAll();
+        System.out.println(gateList);
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("gateList", gateList);
 
@@ -89,5 +90,11 @@ public class GateController {
     public ResponseEntity<?> remodveGate(@PathVariable int gateCode){
         gateService.softDelete(gateCode);
         return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/gate/test")
+    public void getTest() {
+        gateService.getTest();
     }
 }

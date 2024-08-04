@@ -13,4 +13,9 @@ public interface AirplaneRepository extends JpaRepository<Airplane, Integer> {
     Airplane findByairplaneCode(int airplaneCode);
 
     Airplane findByAirplaneCode(int airplane);
+
+
+    List<Airplane> findAllByGatenumber(int i);
+
+    List<Airplane> findByGatenumber(int i);
 }

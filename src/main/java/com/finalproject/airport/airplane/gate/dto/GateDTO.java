@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -52,5 +53,10 @@ public class GateDTO {
     @Schema(description = "지연 시간")
     private Integer delayTime;
 
+    @Schema(description = "항공사")
+    private String airline;
+
+    @Schema(description = "탑승구 오픈시간")
+    private Timestamp scheduleDateTime;
 
 }

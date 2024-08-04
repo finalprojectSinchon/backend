@@ -26,4 +26,5 @@ public class BeanConfiguration {
         return Dotenv.configure().ignoreIfMissing().load();
     }
 
+
 }

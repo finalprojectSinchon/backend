@@ -116,7 +116,7 @@ public class AirPlaneService {
             if (items != null && !items.isEmpty()) {
                 for (ArrivalAirplaneDTO.Response.Body.Item item : items) {
 
-                    if (item.getGatenumber() != null || item.getGatenumber().isEmpty()){
+                    if (item.getGatenumber() == " " || item.getGatenumber().isEmpty()){
                         item.setGatenumber("999");
                     }
                     // 원본 문자열을 LocalDateTime으로 변환하기 위한 포맷터

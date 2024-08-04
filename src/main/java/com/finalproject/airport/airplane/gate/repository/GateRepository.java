@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GateRepository extends JpaRepository<Gate, Integer> {
@@ -22,4 +23,9 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
 
 
     Gate findByLocation(Integer location);
+
+
+    Gate findAllBygateCode(int i);
+
+    Optional<Gate> findByGateCode(Integer gateNumber);
 }

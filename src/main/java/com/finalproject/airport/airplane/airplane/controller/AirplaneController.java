@@ -53,6 +53,26 @@ public class AirplaneController {
 
     }
 
+//    @Operation(summary = "항공 정보만 가져오기 " , description = "항공 정보만")
+//    @GetMapping("/airplanedata")
+//    public ResponseEntity<ResponseDTO> getairdata() {
+//
+//
+//    }
+
+
+
+    @Operation(summary = "비행기 api 불러오기" ,description = "비행기 api")
+    @GetMapping("/apiair")
+    public ResponseEntity<ResponseDTO> getapi() {
+
+        airPlaneService.fetchArrivalAirplane();
+
+        return ResponseEntity.ok()
+                .body(new ResponseDTO(HttpStatus.OK,"비행기 api 조회 ",null));
+
+    }
+
     // 비행기 상세 조회
     @Operation(summary = "비행기 조회" , description = "비행기 상세 정보 조회"
             ,parameters = {@Parameter(name = "airplaneCode",description = "사용자 화면에서 넘어오는 airplane 의 pk")})
