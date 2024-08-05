@@ -29,7 +29,8 @@ public class Gate {
     private GateType type;
 
     @Column(name = "STATUS")
-    private String status;
+    private String status = "사용가능";
+
 
     @Column(name = "REGISTRATION_DATE")
     private Date registrationDate;
@@ -76,6 +77,15 @@ public class Gate {
     }
 
 
-    public void updateGate(Airplane closestAirplane, Timestamp scheduleDateTime, String airline, String y) {
+    public void updateGate(Timestamp scheduleDateTime, String airline ,String status) {
+        this.scheduleDateTime = scheduleDateTime;
+        this.airline = airline;
+//        this.isActive = isActive;
+        this.status = status;
+
     }
+
+
+
 }
+
