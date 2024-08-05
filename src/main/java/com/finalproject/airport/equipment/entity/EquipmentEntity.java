@@ -32,8 +32,9 @@ public class EquipmentEntity extends BaseTimeEntity {
     //장비 위치
     private String location;
 
-    //담당자
-    private String manager;
+    //카테고리
+    @Enumerated(EnumType.STRING)
+    private EquipmentCategory category;
 
     // 상태
     @Column(name ="equipment_status" )
@@ -50,6 +51,9 @@ public class EquipmentEntity extends BaseTimeEntity {
             this.isActive = "Y";
         }
     }
+
+    @Column(name = "IMG")
+    private String img;
 
 
 
