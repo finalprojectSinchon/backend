@@ -40,8 +40,9 @@ public class InspectionController {
     // 안전 점검 등록
 
     @PostMapping("/inspection")
-    public ResponseEntity<?> addInspection(InspectionDTO inspectionDTO ) {
+    public ResponseEntity<?> addInspection(@RequestBody InspectionDTO inspectionDTO ) {
 
+        System.out.println("이거 나오냐 인스펙션 dto ? = " + inspectionDTO);
         try {
             inspectionService.addInspection(inspectionDTO);
 
@@ -82,14 +83,14 @@ public class InspectionController {
 
         }
     }
-    // 점검 등록
-    @PostMapping("/inspectionRegist")
-
-    public ResponseEntity<?>insertInspection(@RequestBody InspectionDTO inspectionDTO) {
-
-        inspectionService.insertInspection(inspectionDTO);
-        return ResponseEntity.ok().build();
-    }
+//    // 점검 등록
+//    @PostMapping("/inspectionRegist")
+//
+//    public ResponseEntity<?>insertInspection(@RequestBody InspectionDTO inspectionDTO) {
+//
+//        inspectionService.insertInspection(inspectionDTO);
+//        return ResponseEntity.ok().build();
+//    }
 
 
 }

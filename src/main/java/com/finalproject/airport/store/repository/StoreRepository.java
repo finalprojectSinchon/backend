@@ -11,5 +11,7 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Integer> {
     List<StoreEntity> findByIsActive(String y);
 
 
-//    Store findByLocation(String location);
+
+
+    StoreEntity findBystoreLocation(String location);
 }
