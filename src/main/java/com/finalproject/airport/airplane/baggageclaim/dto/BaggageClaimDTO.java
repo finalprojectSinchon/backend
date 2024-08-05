@@ -51,6 +51,4 @@ public class BaggageClaimDTO {
     private Integer delayTime;
 
 
-
-
 }

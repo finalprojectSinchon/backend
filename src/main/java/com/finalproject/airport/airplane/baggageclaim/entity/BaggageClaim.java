@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Entity(name = "baggageclamim")
 @Table(name = "TBL_BAGGAGECLAIM")
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @ToString
@@ -67,6 +68,4 @@ public class BaggageClaim extends BaseTimeEntity {
 //        }
 //    }
 
-
-    protected BaggageClaim(){}
 }
