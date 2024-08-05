@@ -44,8 +44,9 @@ public class EquipmentController {
     }
 
     @PostMapping("/equipment")
-    public ResponseEntity<?> addEquipment(EquipmentDTO equipmentDTO) {
+    public ResponseEntity<?> addEquipment(@RequestBody EquipmentDTO equipmentDTO) {
         try {
+            System.out.println("equipmentDTO = " + equipmentDTO);
             equipmentService.addEquipment(equipmentDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO(HttpStatus.CREATED,"등록에 성공하였습니다.",null));
@@ -54,7 +55,7 @@ public class EquipmentController {
         }
     }
 
-    @PutMapping("/equipment/{equipmentCode}/update")
+    @PutMapping("/equipment/{equipmentCode}")
     public ResponseEntity<?> updateEquipment(@RequestBody  EquipmentDTO equipmentDTO, @PathVariable int equipmentCode) {
         System.out.println("equipmentDTO = " + equipmentDTO);
         try {
@@ -80,18 +81,7 @@ public class EquipmentController {
     }
 
 
-    @PostMapping("/equipmentRegist")
-    public ResponseEntity<?>insertEquipment(@RequestBody EquipmentDTO equipmentDTO  ) {
 
-        try {
-            equipmentService.insertEquipment(equipmentDTO);
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"등록 성공!.",null));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-
-    }
 
 
 

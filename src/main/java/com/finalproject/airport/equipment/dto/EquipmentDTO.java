@@ -1,6 +1,7 @@
 package com.finalproject.airport.equipment.dto;
 
 
+import com.finalproject.airport.equipment.entity.EquipmentCategory;
 import lombok.*;
 
 import java.util.Date;
@@ -26,8 +27,8 @@ public class EquipmentDTO {
     //장비 위치
     private String location;
 
-    //담당자
-    private String manager;
+    //카테고리
+    private EquipmentCategory category;
 
     // 상태
     private String status;
@@ -35,5 +36,6 @@ public class EquipmentDTO {
     // location PK
     private int zoneCode;
 
+    private String img;
 
 }

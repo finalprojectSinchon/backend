@@ -59,10 +59,16 @@ public class EquipmentService {
     }
 
     public void updateEquipment(int equipmentCode, EquipmentDTO equipmentDTO) {
-        equipmentDTO.setEquipmentCode(equipmentCode);
-//        equipmentDTO.setEquipmentStatus("Y");
-        EquipmentEntity equipment = modelMapper.map(equipmentDTO, EquipmentEntity.class);
+
+        EquipmentEntity equipment = equipmentRepository.findByequipmentCode(equipmentCode);
+        equipment = equipment.toBuilder().equipmentName(equipmentDTO.getEquipmentName()).
+                equipmentPrice(equipmentDTO.getEquipmentPrice())
+                .equipmentQuantity(equipmentDTO.getEquipmentQuantity())
+                .location(equipmentDTO.getLocation())
+                .category(equipmentDTO.getCategory()).build();
+
         equipmentRepository.save(equipment);
+
     }
 
 
