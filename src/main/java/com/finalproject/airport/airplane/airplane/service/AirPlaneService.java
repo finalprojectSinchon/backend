@@ -5,6 +5,8 @@ import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.DepartureAirplaneDTO;
 import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
+import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -21,8 +23,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.security.Timestamp.*;
@@ -37,17 +42,19 @@ public class AirPlaneService {
     private final String ArrivalApiUrl;
     private final String DepartureApiUrl;
 
+    private final GateRepository gateRepository;
+
 
 
     @Autowired
-    public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper ) {
+    public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper , GateRepository gateRepository ) {
         this.airplaneRepository = airplaneRepository;
         this.modelMapper = modelMapper;
         Dotenv dotenv = Dotenv.load();
         this.apiKey = dotenv.get("API_KEY");
         this.ArrivalApiUrl = dotenv.get("ARRIVAL_API_URL");
         this.DepartureApiUrl = dotenv.get("DEPARTURE_API_URL");
-
+        this.gateRepository = gateRepository;
     }
 
 

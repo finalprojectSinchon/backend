@@ -28,4 +28,7 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
     Gate findAllBygateCode(int i);
 
     Optional<Gate> findByGateCode(Integer gateNumber);
+
+
+    List<Gate> findByGateCodeBetween(int i, int i1);
 }
