@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, Integer> {
@@ -19,4 +20,9 @@ public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, 
 
 
     CheckinCounter findByLocation(CheckinCounterLocation  location);
+
+    @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM checkincounter cc GROUP BY cc.status")
+    List<Object[]> findStatusCounts();
+
+
 }
