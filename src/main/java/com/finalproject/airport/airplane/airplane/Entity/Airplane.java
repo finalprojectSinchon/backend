@@ -50,8 +50,8 @@ public class Airplane {
     @Column(name = "TERMINALID")
     private String terminalid;  // 터미널 구분 (ex. P01: 제1 터미널 P02: 탑승동 P03: 제2 터미널 C01 : 화물터미널 남측 C02 : 화물터미널 북측 C03 : 제2 화물터미널)
 
-    @Column(name = "DELAY_TIME")
-    private Integer delayTime;
+//    @Column(name = "DELAY_TIME")
+//    private Integer delayTime;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;

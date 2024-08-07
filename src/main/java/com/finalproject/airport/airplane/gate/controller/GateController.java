@@ -47,11 +47,26 @@ public class GateController {
     public ResponseEntity<ResponseDTO> getGate(){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-
+        List<GateDTO> gatedate = gateService.feach();
         List<GateDTO> gateList = gateService.findAll();
         System.out.println(gateList);
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("gateList", gateList);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK, "탑승구 전체 조회", responseMap));
+    }
+
+    @Operation(summary = "탑승구 1구역 조회", description = "탑승구 1구역 목록을 조회합니다.")
+    @GetMapping("/gate1")
+    public ResponseEntity<ResponseDTO> getGate1(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        List<GateDTO> gateList1 = gateService.gateList1();
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("gateList", gateList1);
 
         return ResponseEntity.ok()
                 .headers(headers)

@@ -5,6 +5,8 @@ import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.DepartureAirplaneDTO;
 import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
+import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -21,8 +23,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.security.Timestamp.*;
@@ -37,17 +42,19 @@ public class AirPlaneService {
     private final String ArrivalApiUrl;
     private final String DepartureApiUrl;
 
+    private final GateRepository gateRepository;
+
 
 
     @Autowired
-    public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper ) {
+    public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper , GateRepository gateRepository ) {
         this.airplaneRepository = airplaneRepository;
         this.modelMapper = modelMapper;
         Dotenv dotenv = Dotenv.load();
         this.apiKey = dotenv.get("API_KEY");
         this.ArrivalApiUrl = dotenv.get("ARRIVAL_API_URL");
         this.DepartureApiUrl = dotenv.get("DEPARTURE_API_URL");
-
+        this.gateRepository = gateRepository;
     }
 
 
@@ -58,6 +65,7 @@ public class AirPlaneService {
         String formattedDate = today.format(formatter);
         String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate; ;
         System.out.println("requestUrl = " + requestUrl);
+
 
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
@@ -77,9 +85,8 @@ public class AirPlaneService {
                 .bodyToMono(ArrivalAirplaneDTO.class)
                 .block();
 
-
         if (arrivalAirplaneDTO != null) {
-            insertArrivalAirplaneItems(arrivalAirplaneDTO);
+            insertArrivalAirplaneItems(arrivalAirplaneDTO );
         } else {
             System.out.println("No data received");
         }
@@ -111,12 +118,10 @@ public class AirPlaneService {
     }
 
     private void insertArrivalAirplaneItems(ArrivalAirplaneDTO dto) {
-
         if (dto != null && dto.getResponse() != null && dto.getResponse().getBody() != null) {
             List<ArrivalAirplaneDTO.Response.Body.Item> items = dto.getResponse().getBody().getItems();
             if (items != null && !items.isEmpty()) {
                 for (ArrivalAirplaneDTO.Response.Body.Item item : items) {
-
                     if (item.getGatenumber() == " " || item.getGatenumber().isEmpty()){
                         item.setGatenumber("999");
                     }
@@ -128,7 +133,6 @@ public class AirPlaneService {
 
                     // 문자열을 LocalDateTime으로 파싱
                     LocalDateTime localDateTime = LocalDateTime.parse(item.getScheduleDateTime(), inputFormatter);
-
                     // LocalDateTime을 Timestamp로 변환
                     Timestamp timestamp = Timestamp.valueOf(localDateTime);
                     AirplaneDTO airplaneDTO =
@@ -140,7 +144,8 @@ public class AirPlaneService {
                                     item.getRemark(),
                                     item.getCarousel(),
                                     item.getGatenumber(),
-                                    item.getTerminalid()
+                                    item.getTerminalid(),
+                                    item.getChkinrange()
                                     );
                     Airplane airplane = modelMapper.map(airplaneDTO, Airplane.class);
                     airplaneRepository.save(airplane);

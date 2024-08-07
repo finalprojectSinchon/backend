@@ -1,11 +1,9 @@
 package com.finalproject.airport.airplane.airplane.DTO;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,7 +45,7 @@ public class AirplaneDTO {
 
     private String isActive;
 
-    public AirplaneDTO(String airline, String flightId, Timestamp scheduleDateTime, String airport, String remark, String carousel, String gatenumber, String terminalid) {
+    public AirplaneDTO(String airline, String flightId, Timestamp scheduleDateTime, String airport, String remark, String carousel, String gatenumber, String terminalid, String chkinrange) {
         this.airline = airline;
         this.flightId = flightId;
         this.scheduleDateTime = scheduleDateTime;
@@ -57,6 +55,7 @@ public class AirplaneDTO {
         this.remark = remark;
         this.carousel = carousel;
         this.isActive = "Y";
+        this.chkinrange = chkinrange;
     }
     public AirplaneDTO(String airline, String flightId, String chkinrange, Timestamp scheduleDateTime, String airport, String remark,  String gatenumber, String terminalid) {
         this.airline = airline;
