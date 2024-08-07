@@ -28,4 +28,7 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
     Gate findAllBygateCode(int i);
 
     Optional<Gate> findByGateCode(Integer gateNumber);
+
+    @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM gate cc GROUP BY cc.status")
+    List<Object[]> findGateStatusCounts();
 }

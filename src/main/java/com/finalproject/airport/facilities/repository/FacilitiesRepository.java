@@ -20,4 +20,6 @@ public interface FacilitiesRepository  extends JpaRepository<FacilitiesEntity, I
     FacilitiesEntity findByLocation(String location);
 
 
+    @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM facilities cc GROUP BY cc.status")
+    List<Object[]> findFacilitiesStatusCounts();
 }

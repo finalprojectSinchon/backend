@@ -2,6 +2,7 @@ package com.finalproject.airport.inspection.controller;
 
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.inspection.dto.InspectionDTO;
+import com.finalproject.airport.inspection.dto.StatusDTO;
 import com.finalproject.airport.inspection.service.InspectionService;
 
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -92,5 +94,10 @@ public class InspectionController {
 //        return ResponseEntity.ok().build();
 //    }
 
+    @GetMapping("/status-count")
+    public List<StatusDTO> getInspectionStatusCount() {
+        List<StatusDTO> statusList = inspectionService.statusCount();
+        return statusList;
+    }
 
 }

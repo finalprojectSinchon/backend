@@ -17,4 +17,6 @@ public interface StorageRepository extends JpaRepository<StorageEntity, Integer>
 
     StorageEntity findByLocation(String location);
 
+    @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM storage cc GROUP BY cc.status")
+    List<Object[]> findStorageStatusCounts();
 }
