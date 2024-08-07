@@ -12,6 +12,10 @@ import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
+import com.finalproject.airport.inspection.entity.InspectionEntity;
+import com.finalproject.airport.inspection.respository.InspectionRepository;
+import com.finalproject.airport.location.entity.LocationEntity;
+import com.finalproject.airport.location.repository.LocationRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
 import com.finalproject.airport.store.dto.StoreDTO;
@@ -24,7 +28,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,6 +51,10 @@ public class QRService {
     private final StorageRepository storageRepository;
 
     private final FacilitiesRepository facilitiesRepository;
+
+    private final LocationRepository locationRepository;
+
+    private final InspectionRepository inspectionRepository;
 
     public ResponseEntity<?> getQRList(String qrType) {
 
@@ -76,6 +87,7 @@ public class QRService {
                     checkinCounterQRDTOList.add(checkInCounterQRDTO);
                 }
                 qrAllDTO.setCheckInCounter(checkinCounterQRDTOList);
+                break;
             case "store" :
                 List<StoreEntity> storeList = storeRepository.findByIsActive("Y");
                 List<StoreQRDTO> storeDTOList = new ArrayList<>();
@@ -180,4 +192,127 @@ public class QRService {
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "QR코드 생성 시설물 조회성공",qrAllDTO));
     }
+
+    public ResponseEntity<?> getQRDetail(String type, int code) {
+        // 위치 가져오기 // store 은 storeEntity 나머지는 location
+        FacilityDetailDTO location = new FacilityDetailDTO();
+        LocationEntity locationEntity = null;
+        switch (type) {
+            case "store" :
+                StoreEntity store = storeRepository.findById(code).orElse(null);
+                location.setLocation(store.getStoreLocation());
+                break;
+            case "baggage_claim" :
+                locationEntity = locationRepository.findByBaggageClaimCode(code);
+                location.setLocation(locationEntity.getZone().getRegion() + " " + locationEntity.getZone().getFloor() + " " + locationEntity.getZone().getLocation());
+                break;
+                case "gate" :
+                location.setLocation(code + "번 게이트");
+                break;
+            case "checkin_counter" :
+                locationEntity = locationRepository.findByCheckinCounterCode(code);
+                location.setLocation(locationEntity.getZone().getRegion() + " " + locationEntity.getZone().getFloor());
+                break;
+            case "storage" :
+                locationEntity = locationRepository.findByStorageCode(code);
+                location.setLocation(locationEntity.getZone().getRegion() + " " + locationEntity.getZone().getFloor());
+                break;
+            case "facilities" :
+                locationEntity = locationRepository.findByFacilitiesCode(code);
+                location.setLocation(locationEntity.getZone().getRegion() + " " + locationEntity.getZone().getFloor());
+                break;
+
+        }
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "QR코드 시설물 위 조회성공",location));
+    }
+
+    public ResponseEntity<?> joinQR(JoinQRDTO info) {
+
+        // 날짜 형식 정의 및 파싱
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date parseDate;
+        try {
+            parseDate = dateFormat.parse(info.getRegularInspectionDate());
+        } catch (ParseException e) {
+            return ResponseEntity.badRequest().body("Invalid date format.");
+        }
+
+        // Builder 패턴을 사용하여 기본 엔티티 생성
+        InspectionEntity.InspectionEntityBuilder inspectionEntityBuilder = InspectionEntity.builder()
+                .manager(info.getManager())
+                .location(info.getLocation())
+                .regularInspectionDate(parseDate)
+                .type(info.getType())
+                .status(info.getStatus())
+                .phone(info.getPhone())
+                .text(info.getText());
+
+        // Type에 따른 처리
+        switch (info.getType()) {
+            case "gate":
+                Gate gate = gateRepository.findBygateCode(info.getAirplaneCode());
+                if (gate == null) {
+                    return ResponseEntity.badRequest().body("Gate not found.");
+                }
+                gateRepository.save(gate);
+                inspectionEntityBuilder.gate(gate);
+                break;
+
+            case "checkinCounter":
+                CheckinCounter checkinCounter = checkinCounterRepository.findBycheckinCounterCode(info.getAirplaneCode());
+                if (checkinCounter == null) {
+                    return ResponseEntity.badRequest().body("CheckinCounter not found.");
+                }
+                checkinCounterRepository.save(checkinCounter);
+                inspectionEntityBuilder.checkinCounter(checkinCounter);
+                break;
+
+            case "baggageClaim":
+                BaggageClaim baggageClaim = baggageClaimRepository.findBybaggageClaimCode(info.getAirplaneCode());
+                if (baggageClaim == null) {
+                    return ResponseEntity.badRequest().body("BaggageClaim not found.");
+                }
+                baggageClaimRepository.save(baggageClaim);
+                inspectionEntityBuilder.baggageClaim(baggageClaim);
+                break;
+
+            case "store":
+                StoreEntity store = storeRepository.findById(info.getAirplaneCode()).orElse(null);
+                if (store == null) {
+                    return ResponseEntity.badRequest().body("Store not found.");
+                }
+                storeRepository.save(store);
+                inspectionEntityBuilder.store(store);
+                break;
+
+            case "storage":
+                StorageEntity storageEntity = storageRepository.findById(info.getAirplaneCode()).orElse(null);
+                if (storageEntity == null) {
+                    return ResponseEntity.badRequest().body("StorageEntity not found.");
+                }
+                storageRepository.save(storageEntity);
+                inspectionEntityBuilder.storage(storageEntity);
+                break;
+
+            case "facilities":
+                FacilitiesEntity facilities = facilitiesRepository.findById(info.getAirplaneCode()).orElse(null);
+                if (facilities == null) {
+                    return ResponseEntity.badRequest().body("FacilitiesEntity not found.");
+                }
+                facilitiesRepository.save(facilities);
+                inspectionEntityBuilder.facilities(facilities);
+                break;
+
+            default:
+                return ResponseEntity.badRequest().body("Invalid type.");
+        }
+
+        InspectionEntity inspectionEntity = inspectionEntityBuilder.build();
+        inspectionRepository.save(inspectionEntity);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

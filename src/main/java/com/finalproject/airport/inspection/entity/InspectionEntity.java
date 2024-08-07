@@ -49,7 +49,7 @@ public class InspectionEntity extends BaseTimeEntity {
     private String status;
 
     @Column(name = "phone")
-    private Integer phone;
+    private String phone;
 
     @Column(name = "text")
     private String text;
