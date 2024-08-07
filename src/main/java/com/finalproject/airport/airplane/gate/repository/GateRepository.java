@@ -31,4 +31,7 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
 
     @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM gate cc GROUP BY cc.status")
     List<Object[]> findGateStatusCounts();
+
+
+    List<Gate> findByGateCodeBetween(int i, int i1);
 }
