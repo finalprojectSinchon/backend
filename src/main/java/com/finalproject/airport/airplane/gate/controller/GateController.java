@@ -108,8 +108,8 @@ public class GateController {
     }
 
 
-//    @GetMapping("/gate/test")
-//    public void getTest() {
-//        gateService.getTest();
-//    }
+    @GetMapping("/gate/test")
+    public void getTest() {
+        gateService.getTest();
+    }
 }

@@ -66,6 +66,7 @@ public class AirPlaneService {
         String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate; ;
         System.out.println("requestUrl = " + requestUrl);
 
+
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
                 .build();
@@ -84,9 +85,8 @@ public class AirPlaneService {
                 .bodyToMono(ArrivalAirplaneDTO.class)
                 .block();
 
-
         if (arrivalAirplaneDTO != null) {
-            insertArrivalAirplaneItems(arrivalAirplaneDTO);
+            insertArrivalAirplaneItems(arrivalAirplaneDTO );
         } else {
             System.out.println("No data received");
         }
@@ -118,12 +118,10 @@ public class AirPlaneService {
     }
 
     private void insertArrivalAirplaneItems(ArrivalAirplaneDTO dto) {
-
         if (dto != null && dto.getResponse() != null && dto.getResponse().getBody() != null) {
             List<ArrivalAirplaneDTO.Response.Body.Item> items = dto.getResponse().getBody().getItems();
             if (items != null && !items.isEmpty()) {
                 for (ArrivalAirplaneDTO.Response.Body.Item item : items) {
-
                     if (item.getGatenumber() == " " || item.getGatenumber().isEmpty()){
                         item.setGatenumber("999");
                     }
@@ -135,7 +133,6 @@ public class AirPlaneService {
 
                     // 문자열을 LocalDateTime으로 파싱
                     LocalDateTime localDateTime = LocalDateTime.parse(item.getScheduleDateTime(), inputFormatter);
-
                     // LocalDateTime을 Timestamp로 변환
                     Timestamp timestamp = Timestamp.valueOf(localDateTime);
                     AirplaneDTO airplaneDTO =
@@ -147,7 +144,8 @@ public class AirPlaneService {
                                     item.getRemark(),
                                     item.getCarousel(),
                                     item.getGatenumber(),
-                                    item.getTerminalid()
+                                    item.getTerminalid(),
+                                    item.getChkinrange()
                                     );
                     Airplane airplane = modelMapper.map(airplaneDTO, Airplane.class);
                     airplaneRepository.save(airplane);
