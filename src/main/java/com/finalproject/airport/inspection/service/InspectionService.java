@@ -13,6 +13,7 @@ import com.finalproject.airport.equipment.repository.EquipmentRepository;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
 import com.finalproject.airport.inspection.dto.InspectionDTO;
+import com.finalproject.airport.inspection.dto.StatusDTO;
 import com.finalproject.airport.inspection.entity.InspectionEntity;
 import com.finalproject.airport.inspection.respository.InspectionRepository;
 import com.finalproject.airport.maintenance.repository.MaintenanceEquipmentRepository;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 //@RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -178,5 +180,70 @@ public class InspectionService {
             throw new RuntimeException(e);
         }
         return(result > 0)? "정비 등록 성공": "정비 등록 실패";
+    }
+
+    public List<StatusDTO> statusCount() {
+        List<StatusDTO> statusDTOList = new ArrayList<>();
+
+        List<Object[]> checkinCounters = checkinCounterRepository.findStatusCounts();
+        for (Object[] row : checkinCounters) {
+            String status = (String) row[0];
+            Long count = (Long) row[1];
+            System.out.println("Status: " + status + ", Count: " + count);
+            StatusDTO checkinstatus = new StatusDTO("체크인카운터",status,count);
+            statusDTOList.add(checkinstatus);
+        }
+
+        List<Object[]> gates = gateRepository.findGateStatusCounts();
+        for (Object[] row : gates) {
+            String status = (String) row[0];
+            Long count = (Long) row[1];
+            System.out.println("Status: " + status + ", Count: " + count);
+            StatusDTO gateStatus = new StatusDTO("탑승구",status,count);
+            statusDTOList.add(gateStatus);
+        }
+
+        List<Object[]> baggageclaims = baggageClaimRepository.findBaggageClaimStatusCounts();
+        for (Object[] row : baggageclaims) {
+            String status = (String) row[0];
+            Long count = (Long) row[1];
+            System.out.println("Status: " + status + ", Count: " + count);
+            StatusDTO baggageClaimStatus = new StatusDTO("수화물 수취대",status,count);
+            statusDTOList.add(baggageClaimStatus);
+        }
+
+        List<Object[]> stores = storeRepository.findStoreStatusCounts();
+        for (Object[] row : stores) {
+            String status = (String) row[0];
+            Long count = (Long) row[1];
+            System.out.println("Status: " + status + ", Count: " + count);
+            StatusDTO storeStatus = new StatusDTO("점포",status,count);
+            statusDTOList.add(storeStatus);
+        }
+
+        List<Object[]> storages = storageRepository.findStorageStatusCounts();
+        for (Object[] row : storages) {
+            String status = (String) row[0];
+            Long count = (Long) row[1];
+            System.out.println("Status: " + status + ", Count: " + count);
+            StatusDTO storageStatus = new StatusDTO("창고",status,count);
+            statusDTOList.add(storageStatus);
+        }
+        List<Object[]> facilitiess = facilitiesRepository.findFacilitiesStatusCounts();
+        for (Object[] row : facilitiess) {
+            String status = (String) row[0];
+            Long count = (Long) row[1];
+            System.out.println("Status: " + status + ", Count: " + count);
+            StatusDTO facilitiesStatus = new StatusDTO("편의시설",status,count);
+            statusDTOList.add(facilitiesStatus);
+        }
+
+
+
+        System.out.println("statusDTOList = " + statusDTOList);
+
+
+        return statusDTOList;
+
     }
 }
