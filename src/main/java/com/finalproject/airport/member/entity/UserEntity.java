@@ -66,7 +66,7 @@ public class UserEntity extends BaseTimeEntity {
             this.isActive = "Y";
         }
         if ( this.userImg == null) {
-            this.userImg = "https://i.namu.wiki/i/KTpTMexyA3WHmFNhXwOdo3nT_GURxYuA8tEedFzGqFRWXRg78FtmecK21BIsn7qUddH-Ch9z7k64BA7dVTdSaI-0QK5oftkiOgvEc5RuJmYzrJECd3Oa3GNOJUptym3vMN9P3PCYMEycdftWYayZYg.webp";
+            this.userImg = "https://i.postimg.cc/FFYbMSss/2024-08-08-11-04-02.png";
         }
     }
 

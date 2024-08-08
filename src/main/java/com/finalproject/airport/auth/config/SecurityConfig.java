@@ -99,12 +99,15 @@ public class SecurityConfig implements WebSocketConfigurer {
                 .httpBasic((auth) -> auth.disable());
 
 
-        //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join","/api/v1/auth","/ws/**", "/account/search-id", "/account/newPassword").permitAll()
-                        .requestMatchers("/admin","/api/hello").hasRole("ADMIN")
-                        .requestMatchers("/user-info","/api/v1/**","/user").authenticated()      // 로그인 한 사용자만 접근 가능
+                        .requestMatchers("/login", "/", "/join","/api/v1/auth","/ws/**", "/account/**").permitAll()
+                        .requestMatchers("/api/v1/admin/qr/","/api/v1/admin/auth/mail","/api/v1/admin/newUser").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/store/**").hasAnyRole("STORE","ADMIN")
+                        .requestMatchers("/api/v1/airplane/**").hasAnyRole("AIRPLANE","ADMIN")
+                        .requestMatchers("/user-info","/api/v1/location/**","/user").authenticated()      // 로그인 한 사용자만 접근 가능
+                        .requestMatchers("/api/v1/inspection/**","/api/v1/managers").authenticated()
+                        .requestMatchers("/**").authenticated()
                         .anyRequest().authenticated());
 
         http

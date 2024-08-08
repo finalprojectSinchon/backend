@@ -92,6 +92,8 @@ public class AirPlaneService {
         }
 
     }
+
+
     public void fetchDepartureAirplane() {
 
         String requestUrl = DepartureApiUrl +"serviceKey=" +apiKey+ "&type=json" ;

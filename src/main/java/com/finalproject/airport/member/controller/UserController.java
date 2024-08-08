@@ -21,7 +21,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/admin/contact")
+    @GetMapping("/contact")
     public ResponseEntity<?> contact() {
 
         List<UserContactDTO> contactDTO = userService.contact();
