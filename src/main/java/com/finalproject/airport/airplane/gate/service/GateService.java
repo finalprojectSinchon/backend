@@ -190,7 +190,7 @@ public class GateService {
     @Transactional
     public List<GateDTO> feach() {
         LocalDateTime now = LocalDateTime.now();
-
+        System.out.println("여기 왜 실행안돼시발 ");
         // 게이트마다 가장 가까운 비행기를 저장할 맵
         Map<Integer, Airplane> closestAirplanes = new HashMap<>();
         Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
@@ -266,4 +266,23 @@ public class GateService {
                 .collect(Collectors.toList());
     }
 
+    public List<GateDTO> gateList2() {
+        List<Gate> gateList = gateRepository.findByGateCodeBetween(30, 41);
+        System.out.println(gateList);
+
+        return gateList.stream()
+                .filter(gate -> "Y".equals(gate.getIsActive()))
+                .map(gate -> modelMapper.map(gate, GateDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<GateDTO> gateList3() {
+        List<Gate> gateList = gateRepository.findByGateCodeBetween(12, 26);
+        System.out.println(gateList);
+
+        return gateList.stream()
+                .filter(gate -> "Y".equals(gate.getIsActive()))
+                .map(gate -> modelMapper.map(gate, GateDTO.class))
+                .collect(Collectors.toList());
+    }
 }
