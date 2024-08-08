@@ -99,7 +99,7 @@ public class ManagersService {
         managerInfo.put("Manager",findUserList);
 
         // 전체 직원 DTO
-        List<UserEntity> userList = userRepository.findAllByUserRole("ROLE_USER");
+        List<UserEntity> userList = userRepository.findByUserIdIsNotNull();
         List<UserFindManagerDTO> userFindManagerList = new ArrayList<>();
         for (UserEntity userEntity : userList) {
             UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO();
@@ -110,6 +110,7 @@ public class ManagersService {
             userFindManagerDTO.setUserDepartment(userEntity.getUserDepartment());
             userFindManagerList.add(userFindManagerDTO);
         }
+        System.out.println("userFindManagerList = " + userFindManagerList);
 
 
         Set<Integer> findUserCodes = new HashSet<>();
