@@ -166,82 +166,41 @@ public class ApprovalService {
     public void approveGate(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer gateCode = approvalEntity.getGate().getGateCode();
-        if (gateCode == null) {
-            throw new IllegalArgumentException("Gate code must not be null");
-        }
+        Integer originalGateCode = approvalEntity.getCode();
 
-        // 게이트 엔티티 조회 및 수정
-        Optional<Gate> gateEntityOptional = gateRepository.findById(gateCode);
-        if (gateEntityOptional.isPresent()) {
-            Gate gate = gateEntityOptional.get();
-            if ("N".equals(gate.getIsActive())) { // 현재 상태가 N인 경우에만 변경
-                gate.setIsActive("Y"); // isActive를 N에서 Y로 변경
-                gateRepository.save(gate);
-            }
-        } else {
-            throw new RuntimeException("Gate not found: " + gateCode);
-        }
+        //원래 체크인 카운터 조회 및 수정
+        Gate originalGateEntityOptional = gateRepository.findBygateCode(originalGateCode);
+        originalGateEntityOptional = originalGateEntityOptional.toBuilder().isActive("N").build();
+        gateRepository.save(originalGateEntityOptional);
+
+        //수정된 것 가지고 오기
+        Integer modifiedGateCode = approvalEntity.getGate().getGateCode();
+
+        Gate modifiedGateCodeOptional = gateRepository.findBygateCode(modifiedGateCode);
+        modifiedGateCodeOptional = modifiedGateCodeOptional.toBuilder().isActive("Y").build();
+        gateRepository.save(modifiedGateCodeOptional);
     }
 
     @Transactional
     public void approveCheckInCounter(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer checkinCounterCode = approvalEntity.getCheckinCounter().getCheckinCounterCode();
-        if (checkinCounterCode == null) {
-            throw new IllegalArgumentException("CheckinCounter code must not be null");
-        }
+        //원해 체크인 카운터 코드 가져오기
+        Integer originalCheckInCounterCode = approvalEntity.getCode();
 
-        // 체크인 카운터 엔티티 조회 및 수정
-        Optional<CheckinCounter> checkinCounterEntityOptional = checkinCounterRepository.findById(checkinCounterCode);
-        if (checkinCounterEntityOptional.isPresent()) {
-            CheckinCounter checkinCounter = checkinCounterEntityOptional.get();
-            if ("N".equals(checkinCounter.getIsActive())) { // 현재 상태가 N인 경우에만 변경
-                checkinCounter.setIsActive("Y"); // isActive를 N에서 Y로 변경
-                checkinCounterRepository.save(checkinCounter);
-            }
-        } else {
-            throw new RuntimeException("CheckinCounter not found: " + checkinCounterCode);
-        }
+        //원래 체크인 카운터 조회 및 수정
+        CheckinCounter originalCheckinCounterEntityOptional = checkinCounterRepository.findBycheckinCounterCode(originalCheckInCounterCode);
+        originalCheckinCounterEntityOptional = originalCheckinCounterEntityOptional.toBuilder().isActive("N").build();
+        checkinCounterRepository.save(originalCheckinCounterEntityOptional);
+
+        //수정된 것 가지고 오기
+        Integer modifiedCheckInCounterCode = approvalEntity.getCheckinCounter().getCheckinCounterCode();
+
+        CheckinCounter modifiedCheckInCounterCodeOptional = checkinCounterRepository.findBycheckinCounterCode(modifiedCheckInCounterCode);
+        modifiedCheckInCounterCodeOptional = modifiedCheckInCounterCodeOptional.toBuilder().isActive("Y").build();
+        checkinCounterRepository.save(modifiedCheckInCounterCodeOptional);
     }
 
-//    @Transactional
-//    public void approveBaggageClaim(Integer approvalCode) {
-//        ApprovalEntity approvalEntity = approveCommon(approvalCode);
-//
-//        Integer originalBaggageClaimCode = approvalEntity.getOriginalBaggageClaimCode();
-//        if (originalBaggageClaimCode == null) {
-//            throw new IllegalArgumentException("Original Baggage claim code must not be null");
-//        }
-//
-//        // 원래 수하물 수취대 엔티티 조회 및 수정
-//        Optional<BaggageClaim> originalBaggageClaimEntityOptional = baggageClaimRepository.findById(originalBaggageClaimCode);
-//        if (originalBaggageClaimEntityOptional.isPresent()) {
-//            BaggageClaim originalBaggageClaim = originalBaggageClaimEntityOptional.get();
-//            originalBaggageClaim.setIsActive("N");
-//            baggageClaimRepository.save(originalBaggageClaim);
-//        } else {
-//            throw new RuntimeException("Original Baggage claim not found: " + originalBaggageClaimCode);
-//        }
-//
-//        // 수정된 수하물 수취대 엔티티 조회 및 수정
-//        Integer modifiedBaggageClaimCode = approvalEntity.getBaggageClaim().getBaggageClaimCode();
-//        if (modifiedBaggageClaimCode == null) {
-//            throw new IllegalArgumentException("Modified Baggage claim code must not be null");
-//        }
-//
-//        Optional<BaggageClaim> modifiedBaggageClaimEntityOptional = baggageClaimRepository.findById(modifiedBaggageClaimCode);
-//        if (modifiedBaggageClaimEntityOptional.isPresent()) {
-//            BaggageClaim modifiedBaggageClaim = modifiedBaggageClaimEntityOptional.get();
-//            if ("N".equals(modifiedBaggageClaim.getIsActive())) {
-//                modifiedBaggageClaim.setIsActive("Y");
-//                baggageClaimRepository.save(modifiedBaggageClaim);
-//            }
-//        } else {
-//            throw new RuntimeException("Modified Baggage claim not found: " + modifiedBaggageClaimCode);
-//        }
-//    }
 
     @Transactional
     public void approveBaggageClaim(Integer approvalCode) {
@@ -291,25 +250,6 @@ public class ApprovalService {
     }
 
 
-    //    public void approveFacilities(Integer approvalCode) {
-//        ApprovalEntity approvalEntity = approveCommon(approvalCode);
-//
-//        Integer facilitiesCode = approvalEntity.getFacilities().getFacilitiesCode();
-//        if(facilitiesCode == null){
-//            throw new IllegalArgumentException("Facilities code must not be null");
-//        }
-//
-//        Optional<FacilitiesEntity> facilitiesEntityOptional = facilitiesRepository.findById(facilitiesCode);
-//        if(facilitiesEntityOptional.isPresent()){
-//            FacilitiesEntity facilitiesEntity = facilitiesEntityOptional.get();
-//            if ("N".equals(facilitiesEntity.getIsActive())) {
-//                facilitiesEntity.setIsActive("Y");
-//                facilitiesRepository.save(facilitiesEntity);
-//            }
-//        }else {
-//            throw new RuntimeException("Facilities not found: " + facilitiesCode);
-//        }
-//    }
     @Transactional
     public void approveFacilities(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);

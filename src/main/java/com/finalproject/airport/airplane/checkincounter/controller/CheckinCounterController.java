@@ -8,6 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.hibernate.annotations.SelectBeforeUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -92,15 +95,23 @@ public class CheckinCounterController {
             @ApiResponse(code = 201, message = "체크인 카운터 수정 성공"),
             @ApiResponse(code = 400, message = "잘못된 입력")
     })
+    @Operation(summary = "체크인 카운터 수정", description = "체크인 카운터 정보를 수정",
+        parameters = {@Parameter(name = "checkInCounterCode", description = "사용자 화면에서 넘어오는 수화물 수취대의 pk")}
+    )
     @PutMapping("/checkin-counter/{checkinCounterCode}")
     public ResponseEntity<?> modifyCheckinCounter(
             @ApiParam(value = "수정할 체크인 카운터 코드", required = true)
             @PathVariable int checkinCounterCode,
-            @RequestBody CheckinCounterDTO modifyCheckinCounter) {
-        System.out.println("modifyCheckinCounter = " + modifyCheckinCounter);
-        service.modifyCheckinCounter(checkinCounterCode, modifyCheckinCounter);
-        return ResponseEntity.created(URI.create("/checkin-counter/" + checkinCounterCode)).build();
+            @RequestBody CheckinCounterDTO checkinCounterDTO
+    ) {
+       try {
+           String resultMessage = service.modifyCheckinCounter(checkinCounterDTO);
+           return ResponseEntity.ok(resultMessage);
+       }catch (RuntimeException e){
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+       }
     }
+
 
     @ApiOperation(value = "체크인 카운터 소프트 삭제", notes = "특정 체크인 카운터를 소프트 삭제합니다.")
     @ApiResponses({

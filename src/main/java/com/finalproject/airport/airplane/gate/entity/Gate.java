@@ -12,13 +12,14 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @ToString
 @Builder(toBuilder = true)
 public class Gate {
 
     @Id
     @Column(name = "GATE_CODE")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer gateCode;
 
     @Column(name = "LOCATION")
