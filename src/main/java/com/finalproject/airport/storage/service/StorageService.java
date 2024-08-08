@@ -70,7 +70,7 @@ public class StorageService {
             //승인 정보 저장
             ApprovalDTO approvalDTO = new ApprovalDTO(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
                     null,
                     null,

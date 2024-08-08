@@ -75,17 +75,17 @@ public class BaggageClaimService {
             BaggageClaim baggageClaim1 = repository.save(insertBaggageClaim);
 
             // 승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
                     null,
-                    baggageClaim1.getBaggageClaimCode(),
+                    baggageClaim1,
                     null,
                     null
             );
 
-            approvalService.saveBaggageClaimApproval(approvalDTO);
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class BaggageClaimService {
             //2. 수정 후의 데이터 저장
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
                     null,
                     baggageClaim1,
@@ -140,82 +140,6 @@ public class BaggageClaimService {
         return (result>0) ? "수화물 수취대 수정 승인 성공" : "수화물 수취대 수정 승인 요청 실패";
     }
 
-
-
-//
-//    @Transactional
-//    public String modifybaggageClaim(int baggageClaimCode, BaggageClaimDTO baggageClaim) {
-//
-//        int result = 0;
-//
-//        try {
-//            // 1. 기존 데이터 조회
-//            BaggageClaim existingBaggageClaim = repository.findById(baggageClaimCode)
-//                    .orElseThrow(() -> new RuntimeException("BaggageClaim not found"));
-//
-//            // 2. 기존 데이터를 승인 엔티티에 저장
-//            ApprovalDTO approvalDTOBefore = new ApprovalDTO(
-//                    ApprovalTypeEntity.수정,
-//                    ApprovalStatusEntity.N,
-//                    null,
-//                    null,
-//                    baggageClaimCode,
-//                    null,
-//                    null
-//            );
-//
-//            // 기존 데이터를 승인 엔티티에 저장
-//            ApprovalEntity approvalEntityBefore = new ApprovalEntity(
-//                    approvalDTOBefore.getType(),
-//                    approvalDTOBefore.getStatus(),
-//                    null,
-//                    null,
-//                    existingBaggageClaim,
-//                    null,
-//                    null
-//            );
-//            approvalRepository.save(approvalEntityBefore);
-//
-//            // 3. 데이터 수정
-//            existingBaggageClaim.setLocation(baggageClaim.getLocation());
-//            existingBaggageClaim.setType(baggageClaim.getType());
-//            existingBaggageClaim.setStatus(baggageClaim.getStatus());
-//            existingBaggageClaim.setRegistrationDate(baggageClaim.getRegistrationDate());
-//            existingBaggageClaim.setLastInspectionDate(baggageClaim.getLastInspectionDate());
-//            existingBaggageClaim.setManager(baggageClaim.getManager());
-//            existingBaggageClaim.setNote(baggageClaim.getNote());
-//            existingBaggageClaim.setIsActive("N"); // 비활성 상태로 설정
-//
-//            BaggageClaim updatedBaggageClaim = repository.save(existingBaggageClaim);
-//
-//            // 4. 수정된 데이터로 승인 엔티티 저장
-//            ApprovalDTO approvalDTOAfter = new ApprovalDTO(
-//                    ApprovalTypeEntity.수정,
-//                    ApprovalStatusEntity.N,
-//                    null,
-//                    null,
-//                    updatedBaggageClaim.getBaggageClaimCode(),
-//                    null,
-//                    null
-//            );
-//
-//            ApprovalEntity approvalEntityAfter = new ApprovalEntity(
-//                    approvalDTOAfter.getType(),
-//                    approvalDTOAfter.getStatus(),
-//                    null,
-//                    null,
-//                    updatedBaggageClaim,
-//                    null,
-//                    null
-//            );
-//            approvalRepository.save(approvalEntityAfter);
-//
-//            result = 1;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return (result > 0) ? "수화물 수취대 수정 승인 성공" : "수화물 수취대 수정 승인 요청 실패";
-//    }
 
 
     @Transactional

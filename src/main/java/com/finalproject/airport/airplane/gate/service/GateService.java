@@ -2,6 +2,7 @@ package com.finalproject.airport.airplane.gate.service;
 
 import com.finalproject.airport.airplane.airplane.Entity.Airplane;
 import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
+import com.finalproject.airport.airplane.checkincounter.dto.CheckinCounterDTO;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
@@ -10,6 +11,7 @@ import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -30,13 +32,15 @@ public class GateService {
     private final ApprovalService approvalService;
 
     private final AirplaneRepository airplaneRepository;
+    private final ApprovalRepository approvalRepository;
 
-    public GateService(GateRepository gateRepository, ModelMapper modelMapper, ApprovalService approvalService , AirplaneRepository airplaneRepository){
+    public GateService(GateRepository gateRepository, ModelMapper modelMapper, ApprovalService approvalService , AirplaneRepository airplaneRepository, ApprovalRepository approvalRepository){
 
         this.gateRepository = gateRepository;
         this.modelMapper = modelMapper;
         this.approvalService = approvalService;
         this.airplaneRepository = airplaneRepository;
+        this.approvalRepository = approvalRepository;
     }
 
 
@@ -54,33 +58,51 @@ public class GateService {
 
 
 
-
-
-
     public GateDTO findBygateCode(int gateCode) {
 
         Gate gate = gateRepository.findBygateCode(gateCode);
         return modelMapper.map(gate,GateDTO.class);
     }
 
+
     @Transactional
-    public void modifyGate(int gateCode, GateDTO modifyGate) {
+    public String modifyGate(GateDTO modifyGate) {
 
-        Gate gate = gateRepository.findBygateCode(gateCode);
+        System.out.println("modifyGate = " + modifyGate);
+        int result = 0;
 
+        try{
+            Gate gate =  Gate.builder()
+                    .manager(modifyGate.getManager())
+                    .type(modifyGate.getGateType())
+                    .note(modifyGate.getNote())
+                    .location(modifyGate.getLocation())
+                    .status(modifyGate.getStatus())
+                    .lastInspectionDate(modifyGate.getLastInspectionDate())
+                    .registrationDate(modifyGate.getRegistrationDate())
+                    .isActive("N")
+                    .build();
+            System.out.println("gate = " + gate);
+            Gate gate1 = gateRepository.save(gate);
+            System.out.println("gate1 = " + gate1);
+            ApprovalEntity approval = new ApprovalEntity(
+                    ApprovalTypeEntity.수정,
+                    "N",
+                    gate1,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    modifyGate.getGateCode()
 
-        gate =  gate.toBuilder()
-                .manager(modifyGate.getManager())
-                .type(modifyGate.getGateType())
-                .note(modifyGate.getNote())
-                .location(modifyGate.getLocation())
-                .status(modifyGate.getStatus())
-                .lastInspectionDate(modifyGate.getLastInspectionDate())
-                .registrationDate(modifyGate.getRegistrationDate())
-                .build();
-
-        gateRepository.save(gate);
-
+            );
+            approvalRepository.save(approval);
+            result = 1;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return (result>0) ? "게이트 승인 수정 성공" : "게이트 승인 수정 실패";
     }
 
     @Transactional
@@ -118,17 +140,17 @@ public class GateService {
             System.out.println("gate = " + gate);
 
             // 승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
-                    gate.getGateCode(),
+                    "N",
+                    gate,
                     null,
                     null,
                     null,
                     null
             );
-            System.out.println("approvalDTO = " + approvalDTO);
-            approvalService.saveGateApproval(approvalDTO);
+
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {

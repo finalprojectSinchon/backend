@@ -52,13 +52,17 @@ public class FacilitiesController {
     return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK ,"등록에 성공했습니다." , null ));
 }
 
+
 // 수정
 @PutMapping("/facilities/{facilitiesCode}")
-    public ResponseEntity<?> updateFacilities(@RequestBody FacilitiesDTO facilitiesDTO , @PathVariable int facilitiesCode) {
+    public ResponseEntity<?> modifyFacilities(@RequestBody FacilitiesDTO modifyFacilitiesDTO) {
 
-        facilitiesService.updateFacilities(facilitiesCode , facilitiesDTO);
-
-        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK , "수정 완료되었습니다" , null));
+        try{
+            String resultMessage = facilitiesService.modifyFacilities(modifyFacilitiesDTO);
+            return ResponseEntity.ok().body(resultMessage);
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
 }
 
 // 삭제

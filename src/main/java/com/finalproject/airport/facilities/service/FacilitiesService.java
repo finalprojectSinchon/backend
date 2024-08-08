@@ -1,8 +1,10 @@
 package com.finalproject.airport.facilities.service;
 
 import com.finalproject.airport.approval.dto.ApprovalDTO;
+import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.facilities.dto.FacilitiesDTO;
 import com.finalproject.airport.facilities.entity.FacilitesType;
@@ -29,6 +31,8 @@ public class FacilitiesService {
     private final ModelMapper modelMapper;
     @Autowired
     private ApprovalService approvalService;
+    @Autowired
+    private ApprovalRepository approvalRepository;
 
     public List<FacilitiesDTO> selectAllFacilities() {
 
@@ -64,7 +68,8 @@ public class FacilitiesService {
                 findfacilities.getManager(),
                 findfacilities.getFacilitiesClass(),
                 findfacilities.getIsActive(),
-                findfacilities.getCreatedDate()
+                findfacilities.getCreatedDate(),
+                findfacilities.getNote()
         );
       return facilitiesDTO2;
     }
@@ -84,23 +89,24 @@ public class FacilitiesService {
                     .facilitiesType(facilitiesDTO.getType())
                     .manager(facilitiesDTO.getManager())
                     .facilitiesClass(facilitiesDTO.getFacilitiesClass())
+                    .note(facilitiesDTO.getNote())
                     .isActive("N")
                     .build();
 
             FacilitiesEntity facilitiesEntity = facilitiesRepository.save(insertFacilities);
             System.out.println("insertFacilities = " + insertFacilities);
 
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
                     null,
                     null,
                     null,
-                    facilitiesEntity.getFacilitiesCode()
+                    facilitiesEntity
             );
-            System.out.println("approvalDTO = " + approvalDTO);
-            approvalService.saveFacilities(approvalDTO);
+
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e){
@@ -113,21 +119,42 @@ public class FacilitiesService {
 
 
 @Transactional
-    public void updateFacilities(int facilitiesCode , FacilitiesDTO facilitiesDTO) {
+    public String modifyFacilities(FacilitiesDTO facilitiesDTO) {
 
-        FacilitiesEntity findUpdateFacilities = facilitiesRepository.findById(facilitiesCode).orElseThrow(IllegalArgumentException::new);
+       int result = 0;
 
+       try {
 
-       FacilitiesEntity update = findUpdateFacilities.toBuilder()
-//                .facilitiesCode(facilitiesCode)
-                .facilitiesClass(facilitiesDTO.getFacilitiesClass())
-                .location(facilitiesDTO.getLocation())
-                .facilitiesName(facilitiesDTO.getFacilitiesName())
-                .manager(facilitiesDTO.getManager())
-                .facilitiesType(facilitiesDTO.getType())
-                .status(facilitiesDTO.getStatus()).build();
+           FacilitiesEntity modifyFacility = FacilitiesEntity.builder()
+                   .facilitiesClass(facilitiesDTO.getFacilitiesClass())
+                   .location(facilitiesDTO.getLocation())
+                   .facilitiesName(facilitiesDTO.getFacilitiesName())
+                   .manager(facilitiesDTO.getManager())
+                   .facilitiesType(facilitiesDTO.getType())
+                   .status(facilitiesDTO.getStatus())
+                   .note(facilitiesDTO.getNote())
+                   .isActive("N")
+                   .build();
 
-        facilitiesRepository.save(update);
+           FacilitiesEntity facilities1 = facilitiesRepository.save(modifyFacility);
+
+           ApprovalEntity approval = new ApprovalEntity(
+                   ApprovalTypeEntity.수정,
+                   "N",
+                   null,
+                   null,
+                   null,
+                   null,
+                   facilities1,
+                   null,
+                   facilitiesDTO.getFacilitiesCode()
+           );
+           approvalRepository.save(approval);
+           result = 1;
+       }catch (Exception e){
+           throw new RuntimeException(e);
+       }
+      return (result>0) ? "편의시설 승인 수정 성공" : "편의시건 승인 수정 실패";
     }
 
     public void deleteFacilities(int facilitiesCode) {
@@ -135,7 +162,6 @@ public class FacilitiesService {
         FacilitiesEntity deleteFacilities = facilitiesRepository.findById(facilitiesCode).orElseThrow(IllegalArgumentException::new);
 
         FacilitiesEntity delete = deleteFacilities.toBuilder()
-
                 .isActive("N").build();
 
         facilitiesRepository.save(delete);

@@ -71,14 +71,6 @@ public class BaggageClaimController {
         return ResponseEntity.ok().build();
     }
 
-//    // 수화물 수취대 수정
-//    @Operation(summary = "수화물 수취대 수정", description = "수화물 수취대 정보를 수정",
-//            parameters = {@Parameter(name = "baggageClaimCode", description = "사용자 화면에서 넘어오는 수화물 수취대의 pk")})
-//    @PutMapping("/baggage-claim/{baggageClaimCode}")
-//    public ResponseEntity<?> modifybaggageClaim(@PathVariable int baggageClaimCode, @RequestBody BaggageClaimDTO modifybaggageClaim) {
-//        service.modifybaggageClaim(baggageClaimCode, modifybaggageClaim);
-//        return ResponseEntity.created(URI.create("/baggage-claim/" + baggageClaimCode)).build();
-//    }
 
     @Operation(summary = "수화물 수취대 수정", description = "수화물 수취대 정보를 수정",
             parameters = {@Parameter(name = "baggageClaimCode", description = "사용자 화면에서 넘어오는 수화물 수취대의 pk")})

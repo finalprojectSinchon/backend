@@ -93,10 +93,15 @@ public class GateController {
     @Operation(summary = "탑승구 수정", description = "특정 탑승구의 정보를 수정합니다.",
             parameters = {@Parameter(name = "gateCode", description = "수정할 탑승구의 코드")})
     @PutMapping("/gate/{gateCode}")
-    public ResponseEntity<?> modifyGate(@PathVariable int gateCode, @RequestBody GateDTO modifyGate){
-        gateService.modifyGate(gateCode, modifyGate);
-        return ResponseEntity.created(URI.create("/gate/" + gateCode)).build();
+    public ResponseEntity<?> modifyGate(@RequestBody GateDTO modifyGateDTO){
+        try {
+            String resultMessage = gateService.modifyGate(modifyGateDTO);
+            return ResponseEntity.ok(resultMessage);
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
+
 
     // 탑승구 soft delete
     @Operation(summary = "탑승구 삭제", description = "특정 탑승구를 soft delete 합니다.",

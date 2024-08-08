@@ -31,8 +31,7 @@ public class ApprovalEntity extends BaseTimeEntity {
     private ApprovalTypeEntity type;
 
     @Column(name = "APPROVAL_STATUS")
-    @Enumerated(EnumType.STRING)
-    private ApprovalStatusEntity status;
+    private String status;
 
     @Column(name = "CODE")
     @JoinColumn
@@ -71,7 +70,7 @@ public class ApprovalEntity extends BaseTimeEntity {
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities/* Integer code*/) {
+    public ApprovalEntity(ApprovalTypeEntity type, String status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities/* Integer code*/) {
         this.type = type;
         this.status = status;
         this.gate = gate;
@@ -82,7 +81,7 @@ public class ApprovalEntity extends BaseTimeEntity {
         //this.code = code;
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,int code) {
+    public ApprovalEntity(ApprovalTypeEntity type, String status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,int code) {
         this.type = type;
         this.status = status;
         this.gate = gate;
@@ -94,7 +93,4 @@ public class ApprovalEntity extends BaseTimeEntity {
         this.code = code;
     }
 
-    public void setApprovalStatus(ApprovalStatusEntity status) {
-        this.status = status;
-    }
 }

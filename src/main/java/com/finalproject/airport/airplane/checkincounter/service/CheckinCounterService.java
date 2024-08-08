@@ -8,8 +8,10 @@ import com.finalproject.airport.airplane.checkincounter.repository.CheckinCounte
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.approval.dto.ApprovalDTO;
+import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -26,18 +28,21 @@ public class CheckinCounterService {
     private final AirplaneRepository airplaneRepository;
     private final ModelMapper modelMapper;
     private final ApprovalService approvalService;
+    private final ApprovalRepository approvalRepository;
 
     @Autowired
-    public CheckinCounterService(CheckinCounterRepository repository, ModelMapper modelMapper,AirplaneRepository airplaneRepository, ApprovalService approvalService){
+    public CheckinCounterService(CheckinCounterRepository repository, ModelMapper modelMapper, AirplaneRepository airplaneRepository, ApprovalService approvalService, ApprovalRepository approvalRepository){
         this.repository = repository;
         this.modelMapper = modelMapper;
         this.airplaneRepository = airplaneRepository;
         this.approvalService = approvalService;
+        this.approvalRepository = approvalRepository;
     }
 
     @Transactional
     public String insertchkinCounter(CheckinCounterDTO chkinCounter) {
 
+        System.out.println("체킁인카운터서비스 = " + chkinCounter);
         int result = 0;
 
         try {
@@ -55,21 +60,21 @@ public class CheckinCounterService {
                 .isActive("N") // 활성화/비활성화 필드 추가
                 .build();
 
-        CheckinCounter checkinCounter =  repository.save(insertchkinCounter);
+            CheckinCounter checkinCounter =  repository.save(insertchkinCounter);
             System.out.println("checkinCounter = " + checkinCounter);
 
             // 승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
-                    checkinCounter.getCheckinCounterCode(),
+                    checkinCounter,
                     null,
                     null,
                     null
             );
 
-            approvalService.saveChkinCounterApproval(approvalDTO);
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {
@@ -97,24 +102,44 @@ public class CheckinCounterService {
     }
 
     @Transactional
-    public void modifyCheckinCounter(int checkinCounterCode, CheckinCounterDTO modifyCheckinCounter) {
+    public String modifyCheckinCounter(CheckinCounterDTO modifyCheckinCounter) {
 
+        int result = 0;
 
-        CheckinCounter checkinCounter = repository.findBycheckinCounterCode(checkinCounterCode);
+        try {
+            CheckinCounter checkinCounter =  CheckinCounter.builder()
+                    .location(modifyCheckinCounter.getLocation())
+                    .type(modifyCheckinCounter.getType())
+                    .status(modifyCheckinCounter.getStatus())
+                    .registrationDate(modifyCheckinCounter.getRegistrationDate())
+                    .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())
+                    .manager(modifyCheckinCounter.getManager())
+                    .note(modifyCheckinCounter.getNote())
+                    .isActive("N")
+                    .build();
 
+            CheckinCounter checkinCounter1 = repository.save(checkinCounter);
 
-        checkinCounter =  checkinCounter.toBuilder()
-                .location(modifyCheckinCounter.getLocation())
-                .type(modifyCheckinCounter.getType())
-                .status(modifyCheckinCounter.getStatus())
-                .registrationDate(modifyCheckinCounter.getRegistrationDate())
-                .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())
-                .manager(modifyCheckinCounter.getManager())
-                .note(modifyCheckinCounter.getNote())
-                .build();
+            ApprovalEntity approval = new ApprovalEntity(
+                    ApprovalTypeEntity.수정,
+                    "N",
+                    null,
+                    checkinCounter1,
+                    null,
+                    null,
+                    null,
+                    null,
+                    modifyCheckinCounter.getCheckinCounterCode()
 
-        repository.save(checkinCounter);
+            );
+            approvalRepository.save(approval);
+            result = 1;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+     return (result > 0) ? "체크인 카운터 수정 승인 성공" : "체크인 카운터 수정 승인 실패";
     }
+
 
     @Transactional
     public void remodveCheckinCounter(int checkinCounterCode) {

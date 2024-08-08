@@ -12,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @ToString
 @Builder(toBuilder = true)
 public class CheckinCounter extends BaseTimeEntity {
@@ -51,8 +52,6 @@ public class CheckinCounter extends BaseTimeEntity {
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
-
-
 
 
 
