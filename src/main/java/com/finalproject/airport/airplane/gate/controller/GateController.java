@@ -70,9 +70,37 @@ public class GateController {
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(new ResponseDTO(HttpStatus.OK, "탑승구 전체 조회", responseMap));
+                .body(new ResponseDTO(HttpStatus.OK, "탑승구 1구역 조회", responseMap));
+    }
+    @Operation(summary = "탑승구 2구역 조회", description = "탑승구 2구역 목록을 조회합니다.")
+    @GetMapping("/gate2")
+    public ResponseEntity<ResponseDTO> getGate2(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        List<GateDTO> gateList2 = gateService.gateList2();
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("gateList", gateList2);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK, "탑승구 2구역 조회", responseMap));
     }
 
+    @Operation(summary = "탑승구 3구역 조회", description = "탑승구 3구역 목록을 조회합니다.")
+    @GetMapping("/gate3")
+    public ResponseEntity<ResponseDTO> getGate3(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+        List<GateDTO> gateList3 = gateService.gateList3();
+
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("gateList", gateList3);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ResponseDTO(HttpStatus.OK, "탑승구 3구역 조회", responseMap));
+    }
     // 탑승구 상세 조회
     @Operation(summary = "탑승구 상세 조회", description = "특정 탑승구의 세부 정보를 조회합니다.",
             parameters = {@Parameter(name = "gateCode", description = "조회할 탑승구의 코드")})

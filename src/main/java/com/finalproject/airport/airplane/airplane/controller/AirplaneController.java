@@ -120,7 +120,7 @@ public class AirplaneController {
     @GetMapping("/airplane/test")
     public ResponseEntity<?> getAirplaneAPI() {
 
-        airPlaneService.fetchArrivalAirplane();
+        airPlaneService.fetchDepartureAirplane();
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"api 요청 성공",null));
     }
