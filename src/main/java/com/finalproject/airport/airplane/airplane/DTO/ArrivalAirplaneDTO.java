@@ -147,6 +147,10 @@ public class ArrivalAirplaneDTO {
                 private String fid;
                 @Schema(description = "주기 위치", example = "SP01")
                 private String fstandposition;
+                @Schema(description = "체크인 카운터 위치")
+                private String chkinrange;
+
+
 
                 // Getter 및 Setter
                 public String getAirline() {
@@ -181,6 +185,9 @@ public class ArrivalAirplaneDTO {
                     this.estimatedDateTime = estimatedDateTime;
                 }
 
+
+                public String getChkinrange() {return chkinrange;}
+                public void setChkinrange(String chkinrange) {this.chkinrange = chkinrange;}
                 public String getAirport() {
                     return airport;
                 }
@@ -277,6 +284,8 @@ public class ArrivalAirplaneDTO {
                     this.fstandposition = fstandposition;
                 }
             }
+
+
         }
     }
 }

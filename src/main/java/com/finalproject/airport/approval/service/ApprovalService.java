@@ -346,8 +346,14 @@ public class ApprovalService {
         }
     }
 
-    // 수정
 
+    public void notiChecked(int approveCode) {
 
+        ApprovalEntity approval = approvalRepository.findByApprovalCode(approveCode);
+
+        approval = approval.toBuilder().checked("Y").build();
+        approvalRepository.save(approval);
+
+    }
 
 }

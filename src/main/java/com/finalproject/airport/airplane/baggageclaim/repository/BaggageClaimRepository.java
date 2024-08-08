@@ -16,4 +16,7 @@ public interface BaggageClaimRepository  extends CrudRepository<BaggageClaim, In
     BaggageClaim findBybaggageClaimCode(int baggageClaimCode);
 
     BaggageClaim findByLocation(BaggageClaimLocation location);
+
+    @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM baggageclamim cc GROUP BY cc.status")
+    List<Object[]> findBaggageClaimStatusCounts();
 }
