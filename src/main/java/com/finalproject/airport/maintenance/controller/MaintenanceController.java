@@ -94,6 +94,7 @@ public class MaintenanceController {
         return ResponseEntity.ok().build();
     }
 
+    // 각 시설물의 위치
     @GetMapping("/structure")
     public ResponseEntity<ResponseDTO> getStructureLocation(@RequestParam("structure") String structure) {
 
@@ -110,8 +111,9 @@ public class MaintenanceController {
                 .body(new ResponseDTO(HttpStatus.OK,"위치 조회", response));
     }
 
+    // 정비 장비 등록
     @PutMapping("/maintenanceEquipment")
-    public void maintenanceEquipment(@RequestBody  MaintenanceEquipmentDTO maintenanceEquipment) {
+    public void maintenanceEquipment(@RequestBody MaintenanceEquipmentDTO maintenanceEquipment) {
 
         System.out.println("maintenanceEquipment = " + maintenanceEquipment);
 
@@ -119,6 +121,7 @@ public class MaintenanceController {
 
     }
 
+    // 정비 장비 데이터 조회
     @GetMapping("/maintenanceEquipment")
     public int getMaintenanceEquipment(@RequestParam("maintenanceCode") String maintenanceCode) {
 

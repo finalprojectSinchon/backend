@@ -268,4 +268,13 @@ public class ApprovalService {
             throw new RuntimeException("Facilities not found: " + facilitiesCode);
         }
     }
+
+    public void notiChecked(int approveCode) {
+
+        ApprovalEntity approval = approvalRepository.findByApprovalCode(approveCode);
+
+        approval = approval.toBuilder().checked("Y").build();
+        approvalRepository.save(approval);
+
+    }
 }

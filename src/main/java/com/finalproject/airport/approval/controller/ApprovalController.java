@@ -119,6 +119,12 @@ public class ApprovalController {
     }
 
 
+    @GetMapping("/noti-checked")
+    public void notiChecked(@RequestParam("approveCode") String approveCode){
+        System.out.println("approveCode = " + approveCode);
+        approvalService.notiChecked(Integer.parseInt(approveCode));
+
+    }
 }
 
 

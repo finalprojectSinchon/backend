@@ -10,6 +10,8 @@ import com.finalproject.airport.storage.dto.StorageDTO;
 import com.finalproject.airport.store.dto.StoreDTO;
 import lombok.*;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -31,6 +33,9 @@ public class ApprovalDTO {
     private Integer baggageClaimCode;
     private Integer storageCode;
     private Integer facilitiesCode;
+    private Date createdDate;
+    private Date modifiedDate;
+    private String checked;
 
     public ApprovalDTO(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode) {
         this.type = type;
