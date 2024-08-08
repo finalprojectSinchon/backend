@@ -71,14 +71,33 @@ public class BaggageClaimController {
         return ResponseEntity.ok().build();
     }
 
-    // 수화물 수취대 수정
+//    // 수화물 수취대 수정
+//    @Operation(summary = "수화물 수취대 수정", description = "수화물 수취대 정보를 수정",
+//            parameters = {@Parameter(name = "baggageClaimCode", description = "사용자 화면에서 넘어오는 수화물 수취대의 pk")})
+//    @PutMapping("/baggage-claim/{baggageClaimCode}")
+//    public ResponseEntity<?> modifybaggageClaim(@PathVariable int baggageClaimCode, @RequestBody BaggageClaimDTO modifybaggageClaim) {
+//        service.modifybaggageClaim(baggageClaimCode, modifybaggageClaim);
+//        return ResponseEntity.created(URI.create("/baggage-claim/" + baggageClaimCode)).build();
+//    }
+
     @Operation(summary = "수화물 수취대 수정", description = "수화물 수취대 정보를 수정",
             parameters = {@Parameter(name = "baggageClaimCode", description = "사용자 화면에서 넘어오는 수화물 수취대의 pk")})
     @PutMapping("/baggage-claim/{baggageClaimCode}")
-    public ResponseEntity<?> modifybaggageClaim(@PathVariable int baggageClaimCode, @RequestBody BaggageClaimDTO modifybaggageClaim) {
-        service.modifybaggageClaim(baggageClaimCode, modifybaggageClaim);
-        return ResponseEntity.created(URI.create("/baggage-claim/" + baggageClaimCode)).build();
+    public ResponseEntity<?> modifyBaggageClaim(@RequestBody BaggageClaimDTO modifyBaggageClaimDTO) {
+        System.out.println("컨트롤러 = " + modifyBaggageClaimDTO);
+        try {
+            // 서비스에서 수정 및 승인 처리
+            String resultMessage = service.modifyBaggageClaim( modifyBaggageClaimDTO);
+            // 성공적으로 수정되었음을 나타내는 HTTP 200 OK 응답 반환
+            return ResponseEntity.ok(resultMessage);
+        } catch (RuntimeException e) {
+            // 수정 또는 승인 처리 중 오류 발생 시 HTTP 500 Internal Server Error 응답 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
+
+
+
 
     // 수화물 수취대 soft delete
     @Operation(summary = "수화물 수취대 삭제", description = "수화물 수취대 soft delete",

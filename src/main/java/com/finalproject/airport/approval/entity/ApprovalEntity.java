@@ -34,6 +34,10 @@ public class ApprovalEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatusEntity status;
 
+    @Column(name = "CODE")
+    @JoinColumn
+    private Integer code;
+
     @ManyToOne
     @JoinColumn(name = "GATE_CODE")
     private Gate gate;
@@ -58,14 +62,16 @@ public class ApprovalEntity extends BaseTimeEntity {
     @JoinColumn(name = "FACILITY_CODE")
     private FacilitiesEntity facilities;
 
+
     @Column(name="CHECKED")
     private String checked;
     
 
+
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities) {
+    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities/* Integer code*/) {
         this.type = type;
         this.status = status;
         this.gate = gate;
@@ -73,6 +79,19 @@ public class ApprovalEntity extends BaseTimeEntity {
         this.baggageClaim = baggageClaim;
         this.storage = storage;
         this.facilities = facilities;
+        //this.code = code;
+    }
+
+    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,int code) {
+        this.type = type;
+        this.status = status;
+        this.gate = gate;
+        this.checkinCounter = checkinCounter;
+        this.baggageClaim = baggageClaim;
+        this.storage = storage;
+        this.facilities = facilities;
+        this.store = store;
+        this.code = code;
     }
 
     public void setApprovalStatus(ApprovalStatusEntity status) {

@@ -125,6 +125,7 @@ public class ApprovalController {
         approvalService.notiChecked(Integer.parseInt(approveCode));
 
     }
+
 }
 
 
