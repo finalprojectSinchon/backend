@@ -33,6 +33,10 @@ public class ApprovalEntity {
     @Enumerated(EnumType.STRING)
     private ApprovalStatusEntity status;
 
+    @Column(name = "CODE")
+    @JoinColumn
+    private Integer code;
+
     @ManyToOne
     @JoinColumn(name = "GATE_CODE")
     private Gate gate;
@@ -57,10 +61,21 @@ public class ApprovalEntity {
     @JoinColumn(name = "FACILITY_CODE")
     private FacilitiesEntity facilities;
 
+    private Integer originalBaggageClaimCode; // 수정 전의 원래 수화물 수취대 코드 필드 추가
+
+    // getter 및 setter 메서드 추가
+    public Integer getOriginalBaggageClaimCode() {
+        return originalBaggageClaimCode;
+    }
+
+    public void setOriginalBaggageClaimCode(Integer originalBaggageClaimCode) {
+        this.originalBaggageClaimCode = originalBaggageClaimCode;
+    }
+
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities) {
+    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities/* Integer code*/) {
         this.type = type;
         this.status = status;
         this.gate = gate;
@@ -68,6 +83,19 @@ public class ApprovalEntity {
         this.baggageClaim = baggageClaim;
         this.storage = storage;
         this.facilities = facilities;
+        //this.code = code;
+    }
+
+    public ApprovalEntity(ApprovalTypeEntity type, ApprovalStatusEntity status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,int code) {
+        this.type = type;
+        this.status = status;
+        this.gate = gate;
+        this.checkinCounter = checkinCounter;
+        this.baggageClaim = baggageClaim;
+        this.storage = storage;
+        this.facilities = facilities;
+        this.store = store;
+        this.code = code;
     }
 
     public void setApprovalStatus(ApprovalStatusEntity status) {

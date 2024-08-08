@@ -1,3 +1,4 @@
+
 package com.finalproject.airport.approval.service;
 
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
@@ -64,7 +65,7 @@ public class ApprovalService {
         );
 
         System.out.println("approvalEntity: " + approvalEntity);
-       approvalRepository.save(approvalEntity);
+        approvalRepository.save(approvalEntity);
 
     }
 
@@ -205,27 +206,68 @@ public class ApprovalService {
         }
     }
 
+//    @Transactional
+//    public void approveBaggageClaim(Integer approvalCode) {
+//        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+//
+//        Integer originalBaggageClaimCode = approvalEntity.getOriginalBaggageClaimCode();
+//        if (originalBaggageClaimCode == null) {
+//            throw new IllegalArgumentException("Original Baggage claim code must not be null");
+//        }
+//
+//        // 원래 수하물 수취대 엔티티 조회 및 수정
+//        Optional<BaggageClaim> originalBaggageClaimEntityOptional = baggageClaimRepository.findById(originalBaggageClaimCode);
+//        if (originalBaggageClaimEntityOptional.isPresent()) {
+//            BaggageClaim originalBaggageClaim = originalBaggageClaimEntityOptional.get();
+//            originalBaggageClaim.setIsActive("N");
+//            baggageClaimRepository.save(originalBaggageClaim);
+//        } else {
+//            throw new RuntimeException("Original Baggage claim not found: " + originalBaggageClaimCode);
+//        }
+//
+//        // 수정된 수하물 수취대 엔티티 조회 및 수정
+//        Integer modifiedBaggageClaimCode = approvalEntity.getBaggageClaim().getBaggageClaimCode();
+//        if (modifiedBaggageClaimCode == null) {
+//            throw new IllegalArgumentException("Modified Baggage claim code must not be null");
+//        }
+//
+//        Optional<BaggageClaim> modifiedBaggageClaimEntityOptional = baggageClaimRepository.findById(modifiedBaggageClaimCode);
+//        if (modifiedBaggageClaimEntityOptional.isPresent()) {
+//            BaggageClaim modifiedBaggageClaim = modifiedBaggageClaimEntityOptional.get();
+//            if ("N".equals(modifiedBaggageClaim.getIsActive())) {
+//                modifiedBaggageClaim.setIsActive("Y");
+//                baggageClaimRepository.save(modifiedBaggageClaim);
+//            }
+//        } else {
+//            throw new RuntimeException("Modified Baggage claim not found: " + modifiedBaggageClaimCode);
+//        }
+//    }
+
     @Transactional
     public void approveBaggageClaim(Integer approvalCode) {
+        // 공통 승인 로직 호출
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer baggageClaimCode = approvalEntity.getBaggageClaim().getBaggageClaimCode();
-        if (baggageClaimCode == null) {
-            throw new IllegalArgumentException("Baggage claim code must not be null");
-        }
+        // 원래 수하물 수취대 코드 가져오기
+        Integer originalBaggageClaimCode = approvalEntity.getCode();
 
-        //수하물 수취대 엔티티 조회 및 수정
-        Optional<BaggageClaim> baggageClaimEntityOptional = baggageClaimRepository.findById(baggageClaimCode);
-        if (baggageClaimEntityOptional.isPresent()) {
-            BaggageClaim baggageClaim = baggageClaimEntityOptional.get();
-            if ("N".equals(baggageClaim.getIsActive())) {
-                baggageClaim.setIsActive("Y");
-                baggageClaimRepository.save(baggageClaim);
-            }
-        } else {
-            throw new RuntimeException("Baggage claim not found: " + baggageClaimCode);
-        }
+        // 원래 수하물 수취대 엔티티 조회 및 수정
+        BaggageClaim originalBaggageClaimEntityOptional = baggageClaimRepository.findBybaggageClaimCode(originalBaggageClaimCode);
+        originalBaggageClaimEntityOptional = originalBaggageClaimEntityOptional.toBuilder().isActive("N").build();
+        baggageClaimRepository.save(originalBaggageClaimEntityOptional);
+
+        // 수정된 수하물 수취대 코드 가져오기
+        Integer modifiedBaggageClaimCode = approvalEntity.getBaggageClaim().getBaggageClaimCode();
+
+        // 수정된 수하물 수취대 엔티티 조회 및 수정
+        BaggageClaim modifiedBaggageClaimEntityOptional = baggageClaimRepository.findBybaggageClaimCode(modifiedBaggageClaimCode);
+        modifiedBaggageClaimEntityOptional = modifiedBaggageClaimEntityOptional.toBuilder().isActive("Y").build();
+        baggageClaimRepository.save(modifiedBaggageClaimEntityOptional);
     }
+
+
+
+
 
     @Transactional
     public void approveStorage(Integer approvalCode){
@@ -249,23 +291,63 @@ public class ApprovalService {
     }
 
 
+    //    public void approveFacilities(Integer approvalCode) {
+//        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+//
+//        Integer facilitiesCode = approvalEntity.getFacilities().getFacilitiesCode();
+//        if(facilitiesCode == null){
+//            throw new IllegalArgumentException("Facilities code must not be null");
+//        }
+//
+//        Optional<FacilitiesEntity> facilitiesEntityOptional = facilitiesRepository.findById(facilitiesCode);
+//        if(facilitiesEntityOptional.isPresent()){
+//            FacilitiesEntity facilitiesEntity = facilitiesEntityOptional.get();
+//            if ("N".equals(facilitiesEntity.getIsActive())) {
+//                facilitiesEntity.setIsActive("Y");
+//                facilitiesRepository.save(facilitiesEntity);
+//            }
+//        }else {
+//            throw new RuntimeException("Facilities not found: " + facilitiesCode);
+//        }
+//    }
+    @Transactional
     public void approveFacilities(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer facilitiesCode = approvalEntity.getFacilities().getFacilitiesCode();
-        if(facilitiesCode == null){
-            throw new IllegalArgumentException("Facilities code must not be null");
-        }
+        // 시설 코드 확인 전에 null 체크
+        FacilitiesEntity facilities = approvalEntity.getFacilities();
+        if (facilities != null) {
+            Integer facilitiesCode = facilities.getFacilitiesCode();
 
-        Optional<FacilitiesEntity> facilitiesEntityOptional = facilitiesRepository.findById(facilitiesCode);
-        if(facilitiesEntityOptional.isPresent()){
-            FacilitiesEntity facilitiesEntity = facilitiesEntityOptional.get();
-            if ("N".equals(facilitiesEntity.getIsActive())) {
-                facilitiesEntity.setIsActive("Y");
-                facilitiesRepository.save(facilitiesEntity);
+            // 원래 시설 엔티티 조회 및 비활성화
+            Optional<FacilitiesEntity> originalFacilitiesOptional = facilitiesRepository.findById(facilitiesCode);
+            if (originalFacilitiesOptional.isPresent()) {
+                FacilitiesEntity originalFacilities = originalFacilitiesOptional.get();
+                originalFacilities.setIsActive("N");
+                facilitiesRepository.save(originalFacilities);
+            } else {
+                throw new RuntimeException("Original Facilities not found: " + facilitiesCode);
             }
-        }else {
-            throw new RuntimeException("Facilities not found: " + facilitiesCode);
+
+            // 수정된 시설 엔티티 조회 및 활성화
+            Integer modifiedFacilitiesCode = approvalEntity.getFacilities().getFacilitiesCode();
+            if (modifiedFacilitiesCode == null) {
+                throw new IllegalArgumentException("Modified Facilities code must not be null");
+            }
+
+            Optional<FacilitiesEntity> modifiedFacilitiesOptional = facilitiesRepository.findById(modifiedFacilitiesCode);
+            if (modifiedFacilitiesOptional.isPresent()) {
+                FacilitiesEntity modifiedFacilities = modifiedFacilitiesOptional.get();
+                modifiedFacilities.setIsActive("Y");
+                facilitiesRepository.save(modifiedFacilities);
+            } else {
+                throw new RuntimeException("Modified Facilities not found: " + modifiedFacilitiesCode);
+            }
         }
     }
+
+    // 수정
+
+
+
 }

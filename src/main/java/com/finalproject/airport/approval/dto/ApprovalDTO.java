@@ -31,6 +31,7 @@ public class ApprovalDTO {
     private Integer baggageClaimCode;
     private Integer storageCode;
     private Integer facilitiesCode;
+    private Integer code;
 
     public ApprovalDTO(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode) {
         this.type = type;
@@ -40,6 +41,19 @@ public class ApprovalDTO {
         this.baggageClaimCode = baggageclaimcode;
         this.storageCode = storageCode;
         this.facilitiesCode = facilitiesCode;
+
+    }
+
+    public ApprovalDTO(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode, Integer code) {
+        this.type = type;
+        this.status = status;
+        this.gateCode = gatecode;
+        this.checkinCounterCode = checkincountercode;
+        this.baggageClaimCode = baggageclaimcode;
+        this.storageCode = storageCode;
+        this.facilitiesCode = facilitiesCode;
+        this.code = code;
+
     }
 
 }

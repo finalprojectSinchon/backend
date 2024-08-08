@@ -210,6 +210,8 @@ public class AirPlaneService {
         return modelMapper.map(airplane, AirplaneDTO.class);
     }
 
+    // 수정하기
+
     @Transactional
     public void modifybAirplane(int airplaneCode, AirplaneDTO modifyairplane) {
 

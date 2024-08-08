@@ -6,12 +6,11 @@ import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
 import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.baggageclaim.repository.BaggageClaimRepository;
-import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
-import com.finalproject.airport.airplane.gate.dto.GateDTO;
-import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.approval.dto.ApprovalDTO;
+import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +35,9 @@ public class BaggageClaimService {
         this.airplaneRepository = airplaneRepository;
         this.approvalService = approvalService;
     }
+
+    @Autowired
+    private ApprovalRepository approvalRepository;
 
     public List<BaggageClaimDTO> findAll() {
         List<BaggageClaim> baggageClaimList = repository.findByisActive("Y");
@@ -92,32 +94,129 @@ public class BaggageClaimService {
 
         return (result > 0) ? "수화물 수취대 승인 요청 성공" : "수화물 수취대 승인 요청 실패";
 
-
-
-
     }
 
 
     @Transactional
-    public void modifybaggageClaim(int baggageClaimCode, BaggageClaimDTO modifybaggageClaim) {
+    public String modifyBaggageClaim(BaggageClaimDTO baggageClaim) {
+
+        System.out.println("baggageClaim = " + baggageClaim);
+        int result = 0;
+
+        try {
+
+            BaggageClaim modifybaggageClaim = BaggageClaim.builder()
+                    .location(baggageClaim.getLocation())
+                    .type(baggageClaim.getType())
+                    .status(baggageClaim.getStatus())
+                    .registrationDate(baggageClaim.getRegistrationDate())
+                    .lastInspectionDate(baggageClaim.getLastInspectionDate())
+                    .manager(baggageClaim.getManager())
+                    .note(baggageClaim.getNote())
+                    .isActive("N") // 활성화/비활성화 필드 추가
+                    .build();
+
+            BaggageClaim baggageClaim1 = repository.save(modifybaggageClaim);
 
 
-        BaggageClaim baggageClaim = repository.findBybaggageClaimCode(baggageClaimCode);
+            //2. 수정 후의 데이터 저장
+            ApprovalEntity approval = new ApprovalEntity(
+                    ApprovalTypeEntity.수정,
+                    ApprovalStatusEntity.N,
+                    null,
+                    null,
+                    baggageClaim1,
+                    null,
+                    null,
+                    null,
+                    baggageClaim.getBaggageClaimCode()
+            );
 
-
-        baggageClaim =  baggageClaim.toBuilder()
-                .location(modifybaggageClaim.getLocation())
-                .type(modifybaggageClaim.getType())
-                .status(modifybaggageClaim.getStatus())
-                .registrationDate(modifybaggageClaim.getRegistrationDate())
-                .lastInspectionDate(modifybaggageClaim.getLastInspectionDate())
-                .manager(modifybaggageClaim.getManager())
-                .note(modifybaggageClaim.getNote())
-                .build();
-
-        repository.save(baggageClaim);
-
+            approvalRepository.save(approval);
+            result = 1;
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return (result>0) ? "수화물 수취대 수정 승인 성공" : "수화물 수취대 수정 승인 요청 실패";
     }
+
+
+
+//
+//    @Transactional
+//    public String modifybaggageClaim(int baggageClaimCode, BaggageClaimDTO baggageClaim) {
+//
+//        int result = 0;
+//
+//        try {
+//            // 1. 기존 데이터 조회
+//            BaggageClaim existingBaggageClaim = repository.findById(baggageClaimCode)
+//                    .orElseThrow(() -> new RuntimeException("BaggageClaim not found"));
+//
+//            // 2. 기존 데이터를 승인 엔티티에 저장
+//            ApprovalDTO approvalDTOBefore = new ApprovalDTO(
+//                    ApprovalTypeEntity.수정,
+//                    ApprovalStatusEntity.N,
+//                    null,
+//                    null,
+//                    baggageClaimCode,
+//                    null,
+//                    null
+//            );
+//
+//            // 기존 데이터를 승인 엔티티에 저장
+//            ApprovalEntity approvalEntityBefore = new ApprovalEntity(
+//                    approvalDTOBefore.getType(),
+//                    approvalDTOBefore.getStatus(),
+//                    null,
+//                    null,
+//                    existingBaggageClaim,
+//                    null,
+//                    null
+//            );
+//            approvalRepository.save(approvalEntityBefore);
+//
+//            // 3. 데이터 수정
+//            existingBaggageClaim.setLocation(baggageClaim.getLocation());
+//            existingBaggageClaim.setType(baggageClaim.getType());
+//            existingBaggageClaim.setStatus(baggageClaim.getStatus());
+//            existingBaggageClaim.setRegistrationDate(baggageClaim.getRegistrationDate());
+//            existingBaggageClaim.setLastInspectionDate(baggageClaim.getLastInspectionDate());
+//            existingBaggageClaim.setManager(baggageClaim.getManager());
+//            existingBaggageClaim.setNote(baggageClaim.getNote());
+//            existingBaggageClaim.setIsActive("N"); // 비활성 상태로 설정
+//
+//            BaggageClaim updatedBaggageClaim = repository.save(existingBaggageClaim);
+//
+//            // 4. 수정된 데이터로 승인 엔티티 저장
+//            ApprovalDTO approvalDTOAfter = new ApprovalDTO(
+//                    ApprovalTypeEntity.수정,
+//                    ApprovalStatusEntity.N,
+//                    null,
+//                    null,
+//                    updatedBaggageClaim.getBaggageClaimCode(),
+//                    null,
+//                    null
+//            );
+//
+//            ApprovalEntity approvalEntityAfter = new ApprovalEntity(
+//                    approvalDTOAfter.getType(),
+//                    approvalDTOAfter.getStatus(),
+//                    null,
+//                    null,
+//                    updatedBaggageClaim,
+//                    null,
+//                    null
+//            );
+//            approvalRepository.save(approvalEntityAfter);
+//
+//            result = 1;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        return (result > 0) ? "수화물 수취대 수정 승인 성공" : "수화물 수취대 수정 승인 요청 실패";
+//    }
+
 
     @Transactional
     public void softDelete(int baggageClaimCode) {
@@ -127,4 +226,6 @@ public class BaggageClaimService {
         repository.save(baggageClaim);
 
     }
+
+
 }
