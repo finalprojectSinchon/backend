@@ -75,17 +75,17 @@ public class BaggageClaimService {
             BaggageClaim baggageClaim1 = repository.save(insertBaggageClaim);
 
             // 승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
                     null,
-                    baggageClaim1.getBaggageClaimCode(),
+                    baggageClaim1,
                     null,
                     null
             );
 
-            approvalService.saveBaggageClaimApproval(approvalDTO);
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class BaggageClaimService {
             //2. 수정 후의 데이터 저장
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
                     null,
                     baggageClaim1,

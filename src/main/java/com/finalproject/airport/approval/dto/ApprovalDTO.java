@@ -21,7 +21,7 @@ public class ApprovalDTO {
 
     private int approvalCode;
     private ApprovalTypeEntity type;
-    private ApprovalStatusEntity status;
+    private String status;
     private GateDTO gateDTO;
     private CheckinCounterDTO checkinCounterDTO;
     private BaggageClaimDTO baggageClaimDTO;
@@ -40,7 +40,7 @@ public class ApprovalDTO {
     private Date modifiedDate;
     private String checked;
 
-    public ApprovalDTO(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode) {
+    public ApprovalDTO(ApprovalTypeEntity type, String status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode) {
         this.type = type;
         this.status = status;
         this.gateCode = gatecode;
@@ -51,7 +51,7 @@ public class ApprovalDTO {
 
     }
 
-    public ApprovalDTO(ApprovalTypeEntity type, ApprovalStatusEntity status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode, Integer code) {
+    public ApprovalDTO(ApprovalTypeEntity type, String status, Integer gatecode ,Integer checkincountercode,Integer baggageclaimcode, Integer storageCode, Integer facilitiesCode, Integer code) {
         this.type = type;
         this.status = status;
         this.gateCode = gatecode;

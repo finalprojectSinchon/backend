@@ -87,7 +87,7 @@ public class GateService {
             System.out.println("gate1 = " + gate1);
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
-                    ApprovalStatusEntity.N,
+                    "N",
                     gate1,
                     null,
                     null,
@@ -140,17 +140,17 @@ public class GateService {
             System.out.println("gate = " + gate);
 
             // 승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
-                    gate.getGateCode(),
+                    "N",
+                    gate,
                     null,
                     null,
                     null,
                     null
             );
-            System.out.println("approvalDTO = " + approvalDTO);
-            approvalService.saveGateApproval(approvalDTO);
+
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {

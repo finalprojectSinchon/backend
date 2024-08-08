@@ -26,7 +26,9 @@ public class FacilitiesDTO {
 
     private LocalDateTime createdDate;
 
-    public FacilitiesDTO(int facilitiesCode, String status, String location, String facilitiesName, FacilitesType type, String manager, String facilitiesClass, String isActive, LocalDateTime createdDate) {
+    private String note;
+
+    public FacilitiesDTO(int facilitiesCode, String status, String location, String facilitiesName, FacilitesType type, String manager, String facilitiesClass, String isActive, LocalDateTime createdDate, String note) {
         this.facilitiesCode = facilitiesCode;
         this.status = status;
         this.location = location;
@@ -36,6 +38,7 @@ public class FacilitiesDTO {
         this.facilitiesClass = facilitiesClass;
         this.isActive = isActive;
         this.createdDate = createdDate;
+        this.note = note;
     }
 
     public int getFacilitiesCode() {
@@ -65,6 +68,8 @@ public class FacilitiesDTO {
     public String getFacilitiesClass() {
         return facilitiesClass;
     }
+
+    public String getNote(){return note;}
 
     public String getIsActive() {
         return isActive;

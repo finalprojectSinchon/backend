@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity(name = "facilities")
 @Table(name = "tbl_facilites")
 @Getter
+@Setter
 @ToString
 @Builder(toBuilder = true)
 public class FacilitiesEntity extends BaseTimeEntity {
@@ -30,35 +31,24 @@ public class FacilitiesEntity extends BaseTimeEntity {
 
     private String facilitiesClass; // 편의시설 구분   ex) 편의시설 , 이동수단
 
+    private String note;
+
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
-
-    // Getter and Setter
-    public String getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(String isActive) {
-        this.isActive = isActive;
-    }
 
     @PrePersist
     private void ensureIsActiveDefault() {
         if (this.isActive == null) {
             this.isActive = "Y";
         }
-        if (this.createdDate == null) {
-            this.createdDate = LocalDateTime.now();
-        }
-    }
 
-    private LocalDateTime createdDate; // 등록일은 시설물에서 관리
+    }
 
     public FacilitiesEntity() {
     }
 
-    public FacilitiesEntity(int facilitiesCode, String status, String location, String facilitiesName, FacilitesType facilitiesType, String manager, String facilitiesClass, String isActive, LocalDateTime createdDate) {
+    public FacilitiesEntity(int facilitiesCode, String status, String location, String facilitiesName, FacilitesType facilitiesType, String manager, String facilitiesClass, String isActive,  String note) {
         this.facilitiesCode = facilitiesCode;
         this.status = status;
         this.location = location;
@@ -67,6 +57,6 @@ public class FacilitiesEntity extends BaseTimeEntity {
         this.manager = manager;
         this.facilitiesClass = facilitiesClass;
         this.isActive = isActive;
-        this.createdDate = createdDate;
+        this.note = note;
     }
 }

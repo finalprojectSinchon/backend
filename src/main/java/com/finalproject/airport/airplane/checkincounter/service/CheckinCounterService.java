@@ -42,6 +42,7 @@ public class CheckinCounterService {
     @Transactional
     public String insertchkinCounter(CheckinCounterDTO chkinCounter) {
 
+        System.out.println("체킁인카운터서비스 = " + chkinCounter);
         int result = 0;
 
         try {
@@ -59,21 +60,21 @@ public class CheckinCounterService {
                 .isActive("N") // 활성화/비활성화 필드 추가
                 .build();
 
-        CheckinCounter checkinCounter =  repository.save(insertchkinCounter);
+            CheckinCounter checkinCounter =  repository.save(insertchkinCounter);
             System.out.println("checkinCounter = " + checkinCounter);
 
             // 승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
-                    checkinCounter.getCheckinCounterCode(),
+                    checkinCounter,
                     null,
                     null,
                     null
             );
 
-            approvalService.saveChkinCounterApproval(approvalDTO);
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {
@@ -114,13 +115,14 @@ public class CheckinCounterService {
                     .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())
                     .manager(modifyCheckinCounter.getManager())
                     .note(modifyCheckinCounter.getNote())
+                    .isActive("N")
                     .build();
 
             CheckinCounter checkinCounter1 = repository.save(checkinCounter);
 
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
-                    ApprovalStatusEntity.N,
+                    "N",
                     null,
                     checkinCounter1,
                     null,
