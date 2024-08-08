@@ -31,4 +31,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
 
     List<UserEntity> findByUserIdIsNotNull();
+
+
+    List<UserEntity> findAllByUserRole(String roleUser);
 }

@@ -14,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -228,5 +230,45 @@ public class JoinService {
         }
 
 
+    }
+
+    public List<NewUserDTO> getNewUser() {
+
+        List<UserEntity> findNewUser = userRepository.findAllByUserRole("ROLE_USER");
+        List<NewUserDTO> newUserDTOList = new ArrayList<>();
+        for (UserEntity user : findNewUser) {
+            NewUserDTO newUserDTO = new NewUserDTO(user.getUserCode(),user.getUserName());
+            newUserDTOList.add(newUserDTO);
+        }
+
+        return newUserDTOList;
+    }
+
+    public NewUserDetailDTO getNewUserByCode(int userCode) {
+
+        UserEntity user = userRepository.findById(userCode).orElseThrow(IllegalArgumentException::new);
+        NewUserDetailDTO newUserDetailDTO = new NewUserDetailDTO(
+                user.getUserCode(),user.getUserName(),user.getUserId(),user.getUserEmail(),user.getUserPhone(),user.getUserRole()
+        );
+
+        return newUserDetailDTO;
+    }
+
+    public void setRoleAndDepartment(SetRoleAndDepartmentDTO setRoleAndDepartmentDTO) {
+        UserEntity user = userRepository.findById(setRoleAndDepartmentDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
+        String role = null;
+
+        switch (setRoleAndDepartmentDTO.getRole()) {
+            case "관리자" : role = "ROLE_ADMIN"; break;
+            case "항공관련" : role = "ROLE_AIRPLANE"; break;
+            case "점포" : role = "ROLE_STORE"; break;
+            default:
+        }
+
+        user = user.toBuilder()
+                .userRole(role)
+                .userDepartment(setRoleAndDepartmentDTO.getDepartment())
+                .build();
+        userRepository.save(user);
     }
 }

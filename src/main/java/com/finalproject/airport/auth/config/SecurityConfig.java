@@ -102,7 +102,7 @@ public class SecurityConfig implements WebSocketConfigurer {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/", "/join","/api/v1/auth","/ws/**", "/account/**").permitAll()
-                        .requestMatchers("/api/v1/admin/qr/","/api/v1/admin/auth/mail").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/qr/","/api/v1/admin/auth/mail","/api/v1/admin/newUser").hasRole("ADMIN")
                         .requestMatchers("/api/v1/store/**").hasAnyRole("STORE","ADMIN")
                         .requestMatchers("/api/v1/airplane/**").hasAnyRole("AIRPLANE","ADMIN")
                         .requestMatchers("/user-info","/api/v1/location/**","/user").authenticated()      // 로그인 한 사용자만 접근 가능

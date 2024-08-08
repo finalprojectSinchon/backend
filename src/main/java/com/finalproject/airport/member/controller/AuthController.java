@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "회원 관련 컨트롤러", description = "회원 관리 및 인증 관련 API")
@@ -134,5 +135,40 @@ public class AuthController {
         } catch (MessagingException e) {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류입니다.",null));
         }
+    }
+
+    @GetMapping("/api/v1/admin/newUser")
+    public ResponseEntity<?> getNewUser() {
+
+        try {
+            List<NewUserDTO> newUserDTO = joinService.getNewUser();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공", newUserDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류입니다.",null));
+        }
+    }
+
+    @GetMapping("/api/v1/admin/newUser/{userCode}")
+    public ResponseEntity<?> getNewUserByCode(@PathVariable int userCode) {
+
+        try {
+            NewUserDetailDTO userDetail = joinService.getNewUserByCode(userCode);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공", userDetail));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류입니다.",null));
+        }
+
+    }
+
+    @PostMapping("/api/v1/admin/newUser")
+    public ResponseEntity<?> setRoleAndDepartment(@RequestBody SetRoleAndDepartmentDTO setRoleAndDepartmentDTO) {
+
+        try {
+            joinService.setRoleAndDepartment(setRoleAndDepartmentDTO);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"조회 성공", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR,"서버 오류입니다.",null));
+        }
+
     }
 }
