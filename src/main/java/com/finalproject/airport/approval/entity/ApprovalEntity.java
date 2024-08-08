@@ -3,6 +3,7 @@ package com.finalproject.airport.approval.entity;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.common.BaseTimeEntity;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.store.entity.StoreEntity;
@@ -18,7 +19,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder(toBuilder = true)
-public class ApprovalEntity {
+public class ApprovalEntity extends BaseTimeEntity {
 
     @Id
     @Column(name = "APPROVAL_CODE", nullable = false)
@@ -56,6 +57,10 @@ public class ApprovalEntity {
     @ManyToOne
     @JoinColumn(name = "FACILITY_CODE")
     private FacilitiesEntity facilities;
+
+    @Column(name="CHECKED")
+    private String checked;
+    
 
     protected ApprovalEntity() {
     }
