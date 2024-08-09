@@ -1,6 +1,6 @@
 package com.finalproject.airport.airplane.gate.entity;
 
-import com.finalproject.airport.airplane.airplane.Entity.Airplane;
+import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -47,7 +47,7 @@ public class Gate {
 
     @ManyToOne
     @JoinColumn(name = "AIRPLANE_CODE")
-    private Airplane airplane;
+    private DepartureAirplane departureAirplane;
 
     @Column(name = "SCHEDULE_DATE_TIME")
     private Timestamp scheduleDateTime;
