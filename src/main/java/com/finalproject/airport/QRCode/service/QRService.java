@@ -12,6 +12,9 @@ import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
+import com.finalproject.airport.gptapi.dto.request.GPTRequestDTO;
+import com.finalproject.airport.gptapi.dto.response.GPTResponseDTO;
+import com.finalproject.airport.gptapi.service.GPTService;
 import com.finalproject.airport.inspection.entity.InspectionEntity;
 import com.finalproject.airport.inspection.respository.InspectionRepository;
 import com.finalproject.airport.location.entity.LocationEntity;
@@ -31,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +59,8 @@ public class QRService {
     private final LocationRepository locationRepository;
 
     private final InspectionRepository inspectionRepository;
+
+    private final GPTService gptService;
 
     public ResponseEntity<?> getQRList(String qrType) {
 
@@ -310,7 +316,37 @@ public class QRService {
         }
 
         InspectionEntity inspectionEntity = inspectionEntityBuilder.build();
+
+        String inspectionContent = inspectionEntity.toString();
+
+
+        GPTRequestDTO.Message message = new GPTRequestDTO.Message();
+        message.setRole("user");
+        message.setContent(inspectionContent);
+
+        GPTRequestDTO gptRequestDTO = new GPTRequestDTO();
+
+        gptRequestDTO.setMessages(Collections.singletonList(message));
+
+        String prompt = "\"GPT 모델에게 이 프롬프트를 사용하여 보고서를 작성해달라고 요청하세요. 보고서 제목과 각 섹션의 내용은 아래와 같은 형식을 따릅니다:\n" +
+                "\n" +
+                "1. 보고서 제목은 문서의 상단에 큰 글씨로 작성됩니다.\n" +
+                "2. 서론과 결론 섹션은 간단한 마크다운 형식으로 작성됩니다.\n" +
+                "3. 본문은 마크다운 사용하여 왼쪽과 오른쪽으로 나누어 정보를 제공합니다.\n" +
+                "4. 왼쪽과 오른쪽 섹션에는 제목, 본문, 리스트, 테이블 등을 포함할 수 있습니다.\n" +
+                "5. 마크다운을 적절히 조합하여 문서의 스타일을 조정하세요.\n" +
+                "6. 2000 자 정도를 채워주세요." +
+                "7. 한국어로 작성하세요!" +
+                "8. ";
+
+        GPTResponseDTO createText = gptService.getChatCompletion(gptRequestDTO, prompt);
+
+        inspectionEntity = inspectionEntity.toBuilder()
+                .text(createText.getChoices().get(0).getMessage().getContent())
+                .build();
+
         inspectionRepository.save(inspectionEntity);
+
         return ResponseEntity.ok().build();
     }
 
