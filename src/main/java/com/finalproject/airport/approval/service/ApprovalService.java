@@ -143,39 +143,26 @@ public class ApprovalService {
     public void approveGate(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        Integer originalGateCode = approvalEntity.getCode();
+        approvalEntity = approvalEntity.toBuilder().status("Y").build();
+        approvalRepository.save(approvalEntity);
+    }
 
-        //원래 체크인 카운터 조회 및 수정
-        Gate originalGateEntityOptional = gateRepository.findBygateCode(originalGateCode);
-        originalGateEntityOptional = originalGateEntityOptional.toBuilder().isActive("N").build();
-        gateRepository.save(originalGateEntityOptional);
+    @Transactional
+    public void approveBaggageClaim(Integer approvalCode) {
+        // 공통 승인 로직 호출
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        //수정된 것 가지고 오기
-        Integer modifiedGateCode = approvalEntity.getGate().getGateCode();
+        approvalEntity = approvalEntity.toBuilder().status("Y").build();
+        approvalRepository.save(approvalEntity);
 
-        Gate modifiedGateCodeOptional = gateRepository.findBygateCode(modifiedGateCode);
-        modifiedGateCodeOptional = modifiedGateCodeOptional.toBuilder().isActive("Y").build();
-        gateRepository.save(modifiedGateCodeOptional);
     }
 
     @Transactional
     public void approveCheckInCounter(Integer approvalCode) {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
 
-        //원해 체크인 카운터 코드 가져오기
-        Integer originalCheckInCounterCode = approvalEntity.getCode();
-
-        //원래 체크인 카운터 조회 및 수정
-        CheckinCounter originalCheckinCounterEntityOptional = checkinCounterRepository.findBycheckinCounterCode(originalCheckInCounterCode);
-        originalCheckinCounterEntityOptional = originalCheckinCounterEntityOptional.toBuilder().isActive("N").build();
-        checkinCounterRepository.save(originalCheckinCounterEntityOptional);
-
-        //수정된 것 가지고 오기
-        Integer modifiedCheckInCounterCode = approvalEntity.getCheckinCounter().getCheckinCounterCode();
-
-        CheckinCounter modifiedCheckInCounterCodeOptional = checkinCounterRepository.findBycheckinCounterCode(modifiedCheckInCounterCode);
-        modifiedCheckInCounterCodeOptional = modifiedCheckInCounterCodeOptional.toBuilder().isActive("Y").build();
-        checkinCounterRepository.save(modifiedCheckInCounterCodeOptional);
+        approvalEntity = approvalEntity.toBuilder().status("Y").build();
+        approvalRepository.save(approvalEntity);
     }
 
     @Transactional
@@ -189,28 +176,6 @@ public class ApprovalService {
 
     }
 
-
-    @Transactional
-    public void approveBaggageClaim(Integer approvalCode) {
-        // 공통 승인 로직 호출
-        ApprovalEntity approvalEntity = approveCommon(approvalCode);
-
-        // 원래 수하물 수취대 코드 가져오기
-        Integer originalBaggageClaimCode = approvalEntity.getCode();
-
-        // 원래 수하물 수취대 엔티티 조회 및 수정
-        BaggageClaim originalBaggageClaimEntityOptional = baggageClaimRepository.findBybaggageClaimCode(originalBaggageClaimCode);
-        originalBaggageClaimEntityOptional = originalBaggageClaimEntityOptional.toBuilder().isActive("N").build();
-        baggageClaimRepository.save(originalBaggageClaimEntityOptional);
-
-        // 수정된 수하물 수취대 코드 가져오기
-        Integer modifiedBaggageClaimCode = approvalEntity.getBaggageClaim().getBaggageClaimCode();
-
-        // 수정된 수하물 수취대 엔티티 조회 및 수정
-        BaggageClaim modifiedBaggageClaimEntityOptional = baggageClaimRepository.findBybaggageClaimCode(modifiedBaggageClaimCode);
-        modifiedBaggageClaimEntityOptional = modifiedBaggageClaimEntityOptional.toBuilder().isActive("Y").build();
-        baggageClaimRepository.save(modifiedBaggageClaimEntityOptional);
-    }
 
 
 

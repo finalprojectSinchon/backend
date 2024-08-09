@@ -81,7 +81,7 @@ public class ApprovalEntity extends BaseTimeEntity {
         //this.code = code;
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, String status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,int code) {
+    public ApprovalEntity(ApprovalTypeEntity type, String status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,Integer code) {
         this.type = type;
         this.status = status;
         this.gate = gate;

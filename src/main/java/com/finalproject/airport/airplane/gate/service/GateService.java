@@ -72,7 +72,8 @@ public class GateService {
         int result = 0;
 
         try{
-            Gate gate =  Gate.builder()
+            Gate gate =  gateRepository.findAllBygateCode(modifyGate.getGateCode());
+            gate = gate.toBuilder()
                     .manager(modifyGate.getManager())
                     .type(modifyGate.getGateType())
                     .note(modifyGate.getNote())
@@ -80,11 +81,11 @@ public class GateService {
                     .status(modifyGate.getStatus())
                     .lastInspectionDate(modifyGate.getLastInspectionDate())
                     .registrationDate(modifyGate.getRegistrationDate())
-                    .isActive("N")
                     .build();
             System.out.println("gate = " + gate);
             Gate gate1 = gateRepository.save(gate);
             System.out.println("gate1 = " + gate1);
+
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
                     "N",
@@ -94,7 +95,7 @@ public class GateService {
                     null,
                     null,
                     null,
-                    modifyGate.getGateCode()
+                    null
 
             );
             approvalRepository.save(approval);
