@@ -5,6 +5,7 @@ import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity(name = "baggageclamim")
@@ -45,9 +46,8 @@ public class BaggageClaim extends BaseTimeEntity {
     @Column(name = "NOTE")
     private String note;
 
-    @ManyToOne
-    @JoinColumn(name = "AIRPLANE_CODE")
-    private DepartureAirplane departureAirplane;
+    @Column(name = "SCHEDULE_DATE_TIME")
+    private Timestamp scheduleDateTime;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
@@ -59,6 +59,11 @@ public class BaggageClaim extends BaseTimeEntity {
 
     public void setIsActive(String isActive) {
         this.isActive = isActive;
+    }
+
+    public void updateBaggageClaim(Timestamp scheduleDateTime, String airline, String status) {
+        this.scheduleDateTime = scheduleDateTime;
+        this.status = status;
     }
 
 //

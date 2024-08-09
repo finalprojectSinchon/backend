@@ -7,6 +7,7 @@ import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -50,5 +51,7 @@ public class BaggageClaimDTO {
     @Schema(description = "지연 시간")
     private Integer delayTime;
 
+    @Schema(description = "비행기 도착시간")
+    private Timestamp schedule_date_time;
 
 }
