@@ -63,6 +63,7 @@ public class ApprovalController {
         boolean baggageClaimApproved = false;
         boolean storageApproved = false;
         boolean facilitiesApproved = false;
+        boolean storeApproved = false;
         String errorMessage = null;
 
         ApprovalEntity approval = approvalService.approveCommon(approvalCode);
@@ -106,6 +107,15 @@ public class ApprovalController {
             }
 
             try {
+                // 점포 승인처리
+                approvalService.approveStore(approvalCode);
+                storeApproved = true;
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                errorMessage = e.getMessage();
+            }
+
+            try {
                 // 편의시설 승인 처리
                 approvalService.approveFacilities(approvalCode);
                 facilitiesApproved = true;
@@ -113,7 +123,9 @@ public class ApprovalController {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
-        } else if("등록" == approval.getType().toString()) {
+        }
+
+        else if("등록" == approval.getType().toString()) {
             try {
                 if(approval.getGate() != null) {
                     // 게이트 코드 승인처리
@@ -152,7 +164,7 @@ public class ApprovalController {
             try {
                 if(approval.getStorage()!= null) {
                     // 창고 승인처리
-                    approvalService.approveStorage(approvalCode);
+                    approvalService.saveStorageApproval(approval);
                     storageApproved = true;
                 }
             } catch (RuntimeException e) {
@@ -171,7 +183,7 @@ public class ApprovalController {
             }
         }
 
-            boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved || facilitiesApproved;
+            boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved || facilitiesApproved || storeApproved;
             HttpStatus status = anyApproved ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
             String message = anyApproved ? "승인 처리된 시설물은 다음과 같다 :  " : "승인 처리 실패";
 
@@ -182,6 +194,7 @@ public class ApprovalController {
             if (baggageClaimApproved) message += " (Baggage Claim)";
             if (storageApproved) message += " (Storage)";
             if (facilitiesApproved) message += " (Facilities)";
+            if (storeApproved) message += "(Store)";
 
             return ResponseEntity.status(status)
                     .body(new ResponseDTO(status, message, errorMessage));
