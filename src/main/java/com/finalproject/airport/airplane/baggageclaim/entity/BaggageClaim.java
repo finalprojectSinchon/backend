@@ -52,6 +52,9 @@ public class BaggageClaim extends BaseTimeEntity {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
+    @Column(name = "AIRLINE")
+    private String airline;
+
     // Getter and Setter
     public String getIsActive() {
         return isActive;
@@ -64,6 +67,7 @@ public class BaggageClaim extends BaseTimeEntity {
     public void updateBaggageClaim(Timestamp scheduleDateTime, String airline, String status) {
         this.scheduleDateTime = scheduleDateTime;
         this.status = status;
+        this.airline = airline;
     }
 
 //

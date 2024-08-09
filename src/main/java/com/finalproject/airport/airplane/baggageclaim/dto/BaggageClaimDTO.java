@@ -52,6 +52,6 @@ public class BaggageClaimDTO {
     private Integer delayTime;
 
     @Schema(description = "비행기 도착시간")
-    private Timestamp schedule_date_time;
+    private Timestamp scheduleDateTime;
 
 }
