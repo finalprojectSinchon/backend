@@ -1,15 +1,11 @@
 package com.finalproject.airport.airplane.checkincounter.service;
 
-import com.finalproject.airport.airplane.airplane.Entity.Airplane;
-import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
+import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
+import com.finalproject.airport.airplane.airplane.repository.DepartureAirplaneRepository;
 import com.finalproject.airport.airplane.checkincounter.dto.CheckinCounterDTO;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
 import com.finalproject.airport.airplane.checkincounter.repository.CheckinCounterRepository;
-import com.finalproject.airport.airplane.gate.dto.GateDTO;
-import com.finalproject.airport.airplane.gate.entity.Gate;
-import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
-import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
@@ -25,16 +21,16 @@ import java.util.stream.Collectors;
 public class CheckinCounterService {
 
     private final CheckinCounterRepository repository;
-    private final AirplaneRepository airplaneRepository;
+    private final DepartureAirplaneRepository departureAirplaneRepository;
     private final ModelMapper modelMapper;
     private final ApprovalService approvalService;
     private final ApprovalRepository approvalRepository;
 
     @Autowired
-    public CheckinCounterService(CheckinCounterRepository repository, ModelMapper modelMapper, AirplaneRepository airplaneRepository, ApprovalService approvalService, ApprovalRepository approvalRepository){
+    public CheckinCounterService(CheckinCounterRepository repository, ModelMapper modelMapper, DepartureAirplaneRepository departureAirplaneRepository, ApprovalService approvalService, ApprovalRepository approvalRepository){
         this.repository = repository;
         this.modelMapper = modelMapper;
-        this.airplaneRepository = airplaneRepository;
+        this.departureAirplaneRepository = departureAirplaneRepository;
         this.approvalService = approvalService;
         this.approvalRepository = approvalRepository;
     }
@@ -47,10 +43,10 @@ public class CheckinCounterService {
 
         try {
 
-        Airplane airplane = airplaneRepository.findByAirplaneCode(chkinCounter.getAirplaneCode());
+        DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(chkinCounter.getAirplaneCode());
 
         CheckinCounter insertchkinCounter = CheckinCounter.builder()
-                .airplane(airplane) // DTO에서 가져온 비행기 정보
+                .departureAirplane(departureAirplane) // DTO에서 가져온 비행기 정보
                 .lastInspectionDate(chkinCounter.getLastInspectionDate()) // 최근 점검 날짜
                 .location(chkinCounter.getLocation()) // 위치
                 .manager(chkinCounter.getManager()) // 담당자

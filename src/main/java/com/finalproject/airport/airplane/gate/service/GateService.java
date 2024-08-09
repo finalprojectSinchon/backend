@@ -1,15 +1,11 @@
 package com.finalproject.airport.airplane.gate.service;
 
-import com.finalproject.airport.airplane.airplane.Entity.Airplane;
-import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
-import com.finalproject.airport.airplane.checkincounter.dto.CheckinCounterDTO;
-import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounter;
+import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
+import com.finalproject.airport.airplane.airplane.repository.DepartureAirplaneRepository;
 import com.finalproject.airport.airplane.gate.dto.GateDTO;
 import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;
-import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
-import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
@@ -31,15 +27,15 @@ public class GateService {
 
     private final ApprovalService approvalService;
 
-    private final AirplaneRepository airplaneRepository;
+    private final DepartureAirplaneRepository departureAirplaneRepository;
     private final ApprovalRepository approvalRepository;
 
-    public GateService(GateRepository gateRepository, ModelMapper modelMapper, ApprovalService approvalService , AirplaneRepository airplaneRepository, ApprovalRepository approvalRepository){
+    public GateService(GateRepository gateRepository, ModelMapper modelMapper, ApprovalService approvalService , DepartureAirplaneRepository departureAirplaneRepository, ApprovalRepository approvalRepository){
 
         this.gateRepository = gateRepository;
         this.modelMapper = modelMapper;
         this.approvalService = approvalService;
-        this.airplaneRepository = airplaneRepository;
+        this.departureAirplaneRepository = departureAirplaneRepository;
         this.approvalRepository = approvalRepository;
     }
 
@@ -123,10 +119,10 @@ public class GateService {
 
         try {
 
-            Airplane airplane = airplaneRepository.findByAirplaneCode(gateDTO.getAirplaneCode());
+            DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(gateDTO.getAirplaneCode());
 
             Gate insertGate = Gate.builder()
-                    .airplane(airplane) // DTO에서 가져온 비행기 정보
+                    .departureAirplane(departureAirplane) // DTO에서 가져온 비행기 정보
                     .lastInspectionDate(gateDTO.getLastInspectionDate()) // 최근 점검 날짜
                     .location(gateDTO.getLocation()) // 위치
                     .manager(gateDTO.getManager()) // 담당자
@@ -192,19 +188,19 @@ public class GateService {
         LocalDateTime now = LocalDateTime.now();
         System.out.println("여기 왜 실행안돼시발 ");
         // 게이트마다 가장 가까운 비행기를 저장할 맵
-        Map<Integer, Airplane> closestAirplanes = new HashMap<>();
+        Map<Integer, DepartureAirplane> closestAirplanes = new HashMap<>();
         Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
 
         for (int i = 6; i <= 132; i++) {
-            List<Airplane> airplaneList = airplaneRepository.findByGatenumber(i); //게이트 다가져옴 넘버 기준으로
+            List<DepartureAirplane> departureAirplaneList = departureAirplaneRepository.findByGatenumber(i); //게이트 다가져옴 넘버 기준으로
 
-            for (Airplane airplane : airplaneList) {    // 게이트 뽑기
-                LocalDateTime scheduleTime = airplane.getScheduleDateTime().toLocalDateTime(); //시간 뽑는데 로컬데이트타임으로 뽑기
+            for (DepartureAirplane departureAirplane : departureAirplaneList) {    // 게이트 뽑기
+                LocalDateTime scheduleTime = departureAirplane.getScheduleDateTime().toLocalDateTime(); //시간 뽑는데 로컬데이트타임으로 뽑기
 
                 if (scheduleTime.isAfter(now)) {
                     //뽑은 데이터 중 현재 시간기준으로 30분 이후 애들만 가져옴 그러면 이전 시간은 자동으로 거르기
                     if (!closestTimes.containsKey(i) || scheduleTime.isBefore(closestTimes.get(i))) {
-                        closestAirplanes.put(i, airplane);
+                        closestAirplanes.put(i, departureAirplane);
                         closestTimes.put(i, scheduleTime);
                     }
                 }
@@ -242,7 +238,7 @@ public class GateService {
                 );
             } else {
                 gate = Gate.builder()
-                        .airplane(closestAirplane)
+                        .departureAirplane(closestAirplane)
                         .scheduleDateTime(Timestamp.valueOf(scheduleTime))
                         .gateCode(gateNumber)
                         .airline(closestAirplane.getAirline())

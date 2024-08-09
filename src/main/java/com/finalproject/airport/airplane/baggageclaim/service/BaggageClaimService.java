@@ -1,14 +1,12 @@
 package com.finalproject.airport.airplane.baggageclaim.service;
 
 
-import com.finalproject.airport.airplane.airplane.Entity.Airplane;
-import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
+import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
+import com.finalproject.airport.airplane.airplane.repository.DepartureAirplaneRepository;
 import com.finalproject.airport.airplane.baggageclaim.dto.BaggageClaimDTO;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaim;
 import com.finalproject.airport.airplane.baggageclaim.repository.BaggageClaimRepository;
-import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
-import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
@@ -25,14 +23,14 @@ public class BaggageClaimService {
 
     private final BaggageClaimRepository repository;
     private final ModelMapper modelMapper;
-    private final AirplaneRepository airplaneRepository;
+    private final DepartureAirplaneRepository departureAirplaneRepository;
     private final ApprovalService approvalService;
 
     @Autowired
-    public BaggageClaimService(BaggageClaimRepository repository ,ModelMapper modelMapper, AirplaneRepository airplaneRepository, ApprovalService approvalService){
+    public BaggageClaimService(BaggageClaimRepository repository , ModelMapper modelMapper, DepartureAirplaneRepository departureAirplaneRepository, ApprovalService approvalService){
         this.modelMapper = modelMapper;
         this.repository = repository;
-        this.airplaneRepository = airplaneRepository;
+        this.departureAirplaneRepository = departureAirplaneRepository;
         this.approvalService = approvalService;
     }
 
@@ -59,10 +57,10 @@ public class BaggageClaimService {
 
         try {
 
-        Airplane airplane = airplaneRepository.findByAirplaneCode(baggageClaim.getAirplaneCode());
+        DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(baggageClaim.getAirplaneCode());
 
         BaggageClaim insertBaggageClaim = BaggageClaim.builder()
-                .airplane(airplane) // DTO에서 가져온 비행기 정보
+                .departureAirplane(departureAirplane) // DTO에서 가져온 비행기 정보
                 .lastInspectionDate(baggageClaim.getLastInspectionDate()) // 최근 점검 날짜
                 .location(baggageClaim.getLocation()) // 위치
                 .manager(baggageClaim.getManager()) // 담당자

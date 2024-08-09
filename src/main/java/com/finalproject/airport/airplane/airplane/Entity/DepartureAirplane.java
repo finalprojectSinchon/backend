@@ -1,6 +1,5 @@
 package com.finalproject.airport.airplane.airplane.Entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,15 +7,14 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "TBL_AIRPLANE")
+@Table(name = "TBL_AIRPLANE_DE")
 @AllArgsConstructor
 @Getter
 @ToString
 @Builder(toBuilder = true)
-public class Airplane {
+public class DepartureAirplane {
 
     @Id
     @Column(name = "AIRPLANE_CODE", nullable = false)
@@ -40,9 +38,9 @@ public class Airplane {
 
     @Column(name = "CHKINRANGE" )
     private String chkinrange;  // 체크인 카운터
-    
-    @Column(name = "CAROUEL" )
-    private String carousel;       // 수화물 수취대 번호
+
+//    @Column(name = "CAROUEL" )
+//    private String carousel;       // 수화물 수취대 번호
 
     @Column(name = "GATE_NUMBER")
     private int gatenumber;     // 탑승구 번호
@@ -57,6 +55,6 @@ public class Airplane {
     private String isActive;
 
 
-    protected Airplane(){}
+    protected DepartureAirplane(){}
 
 }

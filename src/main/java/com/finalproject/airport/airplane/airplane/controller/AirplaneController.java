@@ -67,6 +67,7 @@ public class AirplaneController {
     public ResponseEntity<ResponseDTO> getapi() {
 
         airPlaneService.fetchArrivalAirplane();
+        airPlaneService.fetchDepartureAirplane();
 
         return ResponseEntity.ok()
                 .body(new ResponseDTO(HttpStatus.OK,"비행기 api 조회 ",null));

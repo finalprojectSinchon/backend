@@ -3,16 +3,16 @@ package com.finalproject.airport.airplane.airplane.service;
 import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.DepartureAirplaneDTO;
-import com.finalproject.airport.airplane.airplane.Entity.Airplane;
-import com.finalproject.airport.airplane.airplane.repository.AirplaneRepository;
-import com.finalproject.airport.airplane.gate.entity.Gate;
+import com.finalproject.airport.airplane.airplane.Entity.ArrivalAirplane;
+import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
+import com.finalproject.airport.airplane.airplane.repository.ArrivalAirplaneRepository;
+import com.finalproject.airport.airplane.airplane.repository.DepartureAirplaneRepository;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,19 +23,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import java.util.HashMap;
 import java.util.List;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.security.Timestamp.*;
 
 @Service
 public class AirPlaneService {
 
-    private final AirplaneRepository airplaneRepository;
+    private final DepartureAirplaneRepository departureAirplaneRepository;
+    private final ArrivalAirplaneRepository airplaneRepository;
     private final ModelMapper modelMapper;
 
     private final String apiKey;
@@ -47,7 +43,8 @@ public class AirPlaneService {
 
 
     @Autowired
-    public AirPlaneService(AirplaneRepository airplaneRepository , ModelMapper modelMapper , GateRepository gateRepository ) {
+    public AirPlaneService(DepartureAirplaneRepository departureAirplaneRepository, ArrivalAirplaneRepository airplaneRepository, ModelMapper modelMapper , GateRepository gateRepository ) {
+        this.departureAirplaneRepository = departureAirplaneRepository;
         this.airplaneRepository = airplaneRepository;
         this.modelMapper = modelMapper;
         Dotenv dotenv = Dotenv.load();
@@ -96,11 +93,19 @@ public class AirPlaneService {
 
     public void fetchDepartureAirplane() {
 
-        String requestUrl = DepartureApiUrl +"serviceKey=" +apiKey+ "&type=json" ;
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = today.format(formatter);
+        String requestUrl = DepartureApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate; ;
         System.out.println("requestUrl = " + requestUrl);
+
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
+                .build();
 
         // WebClient는 Builder 패턴 처럼 사용
         WebClient webClient = WebClient.builder()
+                .exchangeStrategies(exchangeStrategies)
                 .build();
 
         DepartureAirplaneDTO departureAirplaneDTO = webClient.get()
@@ -149,8 +154,8 @@ public class AirPlaneService {
                                     item.getTerminalid(),
                                     item.getChkinrange()
                                     );
-                    Airplane airplane = modelMapper.map(airplaneDTO, Airplane.class);
-                    airplaneRepository.save(airplane);
+                    ArrivalAirplane arrivalAirplane = modelMapper.map(airplaneDTO, ArrivalAirplane.class);
+                    airplaneRepository.save(arrivalAirplane);
 
                 }
             } else {
@@ -166,7 +171,10 @@ public class AirPlaneService {
             List<DepartureAirplaneDTO.Response.Body.Item> items = dto.getResponse().getBody().getItems();
             if (items != null && !items.isEmpty()) {
                 for (DepartureAirplaneDTO.Response.Body.Item item : items) {
-                    System.out.println(item.getScheduleDateTime());
+                    // 공백 또는 null 체크 후 gatenumber 기본값 설정
+                    if (item.getGatenumber() == null || item.getGatenumber().isEmpty()){
+                        item.setGatenumber("999");
+                    }
                     // 원본 문자열을 LocalDateTime으로 변환하기 위한 포맷터
                     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
@@ -189,8 +197,8 @@ public class AirPlaneService {
                                     item.getGatenumber(),
                                     item.getTerminalid()
                             );
-                    Airplane airplane = modelMapper.map(airplaneDTO, Airplane.class);
-                    airplaneRepository.save(airplane);
+                    DepartureAirplane departureAirplane = modelMapper.map(airplaneDTO, DepartureAirplane.class);
+                    departureAirplaneRepository.save(departureAirplane);
 
                 }
             } else {
@@ -204,17 +212,17 @@ public class AirPlaneService {
 
 
     public List<AirplaneDTO> findAll() {
-        List<Airplane> AirplaneList = airplaneRepository.findByisActive("Y");
+        List<DepartureAirplane> departureAirplaneList = departureAirplaneRepository.findByisActive("Y");
 
-        return AirplaneList.stream()
+        return departureAirplaneList.stream()
                 .map(airplane -> modelMapper.map(airplane, AirplaneDTO.class))
                 .collect(Collectors.toList());
     }
 
     public AirplaneDTO findByairplaneCode(int airplaneCode) {
 
-        Airplane airplane  = airplaneRepository.findByairplaneCode(airplaneCode);
-        return modelMapper.map(airplane, AirplaneDTO.class);
+        DepartureAirplane departureAirplane = departureAirplaneRepository.findByairplaneCode(airplaneCode);
+        return modelMapper.map(departureAirplane, AirplaneDTO.class);
     }
 
     // 수정하기
@@ -222,30 +230,30 @@ public class AirPlaneService {
     @Transactional
     public void modifybAirplane(int airplaneCode, AirplaneDTO modifyairplane) {
 
-        Airplane airplane = airplaneRepository.findByairplaneCode(airplaneCode);
+        DepartureAirplane departureAirplane = departureAirplaneRepository.findByairplaneCode(airplaneCode);
 
-        airplane =  airplane.toBuilder()
+        departureAirplane =  departureAirplane.toBuilder()
                 .airline(modifyairplane.getAirline())
                 .scheduleDateTime(modifyairplane.getScheduleDateTime())
                 .remark(modifyairplane.getRemark())
                 .airport(modifyairplane.getAirport())
                 .flightId(modifyairplane.getFlightId())
-                .carousel(modifyairplane.getCarousel())
+//                .carousel(modifyairplane.getCarousel())
                 .gatenumber(modifyairplane.getGatenumber())
                 .terminalid(modifyairplane.getTerminalid())
                 .chkinrange(modifyairplane.getChkinrange())
                 .build();
 
-        airplaneRepository.save(airplane);
+        departureAirplaneRepository.save(departureAirplane);
 
     }
 
     @Transactional
     public void softDelete(int airplaneCode) {
-        Airplane airplane = airplaneRepository.findByairplaneCode(airplaneCode);
-        airplane = airplane.toBuilder().isActive("N").build();
+        DepartureAirplane departureAirplane = departureAirplaneRepository.findByairplaneCode(airplaneCode);
+        departureAirplane = departureAirplane.toBuilder().isActive("N").build();
 
-        airplaneRepository.save(airplane);
+        departureAirplaneRepository.save(departureAirplane);
 
     }
 }
