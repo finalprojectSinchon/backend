@@ -1,8 +1,12 @@
 package com.finalproject.airport.storage.service;
 
+import com.finalproject.airport.airplane.gate.dto.GateDTO;
+import com.finalproject.airport.airplane.gate.entity.Gate;
 import com.finalproject.airport.approval.dto.ApprovalDTO;
+import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
+import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.storage.dto.StorageDTO;
 import com.finalproject.airport.storage.dto.StorageRegistDTO;
@@ -12,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +31,8 @@ public class StorageService {
     private final ModelMapper modelMapper;
     @Autowired
     private ApprovalService approvalService;
+    @Autowired
+    private ApprovalRepository approvalRepository;
 
     public List<StorageDTO> selectAllStorage() {
 
@@ -44,41 +51,39 @@ public class StorageService {
 
     }
 
-    public String addStorage(StorageRegistDTO storageRegistDTO) {
+
+    public String addStorage(StorageDTO storageDTO) {
 
         int result = 0;
 
         try {
 
             StorageEntity insertStorage = StorageEntity.builder()
-                    .type(storageRegistDTO.getType())
-                    .status(storageRegistDTO.getStatus())
-                    .location(
-                            storageRegistDTO.getLocation())
-                    .category(storageRegistDTO.getCategory())
-                    .department(storageRegistDTO.getDepartment())
-                    .manager(storageRegistDTO.getManager())
-                    .period(storageRegistDTO.getPeriod())
-                    .date(storageRegistDTO.getDate())
+                    .type(storageDTO.getType())
+                    .status(storageDTO.getStatus())
+                    .location(storageDTO.getLocation())
+                    .category(storageDTO.getCategory())
+                    .department(storageDTO.getDepartment())
+                    .manager(storageDTO.getManager())
+                    .period(storageDTO.getPeriod())
+                    .date(storageDTO.getDate())
                     .isActive("N")
                     .build();
 
-            //StorageEntity storageEntity = modelMapper.map(storageRegistDTO, StorageEntity.class);
             StorageEntity storageEntity = storageRepository.save(insertStorage);
             System.out.println("storageEntity = " + storageEntity);
 
             //승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
+            ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
                     "N",
                     null,
                     null,
                     null,
-                    storageEntity.getStorageCode(),
+                    storageEntity,
                     null
             );
-            System.out.println("approvalDTO = " + approvalDTO);
-            approvalService.saveStorageApproval(approvalDTO);
+            approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {
@@ -86,58 +91,46 @@ public class StorageService {
         }
         return(result > 0) ? "창고 승인 요청 성공" : "창소 승인 요청 실패";
     }
-    /*@Transactional
-    public String insertBaggageClaim(BaggageClaimDTO baggageClaim) {
+
+
+
+    @Transactional
+    public String updateStorage(StorageDTO modifyStorage) {
+
 
         int result = 0;
 
-        try {
+        try{
+            StorageEntity storage =  StorageEntity.builder()
+                    .manager(modifyStorage.getManager())
+                    .type(modifyStorage.getType())
+                    .location(modifyStorage.getLocation())
+                    .status(modifyStorage.getStatus())
+                    .department(modifyStorage.getDepartment())
+                    .category(modifyStorage.getCategory())
+                    .isActive("N")
+                    .build();
 
-        Airplane airplane = airplaneRepository.findByAirplaneCode(baggageClaim.getAirplaneCode());
+            StorageEntity storage1 = storageRepository.save(storage);
 
-        BaggageClaim insertBaggageClaim = BaggageClaim.builder()
-                .airplane(airplane) // DTO에서 가져온 비행기 정보
-                .lastInspectionDate(baggageClaim.getLastInspectionDate()) // 최근 점검 날짜
-                .location(baggageClaim.getLocation()) // 위치
-                .manager(baggageClaim.getManager()) // 담당자
-                .note(baggageClaim.getNote()) // 비고
-                .status(baggageClaim.getStatus()) // 상태
-                .type(baggageClaim.getType()) // 타입
-                .isActive("N") // 활성화/비활성화 필드 추가
-                .build();
-
-            BaggageClaim baggageClaim1 = repository.save(insertBaggageClaim);
-
-            // 승인 정보 저장
-            ApprovalDTO approvalDTO = new ApprovalDTO(
-                    ApprovalTypeEntity.등록,
-                    ApprovalStatusEntity.N,
+            ApprovalEntity approval = new ApprovalEntity(
+                    ApprovalTypeEntity.수정,
+                    "N",
                     null,
                     null,
-                    baggageClaim1.getBaggageClaimCode(),
-                    null
+                    null,
+                    storage1,
+                    null,
+                    null,
+                    modifyStorage.getStorageCode()
+
             );
-
-            approvalService.saveBaggageClaimApproval(approvalDTO);
-
+            approvalRepository.save(approval);
             result = 1;
-        } catch (Exception e) {
+        } catch (Exception e){
             throw new RuntimeException(e);
         }
-
-        return (result > 0) ? "수화물 수취대 승인 요청 성공" : "수화물 수취대 승인 요청 실패";
-
-
-
-
-    }*/
-
-
-    public void updateStorage(int storageCode, StorageDTO storageDTO) {
-        storageDTO.setStorageCode(storageCode);
-        storageDTO.setStatus("Y");
-        StorageEntity storageEntity = modelMapper.map(storageDTO, StorageEntity.class);
-        storageRepository.save(storageEntity);
+        return (result>0) ? "창고 승인 수정 성공" : "창고 승인 수정 실패";
     }
 
     public void softDeleteStorage(int storageCode) {

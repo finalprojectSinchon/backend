@@ -15,6 +15,8 @@ import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
+import com.finalproject.airport.store.entity.StoreEntity;
+import com.finalproject.airport.store.repository.StoreRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,9 +35,10 @@ public class ApprovalService {
     private final BaggageClaimRepository baggageClaimRepository;
     private final StorageRepository storageRepository;
     private final FacilitiesRepository facilitiesRepository;
+    private final StoreRepository storeRepository;
 
     @Autowired
-    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository, CheckinCounterRepository checkinCounterRepository, BaggageClaimRepository baggageClaimRepository, StorageRepository storageRepository, FacilitiesRepository facilitiesRepository) {
+    public ApprovalService(ApprovalRepository repository, ModelMapper modelMapper, GateRepository gateRepository, CheckinCounterRepository checkinCounterRepository, BaggageClaimRepository baggageClaimRepository, StorageRepository storageRepository, FacilitiesRepository facilitiesRepository, StoreRepository storeRepository) {
         this.approvalRepository = repository;
         this.modelMapper = modelMapper;
         this.gateRepository = gateRepository;
@@ -43,6 +46,7 @@ public class ApprovalService {
         this.baggageClaimRepository = baggageClaimRepository;
         this.storageRepository = storageRepository;
         this.facilitiesRepository = facilitiesRepository;
+        this.storeRepository = storeRepository;
     }
 
     public List<ApprovalEntity> findAll() {
@@ -88,21 +92,14 @@ public class ApprovalService {
     }
 
     @Transactional
-    public void saveStorageApproval(ApprovalDTO approvalDTO){
+    public void saveStorageApproval(ApprovalEntity approval){
 
-        StorageEntity storage = storageRepository.findBystorageCode(approvalDTO.getStorageCode());
-        ApprovalEntity approvalEntity = new ApprovalEntity(
-                approvalDTO.getType(),
-                approvalDTO.getStatus(),
-                null,
-                null,
-                null,
-                storage,
-                null
-        );
+        StorageEntity storage = storageRepository.findBystorageCode(approval.getStorage().getStorageCode());
+        storage = storage.toBuilder().isActive("Y").build();
+        storageRepository.save(storage);
+        approval = approval.toBuilder().status("Y").build();
+        approvalRepository.save(approval);
 
-        System.out.println("approvalEntity = " + approvalEntity);
-        approvalRepository.save(approvalEntity);
     }
 
     @Transactional
@@ -222,25 +219,69 @@ public class ApprovalService {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
         System.out.println("approvalEntity = " + approvalEntity);
 
-        // 원래 수하물 수취대 코드 가져오기
+        // 원래 편의시설 코드 가져오기
         Integer originalFacilitiesCode = approvalEntity.getCode();
         System.out.println("originalFacilitiesCode = " + originalFacilitiesCode);
 
-        // 원래 수하물 수취대 엔티티 조회 및 수정
+        // 원래 편의시설 엔티티 조회 및 수정
         FacilitiesEntity originalFacilitiesEntityOptional = facilitiesRepository.findByfacilitiesCode(originalFacilitiesCode);
         System.out.println("originalFacilitiesEntityOptional = " + originalFacilitiesEntityOptional);
         originalFacilitiesEntityOptional = originalFacilitiesEntityOptional.toBuilder().isActive("N").build();
         facilitiesRepository.save(originalFacilitiesEntityOptional);
 
-        // 수정된 수하물 수취대 코드 가져오기
+        // 수정된 편의시설 코드 가져오기
         Integer modifiedFacilitiesCode = approvalEntity.getFacilities().getFacilitiesCode();
 
-        // 수정된 수하물 수취대 엔티티 조회 및 수정
+        // 수정된 편의시설 엔티티 조회 및 수정
         FacilitiesEntity modifiedFacilitiesEntityOptional = facilitiesRepository.findByfacilitiesCode(modifiedFacilitiesCode);
         modifiedFacilitiesEntityOptional = modifiedFacilitiesEntityOptional.toBuilder().isActive("Y").build();
         facilitiesRepository.save(modifiedFacilitiesEntityOptional);
     }
 
+
+    @Transactional
+    public void approveStorage(Integer approvalCode){
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+
+        Integer originalStorageCode = approvalEntity.getCode();
+        System.out.println("originalStorageCode = " + originalStorageCode);
+
+        // 원래 창고 엔티티 조회 및 수정
+        StorageEntity originalStorageEntityOptional = storageRepository.findBystorageCode(originalStorageCode);
+        System.out.println("originalFacilitiesEntityOptional = " + originalStorageEntityOptional);
+        originalStorageEntityOptional = originalStorageEntityOptional.toBuilder().isActive("N").build();
+        storageRepository.save(originalStorageEntityOptional);
+
+        // 수정된 창고 코드 가져오기
+        Integer modifiedStorageCode = approvalEntity.getStorage().getStorageCode();
+
+        // 수정된 창고 엔티티 조회 및 수정
+        StorageEntity modifiedStorageEntityOptional = storageRepository.findBystorageCode(modifiedStorageCode);
+        modifiedStorageEntityOptional = modifiedStorageEntityOptional.toBuilder().isActive("Y").build();
+        storageRepository.save(modifiedStorageEntityOptional);
+    }
+
+
+    @Transactional
+    public void approveStore(Integer approvalCode){
+        ApprovalEntity approvalEntity = approveCommon(approvalCode);
+
+        Integer originalStoreCode = approvalEntity.getCode();
+
+        // 원래 창고 엔티티 조회 및 수정
+        StoreEntity originalStoreEntityOptional = storeRepository.findBystoreId(originalStoreCode);
+        System.out.println("originalStoreEntityOptional = " + originalStoreEntityOptional);
+        originalStoreEntityOptional = originalStoreEntityOptional.toBuilder().isActive("N").build();
+        storeRepository.save(originalStoreEntityOptional);
+
+        // 수정된 창고 코드 가져오기
+        Integer modifiedStoreCode = approvalEntity.getStore().getStoreId();
+
+        // 수정된 수하물 수취대 엔티티 조회 및 수정
+        StoreEntity modifiedStoreEntityOptional = storeRepository.findBystoreId(modifiedStoreCode);
+        modifiedStoreEntityOptional = modifiedStoreEntityOptional.toBuilder().isActive("Y").build();
+        storeRepository.save(modifiedStoreEntityOptional);
+    }
 
     public void notiChecked(int approveCode) {
 
@@ -252,27 +293,6 @@ public class ApprovalService {
     }
 
 
-
-    @Transactional
-    public void approveStorage(Integer approvalCode){
-        ApprovalEntity approvalEntity = approveCommon(approvalCode);
-
-        Integer storageCode = approvalEntity.getStorage().getStorageCode();
-        if(storageCode == null){
-            throw new IllegalArgumentException("Storage code must not be null");
-        }
-
-        Optional<StorageEntity> storageEntityOptional = storageRepository.findById(storageCode);
-//        if(storageEntityOptional.isPresent()){
-//            StorageEntity storageEntity = storageEntityOptional.get();
-//            if("N".equals(storageEntity.getIsActive())){
-//                storageEntity.setIsActive("Y");
-//                storageRepository.save(storageEntity);
-//            }
-//        }else {
-//            throw new RuntimeException("Storage not found:" + storageCode);
-//        }
-    }
 
 
 }

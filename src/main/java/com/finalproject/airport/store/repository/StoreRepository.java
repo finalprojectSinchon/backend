@@ -1,5 +1,6 @@
 package com.finalproject.airport.store.repository;
 
+import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.store.entity.StoreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +11,8 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Integer> {
 
     List<StoreEntity> findByIsActive(String y);
 
+
+    StoreEntity findBystoreId(Integer storeId);
 
 
 
