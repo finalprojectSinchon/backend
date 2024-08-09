@@ -63,57 +63,75 @@ public class ApprovalController {
         boolean baggageClaimApproved = false;
         boolean storageApproved = false;
         boolean facilitiesApproved = false;
+        boolean storeApproved = false;
         String errorMessage = null;
 
         ApprovalEntity approval = approvalService.approveCommon(approvalCode);
 
         if ("수정" == approval.getType().toString()) {
             try {
+                if(approval.getGate() != null) {
                 // 게이트 코드 승인처리
                 approvalService.approveGate(approvalCode);
-                gateApproved = true;
+                gateApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getCheckinCounter() != null) {
                 // 체크인 카운트 승인처리
                 approvalService.approveCheckInCounter(approvalCode);
-                checkInCounterApproved = true;
+                checkInCounterApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getBaggageClaim() != null) {
                 // 수하물 수취대 승인처리
                 approvalService.approveBaggageClaim(approvalCode);
 
-                baggageClaimApproved = true;
+                baggageClaimApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getStorage() != null) {
                 // 창고 승인처리
                 approvalService.approveStorage(approvalCode);
-                storageApproved = true;
+                storageApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
-                // 편의시설 승인 처리
-                approvalService.approveFacilities(approvalCode);
-                facilitiesApproved = true;
+                if(approval.getStore() != null) {
+                // 점포 승인처리
+                approvalService.approveStore(approvalCode);
+                storeApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
-        } else if("등록" == approval.getType().toString()) {
+
+            try {
+                if(approval.getFacilities() != null) {
+                // 편의시설 승인 처리
+                approvalService.approveFacilities(approvalCode);
+                facilitiesApproved = true;}
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                errorMessage = e.getMessage();
+            }
+        }
+
+        else if("등록" == approval.getType().toString()) {
             try {
                 if(approval.getGate() != null) {
                     // 게이트 코드 승인처리
@@ -152,7 +170,7 @@ public class ApprovalController {
             try {
                 if(approval.getStorage()!= null) {
                     // 창고 승인처리
-                    approvalService.approveStorage(approvalCode);
+                    approvalService.saveStorageApproval(approval);
                     storageApproved = true;
                 }
             } catch (RuntimeException e) {
@@ -171,7 +189,7 @@ public class ApprovalController {
             }
         }
 
-            boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved || facilitiesApproved;
+            boolean anyApproved = gateApproved || checkInCounterApproved || baggageClaimApproved || storageApproved || facilitiesApproved || storeApproved;
             HttpStatus status = anyApproved ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
             String message = anyApproved ? "승인 처리된 시설물은 다음과 같다 :  " : "승인 처리 실패";
 
@@ -182,6 +200,7 @@ public class ApprovalController {
             if (baggageClaimApproved) message += " (Baggage Claim)";
             if (storageApproved) message += " (Storage)";
             if (facilitiesApproved) message += " (Facilities)";
+            if (storeApproved) message += "(Store)";
 
             return ResponseEntity.status(status)
                     .body(new ResponseDTO(status, message, errorMessage));

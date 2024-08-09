@@ -66,9 +66,9 @@ public class StorageController {
     })
 
     @PostMapping("/storage")    // 등록
-    public ResponseEntity<?> addStorage(@RequestBody StorageRegistDTO storageRegistDTO) {
+    public ResponseEntity<?> addStorage(@RequestBody StorageDTO storageDTO) {
         try{
-            storageService.addStorage(storageRegistDTO);
+            storageService.addStorage(storageDTO);
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.CREATED,"창고 등록에 성공하였습니다",null));
         } catch (Exception e) {
@@ -83,14 +83,14 @@ public class StorageController {
             @ApiResponse(responseCode = "500", description = "수정 중 서버 오류 발생")
     })
     @PutMapping("/storage/{storageCode}")   // 수정
-    public ResponseEntity<?> updateStorage(@PathVariable int storageCode, @RequestBody StorageDTO storageDTO) {
+    public ResponseEntity<?> updateStorage(@RequestBody StorageDTO storageDTO) {
             try {
-                storageService.updateStorage(storageCode, storageDTO);
+                String resultMessage = storageService.updateStorage(storageDTO);
+                return ResponseEntity.ok(resultMessage);
 
-                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "수정에 성공했습니다.", null));
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
 
-                return ResponseEntity.internalServerError().build();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
     }
 
