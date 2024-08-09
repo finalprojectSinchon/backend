@@ -92,8 +92,17 @@ public class ManagersService {
                     UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
                     findUserList.add(userFindManagerDTO);
                 }
-            case "inspection" :
+                break;
             case "gate" :
+                List<ManagersEntity> findUsrCodeForGate = managersRepository.findAllByGateCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUsrCodeForGate) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                }
+                break;
+            case "inspection" :
+
         }
 
         managerInfo.put("Manager",findUserList);
@@ -219,8 +228,20 @@ public class ManagersService {
                             .build();
                     managersRepository.save(managersEntity);
                 }
-            case "inspection" :
             case "gate" :
+                List<ManagersEntity> managerForGateList = managersRepository.findAllByGateCodeAndIsActive(airportCode,"Y");
+                for(ManagersEntity manager : managerForGateList) {
+                    manager.setIsActive("N");
+                }
+                for(ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow(null);
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .gateCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
+            case "inspection" :
         }
 
     }

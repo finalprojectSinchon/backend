@@ -103,7 +103,8 @@ public class CheckinCounterService {
         int result = 0;
 
         try {
-            CheckinCounter checkinCounter =  CheckinCounter.builder()
+            CheckinCounter checkinCounter =  repository.findBycheckinCounterCode(modifyCheckinCounter.getCheckinCounterCode());
+                    checkinCounter = checkinCounter.toBuilder()
                     .location(modifyCheckinCounter.getLocation())
                     .type(modifyCheckinCounter.getType())
                     .status(modifyCheckinCounter.getStatus())
@@ -111,7 +112,6 @@ public class CheckinCounterService {
                     .lastInspectionDate(modifyCheckinCounter.getLastInspectionDate())
                     .manager(modifyCheckinCounter.getManager())
                     .note(modifyCheckinCounter.getNote())
-                    .isActive("N")
                     .build();
 
             CheckinCounter checkinCounter1 = repository.save(checkinCounter);
@@ -125,7 +125,7 @@ public class CheckinCounterService {
                     null,
                     null,
                     null,
-                    modifyCheckinCounter.getCheckinCounterCode()
+                    null
 
             );
             approvalRepository.save(approval);

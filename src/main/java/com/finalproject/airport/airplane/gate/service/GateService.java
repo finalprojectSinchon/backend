@@ -9,6 +9,9 @@ import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
+import com.finalproject.airport.manager.entity.ManagersEntity;
+import com.finalproject.airport.manager.repository.ManagersRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GateService {
 
     private final GateRepository gateRepository;
@@ -30,26 +34,29 @@ public class GateService {
     private final DepartureAirplaneRepository departureAirplaneRepository;
     private final ApprovalRepository approvalRepository;
 
-    public GateService(GateRepository gateRepository, ModelMapper modelMapper, ApprovalService approvalService , DepartureAirplaneRepository departureAirplaneRepository, ApprovalRepository approvalRepository){
+    private final ManagersRepository managersRepository;
 
-        this.gateRepository = gateRepository;
-        this.modelMapper = modelMapper;
-        this.approvalService = approvalService;
-        this.departureAirplaneRepository = departureAirplaneRepository;
-        this.approvalRepository = approvalRepository;
-    }
 
 
     public List<GateDTO> findAll() {
 
-
         List<Gate> gateList = gateRepository.findByisActive("Y");
 
-        return gateList.stream()
+        List<GateDTO> gateDTOList = gateList.stream()
                 .map(gate -> modelMapper.map(gate, GateDTO.class))
                 .collect(Collectors.toList());
-    }
 
+        for (GateDTO gateDTO : gateDTOList) {
+            List<ManagersEntity> managersEntityList = managersRepository.findAllByGateCode(gateDTO.getGateCode());
+            List<String> managerNames = new ArrayList<>();
+            for (ManagersEntity managersEntity : managersEntityList) {
+                managerNames.add(managersEntity.getUser().getUserName());
+            }
+            gateDTO.setManager(String.join(",", managerNames));
+        }
+
+        return gateDTOList;
+    }
 
 
 
@@ -68,7 +75,8 @@ public class GateService {
         int result = 0;
 
         try{
-            Gate gate =  Gate.builder()
+            Gate gate =  gateRepository.findAllBygateCode(modifyGate.getGateCode());
+            gate = gate.toBuilder()
                     .manager(modifyGate.getManager())
                     .type(modifyGate.getGateType())
                     .note(modifyGate.getNote())
@@ -76,11 +84,11 @@ public class GateService {
                     .status(modifyGate.getStatus())
                     .lastInspectionDate(modifyGate.getLastInspectionDate())
                     .registrationDate(modifyGate.getRegistrationDate())
-                    .isActive("N")
                     .build();
             System.out.println("gate = " + gate);
             Gate gate1 = gateRepository.save(gate);
             System.out.println("gate1 = " + gate1);
+
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
                     "N",
@@ -90,7 +98,7 @@ public class GateService {
                     null,
                     null,
                     null,
-                    modifyGate.getGateCode()
+                    null
 
             );
             approvalRepository.save(approval);
