@@ -9,10 +9,12 @@ import com.finalproject.airport.airplane.airplane.repository.ArrivalAirplaneRepo
 import com.finalproject.airport.airplane.airplane.repository.DepartureAirplaneRepository;
 import com.finalproject.airport.airplane.gate.repository.GateRepository;
 import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -54,7 +56,8 @@ public class AirPlaneService {
         this.gateRepository = gateRepository;
     }
 
-
+    @Scheduled(cron = "0 0 0 * * *")
+//    @PostConstruct
     public void fetchArrivalAirplane() {
 
         LocalDate today = LocalDate.now();
@@ -90,7 +93,8 @@ public class AirPlaneService {
 
     }
 
-
+    @Scheduled(cron = "0 0 0 * * *")
+//    @PostConstruct
     public void fetchDepartureAirplane() {
 
         LocalDate today = LocalDate.now();

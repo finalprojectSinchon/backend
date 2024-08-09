@@ -12,7 +12,7 @@ public class GateQRDTO {
 
     private int id;
 
-    private int location;
+    private String location;
 
     private GateType type;
 }
