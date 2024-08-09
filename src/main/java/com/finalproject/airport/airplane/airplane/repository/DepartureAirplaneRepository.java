@@ -1,5 +1,6 @@
 package com.finalproject.airport.airplane.airplane.repository;
 
+import com.finalproject.airport.airplane.airplane.Entity.ArrivalAirplane;
 import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,6 @@ public interface DepartureAirplaneRepository extends JpaRepository<DepartureAirp
     List<DepartureAirplane> findAllByGatenumber(int i);
 
     List<DepartureAirplane> findByGatenumber(int i);
+
+    List<ArrivalAirplane> findByCheckinCounter(int i);
 }

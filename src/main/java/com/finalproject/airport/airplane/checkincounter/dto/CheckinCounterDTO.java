@@ -50,4 +50,6 @@ public class CheckinCounterDTO {
     @Schema(description = "지연 시간")
     private Integer delayTime;
 
+    @Schema(description = "항공사")
+    private String airline;
 }

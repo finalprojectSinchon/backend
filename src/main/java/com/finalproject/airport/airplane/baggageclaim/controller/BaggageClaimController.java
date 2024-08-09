@@ -40,6 +40,7 @@ public class BaggageClaimController {
 
         List<BaggageClaimDTO> baggageClaimdata = service.baggageClaimfeach();
         List<BaggageClaimDTO> baggageClaimList = service.findAll();
+
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("baggageClaimList", baggageClaimList);
 

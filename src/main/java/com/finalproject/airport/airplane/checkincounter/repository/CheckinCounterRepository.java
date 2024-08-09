@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, Integer> {
@@ -25,4 +26,5 @@ public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, 
     List<Object[]> findStatusCounts();
 
 
+    Optional<CheckinCounter> findByCheckinCounterCode(Integer checkinCounterNumber);
 }

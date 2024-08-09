@@ -5,6 +5,7 @@ import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity(name = "checkincounter")
@@ -45,9 +46,8 @@ public class CheckinCounter extends BaseTimeEntity {
     @Column(name = "NOTE")
     private String note;
 
-    @ManyToOne
-    @JoinColumn(name = "AIRPLANE_CODE")
-    private DepartureAirplane departureAirplane;
+    @Column(name = "AIRLINE")
+    private String airline;
 
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
@@ -74,4 +74,7 @@ public class CheckinCounter extends BaseTimeEntity {
         }
     }
 
+    public void updateCheckinCounter(Timestamp timestamp, String airline, String status) {
+
+    }
 }

@@ -58,7 +58,9 @@ public class CheckinCounterController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
+        List<CheckinCounterDTO> chkinCounterfeach = service.chkinCounterfeach();
         List<CheckinCounterDTO> chkinCounterList = service.findAll();
+
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("chkinCounterList", chkinCounterList);
 
