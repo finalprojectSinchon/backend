@@ -65,7 +65,7 @@ public class QRService {
                 List<BaggageClaim> baggageClaimList = baggageClaimRepository.findByisActive("Y");
                 List<BaggageClaimQRDTO> baggageClaimDTOList = new ArrayList<>();
                 for (BaggageClaim baggageClaim : baggageClaimList) {
-                    BaggageClaimQRDTO baggageClaimQRDTO = new BaggageClaimQRDTO(baggageClaim.getBaggageClaimCode(),baggageClaim.getType(),baggageClaim.getLocation());
+                    BaggageClaimQRDTO baggageClaimQRDTO = new BaggageClaimQRDTO(baggageClaim.getBaggageClaimCode(),baggageClaim.getType(),baggageClaim.getBaggageClaimCode() + "번 수화물 수취대");
                     baggageClaimDTOList.add(baggageClaimQRDTO);
                 }
                 qrAllDTO.setBaggageClaim(baggageClaimDTOList);
@@ -74,7 +74,7 @@ public class QRService {
                 List<Gate> gateList = gateRepository.findByisActive("Y");
                 List<GateQRDTO> gateQRDTOList = new ArrayList<>();
                 for (Gate gate : gateList) {
-                    GateQRDTO gateQRDTO = new GateQRDTO(gate.getGateCode(),gate.getLocation(),gate.getType());
+                    GateQRDTO gateQRDTO = new GateQRDTO(gate.getGateCode(),gate.getGateCode() + "번 탑승구",gate.getType());
                     gateQRDTOList.add(gateQRDTO);
                 }
                 qrAllDTO.setGate(gateQRDTOList);
@@ -122,7 +122,7 @@ public class QRService {
                     BaggageClaimQRDTO baggageClaimQRDTO = new BaggageClaimQRDTO(
                             baggageClaim.getBaggageClaimCode(),
                             baggageClaim.getType(),
-                            baggageClaim.getLocation()
+                            baggageClaim.getBaggageClaimCode() + "번 수화물 수취대"
                     );
                     allBaggageClaimDTOList.add(baggageClaimQRDTO);
                 }
@@ -133,7 +133,7 @@ public class QRService {
                 for (Gate gate : allGateList) {
                     GateQRDTO gateQRDTO = new GateQRDTO(
                             gate.getGateCode(),
-                            gate.getLocation(),
+                            gate.getGateCode() + "번 탑승구",
                             gate.getType()
                     );
                     allGateQRDTOList.add(gateQRDTO);

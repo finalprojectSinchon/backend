@@ -19,7 +19,7 @@ public class BaggageClaimQRDTO {
 
     private BaggageClaimType type;
 
-    private BaggageClaimLocation location;
+    private String location;
 
 
 }
