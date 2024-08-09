@@ -43,7 +43,7 @@ public class BaggageClaimDTO {
     private String note;
 
     @Schema(description = "비행기 정보(FK)")
-    private AirplaneDTO airplane;
+    private String airplane;
 
     @Schema(description = "비행기 코드")
     private int airplaneCode;
@@ -53,5 +53,8 @@ public class BaggageClaimDTO {
 
     @Schema(description = "비행기 도착시간")
     private Timestamp scheduleDateTime;
+
+    @Schema(description = "항공사")
+    private String airline;
 
 }
