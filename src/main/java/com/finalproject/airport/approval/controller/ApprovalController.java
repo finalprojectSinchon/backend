@@ -70,55 +70,61 @@ public class ApprovalController {
 
         if ("수정" == approval.getType().toString()) {
             try {
+                if(approval.getGate() != null) {
                 // 게이트 코드 승인처리
                 approvalService.approveGate(approvalCode);
-                gateApproved = true;
+                gateApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getCheckinCounter() != null) {
                 // 체크인 카운트 승인처리
                 approvalService.approveCheckInCounter(approvalCode);
-                checkInCounterApproved = true;
+                checkInCounterApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getBaggageClaim() != null) {
                 // 수하물 수취대 승인처리
                 approvalService.approveBaggageClaim(approvalCode);
 
-                baggageClaimApproved = true;
+                baggageClaimApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getStorage() != null) {
                 // 창고 승인처리
                 approvalService.approveStorage(approvalCode);
-                storageApproved = true;
+                storageApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getStore() != null) {
                 // 점포 승인처리
                 approvalService.approveStore(approvalCode);
-                storeApproved = true;
+                storeApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();
             }
 
             try {
+                if(approval.getFacilities() != null) {
                 // 편의시설 승인 처리
                 approvalService.approveFacilities(approvalCode);
-                facilitiesApproved = true;
+                facilitiesApproved = true;}
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 errorMessage = e.getMessage();

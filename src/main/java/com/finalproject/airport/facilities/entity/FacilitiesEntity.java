@@ -38,6 +38,7 @@ public class FacilitiesEntity extends BaseTimeEntity {
 
 
     @PrePersist
+    @PreUpdate
     private void ensureIsActiveDefault() {
         if (this.isActive == null) {
             this.isActive = "Y";
