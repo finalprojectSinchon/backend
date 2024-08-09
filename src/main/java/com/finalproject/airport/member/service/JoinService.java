@@ -170,14 +170,14 @@ public class JoinService {
         String userName = userIdDTO.getUname();
 
         UserEntity user = userRepository.findByUserEmailAndUserName(userEmail , userName);
-
-        if (user != null) {
-
-            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "아이디 찾기완료", user.getUserId() ));
+        String userId = user.getUserId();
+        if (userId.length() >= 3) {
+            userId = userId.substring(0, 1) + "**" + userId.substring(3);
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "아이디 찾기완료", userId));
         } else {
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이름,이메일이 틀립니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이디 오류!.");
         }
+
 
 
     }
