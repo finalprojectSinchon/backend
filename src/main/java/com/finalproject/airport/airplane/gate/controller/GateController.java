@@ -47,7 +47,7 @@ public class GateController {
     public ResponseEntity<ResponseDTO> getGate(){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        List<GateDTO> gatedate = gateService.feach();
+        List<GateDTO> gatedata = gateService.feach();
         List<GateDTO> gateList = gateService.findAll();
         System.out.println(gateList);
         Map<String, Object> responseMap = new HashMap<>();

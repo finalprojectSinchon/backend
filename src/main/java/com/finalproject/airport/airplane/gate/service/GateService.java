@@ -186,8 +186,6 @@ public class GateService {
     @Transactional
     public List<GateDTO> feach() {
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("여기 왜 실행안돼시발 ");
-        // 게이트마다 가장 가까운 비행기를 저장할 맵
         Map<Integer, DepartureAirplane> closestAirplanes = new HashMap<>();
         Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
 

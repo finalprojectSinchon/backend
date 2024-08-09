@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BaggageClaimRepository  extends CrudRepository<BaggageClaim, Integer> {
@@ -19,4 +20,6 @@ public interface BaggageClaimRepository  extends CrudRepository<BaggageClaim, In
 
     @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM baggageclamim cc GROUP BY cc.status")
     List<Object[]> findBaggageClaimStatusCounts();
+
+    Optional<BaggageClaim> findByBaggageClaimCode(Integer baggageClaimNumber);
 }
