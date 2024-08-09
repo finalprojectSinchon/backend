@@ -21,8 +21,6 @@ import java.util.Date;
 @Getter
 @ToString
 @Builder(toBuilder = true)
-
-
 public class InspectionEntity extends BaseTimeEntity {
 
     @Id
@@ -51,7 +49,7 @@ public class InspectionEntity extends BaseTimeEntity {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "text")
+    @Column(name = "text", columnDefinition = "TEXT")
     private String text;
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
