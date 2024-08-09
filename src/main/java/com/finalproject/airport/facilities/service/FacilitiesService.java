@@ -125,18 +125,21 @@ public class FacilitiesService {
 
        try {
 
-           FacilitiesEntity modifyFacility = FacilitiesEntity.builder()
-                   .facilitiesClass(facilitiesDTO.getFacilitiesClass())
-                   .location(facilitiesDTO.getLocation())
-                   .facilitiesName(facilitiesDTO.getFacilitiesName())
-                   .manager(facilitiesDTO.getManager())
-                   .facilitiesType(facilitiesDTO.getType())
-                   .status(facilitiesDTO.getStatus())
-                   .note(facilitiesDTO.getNote())
-                   .isActive("N")
-                   .build();
+           FacilitiesEntity modifyFacility = new FacilitiesEntity(
+                   0,
+                   facilitiesDTO.getStatus(),
+                   facilitiesDTO.getLocation(),
+                   facilitiesDTO.getFacilitiesName(),
+                   facilitiesDTO.getType(),
+                   facilitiesDTO.getManager(),
+                   facilitiesDTO.getFacilitiesClass(),
+                   "N",  // 여기서 isActive를 명시적으로 설정
+                   facilitiesDTO.getNote()
+           );
 
+           System.out.println("modifyFacility = " + modifyFacility);
            FacilitiesEntity facilities1 = facilitiesRepository.save(modifyFacility);
+           System.out.println("facilities1 = " + facilities1);
 
            ApprovalEntity approval = new ApprovalEntity(
                    ApprovalTypeEntity.수정,
