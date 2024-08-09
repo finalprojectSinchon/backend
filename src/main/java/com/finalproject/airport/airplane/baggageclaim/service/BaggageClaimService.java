@@ -114,7 +114,8 @@ public class BaggageClaimService {
 
         try {
 
-            BaggageClaim modifybaggageClaim = BaggageClaim.builder()
+            BaggageClaim baggageClaim1 = repository.findBybaggageClaimCode(baggageClaim.getBaggageClaimCode());
+            baggageClaim1 = baggageClaim1.toBuilder()
                     .location(baggageClaim.getLocation())
                     .type(baggageClaim.getType())
                     .status(baggageClaim.getStatus())
@@ -122,10 +123,9 @@ public class BaggageClaimService {
                     .lastInspectionDate(baggageClaim.getLastInspectionDate())
                     .manager(baggageClaim.getManager())
                     .note(baggageClaim.getNote())
-                    .isActive("N") // 활성화/비활성화 필드 추가
                     .build();
 
-            BaggageClaim baggageClaim1 = repository.save(modifybaggageClaim);
+            BaggageClaim baggage = repository.save(baggageClaim1);
 
 
             //2. 수정 후의 데이터 저장
@@ -134,14 +134,15 @@ public class BaggageClaimService {
                     "N",
                     null,
                     null,
-                    baggageClaim1,
+                    baggage,
                     null,
                     null,
                     null,
-                    baggageClaim.getBaggageClaimCode()
+                    null
             );
 
             approvalRepository.save(approval);
+
             result = 1;
         }catch (Exception e) {
             throw new RuntimeException(e);
