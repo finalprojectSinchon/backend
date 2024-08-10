@@ -16,8 +16,8 @@ import java.util.List;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "AirService Api ",
-                description = "AirService Api 명세입니다.",
+                title = "SkyCare Api ",
+                description = "SkyCare Api 명세입니다.",
                 version = "v1"
         )
 )
