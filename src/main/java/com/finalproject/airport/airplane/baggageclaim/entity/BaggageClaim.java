@@ -20,7 +20,7 @@ public class BaggageClaim extends BaseTimeEntity {
 
     @Id
     @Column(name = "BAGGAGECLAIM_CODE", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int baggageClaimCode;
 
     @Column(name = "LOCATION" )
@@ -70,12 +70,11 @@ public class BaggageClaim extends BaseTimeEntity {
         this.airline = airline;
     }
 
-//
-//    @PrePersist
-//    private void ensureIsActiveDefault() {
-//        if (this.isActive == null) {
-//            this.isActive = "Y";
-//        }
-//    }
+    @PrePersist
+    private void ensureIsActiveDefault() {
+        if (this.isActive == null) {
+            this.isActive = "Y";
+        }
+    }
 
 }

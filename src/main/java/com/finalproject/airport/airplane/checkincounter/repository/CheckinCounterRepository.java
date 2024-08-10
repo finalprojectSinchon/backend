@@ -25,4 +25,5 @@ public interface CheckinCounterRepository extends JpaRepository<CheckinCounter, 
     List<Object[]> findStatusCounts();
 
 
+    CheckinCounter findByCheckinCounterCode(Integer checkinCounterCode);
 }

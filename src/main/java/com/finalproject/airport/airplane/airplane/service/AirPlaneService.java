@@ -63,7 +63,7 @@ public class AirPlaneService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
-        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate; ;
+        String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + "20240810"; ;
         System.out.println("requestUrl = " + requestUrl);
 
 
@@ -100,7 +100,7 @@ public class AirPlaneService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
-        String requestUrl = DepartureApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate; ;
+        String requestUrl = DepartureApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + "20240810"; ;
         System.out.println("requestUrl = " + requestUrl);
 
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
