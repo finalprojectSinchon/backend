@@ -22,7 +22,9 @@ public class GPTRequestDTO {
     @Getter
     @Setter
     public static class Message {
+
         private String role;
+
         private String content;
 
 
