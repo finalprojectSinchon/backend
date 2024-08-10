@@ -161,7 +161,7 @@ public class CheckinCounterService {
 
     }
     @Transactional
-    public void feachdate() {
+    public List<CheckinCounterDTO> feachdate() {
         LocalDateTime now = LocalDateTime.now();
         Map<Integer, DepartureAirplane> closestAirplanes = new HashMap<>();
         Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
@@ -215,7 +215,9 @@ public class CheckinCounterService {
                 // 변경된 엔티티 저장
                 repository.save(checkinCounter);
             }
+
         }
+        return null;
     }
 
     public List<DepartureAirplane> getFilteredAirplanes() {
