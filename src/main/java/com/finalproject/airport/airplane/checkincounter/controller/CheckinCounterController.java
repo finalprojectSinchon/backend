@@ -50,7 +50,7 @@ public class CheckinCounterController {
     })
     @PostMapping("/checkin-counter")
     public ResponseEntity<Void> insertChkinCounter(@RequestBody CheckinCounterDTO chkinCounter) {
-        service.insertCheckinCounter(chkinCounter);
+        service.insertchkinCounter(chkinCounter);
         return ResponseEntity.ok().build();
     }
 

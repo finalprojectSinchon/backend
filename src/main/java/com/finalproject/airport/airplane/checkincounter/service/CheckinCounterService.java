@@ -43,53 +43,42 @@ public class CheckinCounterService {
     }
 
     @Transactional
-    public String insertCheckinCounter(CheckinCounterDTO checkinCounterDTO) {
-        log.info("Inserting check-in counter: {}", checkinCounterDTO);
+    public String insertchkinCounter(CheckinCounterDTO chkinCounter) {
+
+        log.info("Inserting check-in counter: {}", chkinCounter);
         int result = 0;
 
         try {
-            DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(checkinCounterDTO.getAirplaneCode());
 
-            CheckinCounter checkinCounter = CheckinCounter.builder()
-                    .departureAirplane(departureAirplane)
-                    .lastInspectionDate(checkinCounterDTO.getLastInspectionDate())
-                    .location(checkinCounterDTO.getLocation())
-                    .manager(checkinCounterDTO.getManager())
-                    .note(checkinCounterDTO.getNote())
-                    .status(checkinCounterDTO.getStatus())
-                    .type(checkinCounterDTO.getType())
-                    .isActive("N")
+            DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(chkinCounter.getAirplaneCode());
+
+            CheckinCounter insertchkinCounter = CheckinCounter.builder()
+//                .departureAirplane(departureAirplane) // DTO에서 가져온 비행기 정보
+                    .lastInspectionDate(chkinCounter.getLastInspectionDate()) // 최근 점검 날짜
+                    .location(chkinCounter.getLocation()) // 위치
+                    .manager(chkinCounter.getManager()) // 담당자
+                    .note(chkinCounter.getNote()) // 비고
+                    .status(chkinCounter.getStatus()) // 상태
+                    .type(chkinCounter.getType()) // 타입
+                    .isActive("N") // 활성화/비활성화 필드 추가
                     .build();
 
-            CheckinCounter savedCheckinCounter = repository.save(checkinCounter);
-            log.info("Saved check-in counter: {}", savedCheckinCounter);
-
-        DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(chkinCounter.getAirplaneCode());
-
-        CheckinCounter insertchkinCounter = CheckinCounter.builder()
-//                .departureAirplane(departureAirplane) // DTO에서 가져온 비행기 정보
-                .lastInspectionDate(chkinCounter.getLastInspectionDate()) // 최근 점검 날짜
-                .location(chkinCounter.getLocation()) // 위치
-                .manager(chkinCounter.getManager()) // 담당자
-                .note(chkinCounter.getNote()) // 비고
-                .status(chkinCounter.getStatus()) // 상태
-                .type(chkinCounter.getType()) // 타입
-                .isActive("N") // 활성화/비활성화 필드 추가
-                .build();
-
             CheckinCounter checkinCounter =  repository.save(insertchkinCounter);
+            log.info("Saved check-in counter: {}", checkinCounter);
 
+            // 승인 정보 저장
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
                     "N",
                     null,
-                    savedCheckinCounter,
+                    checkinCounter,
                     null,
                     null,
                     null
             );
 
             approvalRepository.save(approval);
+
             result = 1;
         } catch (Exception e) {
             log.error("Error inserting check-in counter: ", e);
@@ -97,6 +86,8 @@ public class CheckinCounterService {
         }
 
         return (result > 0) ? "체크인 카운터 승인 요청 성공" : "체크인 카운터 승인 요청 실패";
+
+
     }
 
     public List<CheckinCounterDTO> findAll() {
