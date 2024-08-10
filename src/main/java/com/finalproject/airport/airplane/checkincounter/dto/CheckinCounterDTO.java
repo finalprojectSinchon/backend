@@ -1,12 +1,11 @@
 package com.finalproject.airport.airplane.checkincounter.dto;
 
-import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
-import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterLocation;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -41,13 +40,36 @@ public class CheckinCounterDTO {
     @Schema(description = "비고")
     private String note;
 
-    @Schema(description = "비행기 정보(FK)")
-    private AirplaneDTO airplane;
-
     @Schema(description = "비행기 코드")
     private int airplaneCode;
 
     @Schema(description = "지연 시간")
     private Integer delayTime;
+
+    @Schema(description = "탑승구 오픈시간")
+    private Timestamp scheduleDateTime;
+
+    @Schema(description = "항공사")
+    private String airline;
+
+    // 정적 메서드로 수정
+    public static CheckinCounterDTO createCheckinCounterDTO(CheckinCounterLocation location) {
+        CheckinCounterDTO dto = new CheckinCounterDTO();
+
+        dto.setCheckinCounterCode(location.getCode());
+        dto.setLocation(location);
+        dto.setType(CheckinCounterType.A); // 예시 값, 실제 값 설정 필요
+        dto.setStatus("정상");
+        dto.setRegistrationDate(new Date());
+        dto.setLastInspectionDate(new Date());
+        dto.setManager("담당자");
+        dto.setNote("비고");
+        dto.setAirplaneCode(123);
+        dto.setDelayTime(15);
+        dto.setScheduleDateTime(new Timestamp(System.currentTimeMillis()));
+        dto.setAirline("항공사명");
+
+        return dto;
+    }
 
 }
