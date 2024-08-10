@@ -47,7 +47,7 @@ public class GateService {
                 .collect(Collectors.toList());
 
         for (GateDTO gateDTO : gateDTOList) {
-            List<ManagersEntity> managersEntityList = managersRepository.findAllByGateCode(gateDTO.getGateCode());
+            List<ManagersEntity> managersEntityList = managersRepository.findAllByGateCodeAndIsActive(gateDTO.getGateCode(),"Y");
             List<String> managerNames = new ArrayList<>();
             for (ManagersEntity managersEntity : managersEntityList) {
                 managerNames.add(managersEntity.getUser().getUserName());
