@@ -93,7 +93,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
 
         String messageType = typeNode.asText();
-        System.out.println("messageType = " + messageType);
+
         if ("REQUEST_ALL_STATUSES".equals(messageType)) {
             System.out.println("왜 여기로 넘어가니");
             sendAllUserStatuses(session);
@@ -109,9 +109,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 String jsonMessageStr = objectMapper.writeValueAsString(jsonMessage);
                 sessionTo.sendMessage(new TextMessage(jsonMessageStr));
             }
-
             // 메시지 저장
             chatService.saveMessage(messageDTO);
+        } else if ("SOS_ALERT".equals(messageType)) {
+            // 긴급 상황
+            broadcastSOSAlert(jsonMessage);
+        }
+    }
+
+    private void broadcastSOSAlert(JsonNode alertMessage) throws IOException {
+        String jsonMessage = objectMapper.writeValueAsString(alertMessage);
+        for (WebSocketSession session : userSessions.values()) {
+            if (session.isOpen()) {
+                session.sendMessage(new TextMessage(jsonMessage));
+            }
         }
     }
 
