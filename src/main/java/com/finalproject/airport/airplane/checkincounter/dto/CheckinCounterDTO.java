@@ -52,24 +52,10 @@ public class CheckinCounterDTO {
     @Schema(description = "항공사")
     private String airline;
 
+    @Schema(description = "도착공항")
+    private String airport;
+
     // 정적 메서드로 수정
-    public static CheckinCounterDTO createCheckinCounterDTO(CheckinCounterLocation location) {
-        CheckinCounterDTO dto = new CheckinCounterDTO();
-
-        dto.setCheckinCounterCode(location.getCode());
-        dto.setLocation(location);
-        dto.setType(CheckinCounterType.A); // 예시 값, 실제 값 설정 필요
-        dto.setStatus("정상");
-        dto.setRegistrationDate(new Date());
-        dto.setLastInspectionDate(new Date());
-        dto.setManager("담당자");
-        dto.setNote("비고");
-        dto.setAirplaneCode(123);
-        dto.setDelayTime(15);
-        dto.setScheduleDateTime(new Timestamp(System.currentTimeMillis()));
-        dto.setAirline("항공사명");
-
-        return dto;
-    }
+   
 
 }

@@ -197,7 +197,6 @@ public class CheckinCounterService {
 
             // CheckinCounter 엔티티 조회
             CheckinCounter checkinCounter = repository.findByCheckinCounterCode(checkinCounterCode);
-
             if (checkinCounter != null) {
                 // 엔티티 필드 업데이트
                 checkinCounter.setLocation(CheckinCounterLocation.values()[checkinCounterCode - 1]);  // 위치 설정
@@ -209,6 +208,7 @@ public class CheckinCounterService {
 //                checkinCounter.setNote("비고");  // 예시 값
 //                checkinCounter.setAirplaneCode(airplane.getAirplaneCode());
 //                checkinCounter.setDelayTime(airplane.getGatenumber());  // 예시 값
+                checkinCounter.setAirport(airplane.getAirport());
                 checkinCounter.setScheduleDateTime(airplane.getScheduleDateTime());
                 checkinCounter.setAirline(airplane.getAirline());
 

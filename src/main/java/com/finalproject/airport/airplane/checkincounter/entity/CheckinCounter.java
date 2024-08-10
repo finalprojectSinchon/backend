@@ -55,6 +55,9 @@ public class CheckinCounter extends BaseTimeEntity {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
+    @Column(name = "AIRPORT")
+    private String airport;
+
 
 
     // Getter and Setter
