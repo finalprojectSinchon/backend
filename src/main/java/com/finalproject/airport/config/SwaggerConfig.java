@@ -1,25 +1,45 @@
-package com.finalproject.airport.config;
+package com.finalproject.airport.config;// Java
 
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+
+import java.util.Arrays;
+import java.util.List;
+
+@OpenAPIDefinition(
+        info = @Info(
+                title = "AirService Api ",
+                description = "AirService Api 명세입니다.",
+                version = "v1"
+        )
+)
 @Configuration
-@EnableWebMvc
 public class SwaggerConfig {
 
+    private static final String BEARER_TOKEN_PREFIX = "Bearer";
+
     @Bean
-    public OpenAPI openAPI(){
-        return new OpenAPI().components(new Components()).info(swaggerInfo());
+    public OpenAPI openAPI() {
+        String securityJwtName = "JWT";
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(securityJwtName);
+        Components components = new Components()
+                .addSecuritySchemes(securityJwtName, new SecurityScheme()
+                        .name(securityJwtName)
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme(BEARER_TOKEN_PREFIX)
+                        .bearerFormat(securityJwtName));
+
+        return new OpenAPI()
+                .addSecurityItem(securityRequirement)
+                .components(components);
     }
 
-    private Info swaggerInfo() {
-
-        return new Info().title("airService API")
-                .description("airService swagger 명세서")
-                .version("1.0.0");
-    }
 }

@@ -101,6 +101,7 @@ public class SecurityConfig implements WebSocketConfigurer {
 
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**","/swagger-ui/index.html","/v3/api-docs").permitAll()
                         .requestMatchers("/login", "/", "/join","/api/v1/auth","/ws/**", "/account/**").permitAll()
                         .requestMatchers("/api/v1/admin/qr/","/api/v1/admin/auth/mail","/api/v1/admin/newUser").hasRole("ADMIN")
                         .requestMatchers("/api/v1/store/**").hasAnyRole("STORE","ADMIN")
