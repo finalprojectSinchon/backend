@@ -1,88 +1,53 @@
 package com.finalproject.airport.facilities.service;
 
-import com.finalproject.airport.approval.dto.ApprovalDTO;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
-import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
-import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.facilities.dto.FacilitiesDTO;
-import com.finalproject.airport.facilities.entity.FacilitesType;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ch.qos.logback.classic.spi.ThrowableProxyVO.build;
-
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FacilitiesService {
 
-    @Autowired
     private final FacilitiesRepository facilitiesRepository;
-
     private final ModelMapper modelMapper;
-    @Autowired
-    private ApprovalService approvalService;
-    @Autowired
-    private ApprovalRepository approvalRepository;
+    private final ApprovalRepository approvalRepository;
 
     public List<FacilitiesDTO> selectAllFacilities() {
-
+        log.info("Fetching all active facilities");
 
         List<FacilitiesEntity> facilities = facilitiesRepository.findAllByIsActive("Y");
-
-
         return facilities.stream()
-                .map(fact -> modelMapper.map(fact, FacilitiesDTO.class)
-                ).collect(Collectors.toList());
+                .map(facility -> modelMapper.map(facility, FacilitiesDTO.class))
+                .collect(Collectors.toList());
     }
-
 
     public FacilitiesDTO findFacilities(int facilitiesCode) {
+        log.info("Fetching facility with code: {}", facilitiesCode);
 
-        FacilitiesEntity findfacilities =facilitiesRepository.findById(facilitiesCode).orElseThrow();
+        FacilitiesEntity facilitiesEntity = facilitiesRepository.findById(facilitiesCode)
+                .orElseThrow(() -> new IllegalArgumentException("No facility found with code: " + facilitiesCode));
 
-        findfacilities.getFacilitiesCode();
-
-        FacilitiesDTO facilitiesDTO =new FacilitiesDTO();
-//        facilitiesDTO.setFacilitiesCode(facilitiesCode);
-//        facilitiesDTO.setFacilitiesName(findfacilities.getFacilitiesName());
-//        facilitiesDTO.setFacilitiesLocation(findfacilities.getFacilitiesLocation());
-//        facilitiesDTO.setFacilitiesManager(findfacilities.getFacilitiesManager());
-//        facilitiesDTO.setFacilitiesType(findfacilities.getFacilitiesType());
-
-        FacilitiesDTO facilitiesDTO2 = new FacilitiesDTO(
-                facilitiesCode,
-                findfacilities.getStatus(),
-                findfacilities.getLocation(),
-                findfacilities.getFacilitiesName(),
-                findfacilities.getFacilitiesType(),
-                findfacilities.getManager(),
-                findfacilities.getFacilitiesClass(),
-                findfacilities.getIsActive(),
-                findfacilities.getCreatedDate(),
-                findfacilities.getNote()
-        );
-      return facilitiesDTO2;
+        return modelMapper.map(facilitiesEntity, FacilitiesDTO.class);
     }
 
-    // 등록
     @Transactional
     public String insertFacilities(FacilitiesDTO facilitiesDTO) {
-
-        int result = 0;
+        log.info("Inserting new facility: {}", facilitiesDTO);
 
         try {
-
-            FacilitiesEntity insertFacilities = FacilitiesEntity.builder()
+            FacilitiesEntity newFacility = FacilitiesEntity.builder()
                     .status(facilitiesDTO.getStatus())
                     .location(facilitiesDTO.getLocation())
                     .facilitiesName(facilitiesDTO.getFacilitiesName())
@@ -93,8 +58,8 @@ public class FacilitiesService {
                     .isActive("N")
                     .build();
 
-            FacilitiesEntity facilitiesEntity = facilitiesRepository.save(insertFacilities);
-            System.out.println("insertFacilities = " + insertFacilities);
+            FacilitiesEntity savedFacility = facilitiesRepository.save(newFacility);
+            log.info("Saved new facility: {}", savedFacility);
 
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
@@ -103,76 +68,66 @@ public class FacilitiesService {
                     null,
                     null,
                     null,
-                    facilitiesEntity
+                    savedFacility
             );
 
             approvalRepository.save(approval);
-
-            result = 1;
-        } catch (Exception e){
-            throw new RuntimeException(e);
+            return "Facility approval request succeeded";
+        } catch (Exception e) {
+            log.error("Error inserting facility", e);
+            throw new RuntimeException("Error inserting facility", e);
         }
-        return (result > 0) ? "편의시설 승인 요청 성공" : "편의시설 승인 요청 실패";
-
     }
 
-
-
-@Transactional
+    @Transactional
     public String modifyFacilities(FacilitiesDTO facilitiesDTO) {
+        log.info("Modifying facility: {}", facilitiesDTO);
 
-       int result = 0;
+        try {
+            FacilitiesEntity existingFacility = facilitiesRepository.findById(facilitiesDTO.getFacilitiesCode())
+                    .orElseThrow(() -> new IllegalArgumentException("No facility found with code: " + facilitiesDTO.getFacilitiesCode()));
 
-       try {
+            FacilitiesEntity modifiedFacility = existingFacility.toBuilder()
+                    .status(facilitiesDTO.getStatus())
+                    .location(facilitiesDTO.getLocation())
+                    .facilitiesName(facilitiesDTO.getFacilitiesName())
+                    .facilitiesType(facilitiesDTO.getType())
+                    .manager(facilitiesDTO.getManager())
+                    .facilitiesClass(facilitiesDTO.getFacilitiesClass())
+                    .note(facilitiesDTO.getNote())
+                    .build();
 
-           FacilitiesEntity modifyFacility = new FacilitiesEntity(
-                   0,
-                   facilitiesDTO.getStatus(),
-                   facilitiesDTO.getLocation(),
-                   facilitiesDTO.getFacilitiesName(),
-                   facilitiesDTO.getType(),
-                   facilitiesDTO.getManager(),
-                   facilitiesDTO.getFacilitiesClass(),
-                   "N",  // 여기서 isActive를 명시적으로 설정
-                   facilitiesDTO.getNote()
-           );
+            FacilitiesEntity savedFacility = facilitiesRepository.save(modifiedFacility);
+            log.info("Saved modified facility: {}", savedFacility);
 
-           System.out.println("modifyFacility = " + modifyFacility);
-           FacilitiesEntity facilities1 = facilitiesRepository.save(modifyFacility);
-           System.out.println("facilities1 = " + facilities1);
+            ApprovalEntity approval = new ApprovalEntity(
+                    ApprovalTypeEntity.수정,
+                    "N",
+                    null,
+                    null,
+                    null,
+                    null,
+                    savedFacility,
+                    null,
+                    facilitiesDTO.getFacilitiesCode()
+            );
 
-           ApprovalEntity approval = new ApprovalEntity(
-                   ApprovalTypeEntity.수정,
-                   "N",
-                   null,
-                   null,
-                   null,
-                   null,
-                   facilities1,
-                   null,
-                   facilitiesDTO.getFacilitiesCode()
-           );
-           approvalRepository.save(approval);
-           result = 1;
-       }catch (Exception e){
-           throw new RuntimeException(e);
-       }
-      return (result>0) ? "편의시설 승인 수정 성공" : "편의시건 승인 수정 실패";
+            approvalRepository.save(approval);
+            return "Facility approval modification succeeded";
+        } catch (Exception e) {
+            log.error("Error modifying facility", e);
+            throw new RuntimeException("Error modifying facility", e);
+        }
     }
 
+    @Transactional
     public void deleteFacilities(int facilitiesCode) {
+        log.info("Deleting facility with code: {}", facilitiesCode);
 
-        FacilitiesEntity deleteFacilities = facilitiesRepository.findById(facilitiesCode).orElseThrow(IllegalArgumentException::new);
+        FacilitiesEntity facility = facilitiesRepository.findById(facilitiesCode)
+                .orElseThrow(() -> new IllegalArgumentException("No facility found with code: " + facilitiesCode));
 
-        FacilitiesEntity delete = deleteFacilities.toBuilder()
-                .isActive("N").build();
-
-        facilitiesRepository.save(delete);
+        FacilitiesEntity updatedFacility = facility.toBuilder().isActive("N").build();
+        facilitiesRepository.save(updatedFacility);
     }
 }
-
-
-
-
-
-

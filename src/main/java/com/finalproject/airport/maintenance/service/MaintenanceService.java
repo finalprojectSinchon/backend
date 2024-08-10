@@ -24,6 +24,7 @@ import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
 import com.finalproject.airport.store.repository.StoreRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class MaintenanceService {
 
     private final MaintenanceRepository maintenanceRepository;
@@ -50,7 +52,7 @@ public class MaintenanceService {
     private final MaintenanceEquipmentRepository maintenanceEquipmentRepository;
 
     @Autowired
-    public MaintenanceService(MaintenanceRepository maintenanceRepository , ModelMapper modelMapper, GateService gateService, GateRepository gateRepository, BaggageClaimRepository baggageClaimRepository, FacilitiesRepository facilitiesRepository, CheckinCounterRepository checkinCounterRepository, StorageRepository storageRepository, StoreRepository storeRepository, EquipmentRepository equipmentRepository, MaintenanceEquipmentRepository maintenanceEquipmentRepository) {
+    public MaintenanceService(MaintenanceRepository maintenanceRepository, ModelMapper modelMapper, GateService gateService, GateRepository gateRepository, BaggageClaimRepository baggageClaimRepository, FacilitiesRepository facilitiesRepository, CheckinCounterRepository checkinCounterRepository, StorageRepository storageRepository, StoreRepository storeRepository, EquipmentRepository equipmentRepository, MaintenanceEquipmentRepository maintenanceEquipmentRepository) {
         this.maintenanceRepository = maintenanceRepository;
         this.modelMapper = modelMapper;
         this.gateService = gateService;
@@ -67,7 +69,7 @@ public class MaintenanceService {
     // 정비 전체 조회
     public List<MaintenanceDTO> findAll() {
         List<MaintenanceEntity> maintenanceList = maintenanceRepository.findByIsActive("Y");
-        System.out.println("maintenanceList = " + maintenanceList);
+        log.info("Maintenance List: {}", maintenanceList);
         return maintenanceList.stream()
                 .map(maintenance -> modelMapper.map(maintenance, MaintenanceDTO.class))
                 .collect(Collectors.toList());
@@ -75,7 +77,6 @@ public class MaintenanceService {
 
     // 정비 상세 조회
     public MaintenanceDTO getMaintenanceById(int maintenanceCode) {
-
         MaintenanceEntity maintenanceEntity = maintenanceRepository.findById(maintenanceCode);
         return modelMapper.map(maintenanceEntity, MaintenanceDTO.class);
     }
@@ -83,7 +84,6 @@ public class MaintenanceService {
     // 정비 항목 수정
     @Transactional
     public void updateMaintenance(int maintenanceCode, MaintenanceDTO maintenanceDTO) {
-
         MaintenanceEntity maintenanceEntity = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
 
         maintenanceEntity = maintenanceEntity.toBuilder()
@@ -91,8 +91,7 @@ public class MaintenanceService {
                 .type(maintenanceDTO.getType())
                 .location(maintenanceDTO.getLocation())
                 .status(maintenanceDTO.getStatus())
-                .manager(
-                        maintenanceDTO.getManager())
+                .manager(maintenanceDTO.getManager())
                 .maintenanceStartDate(maintenanceDTO.getMaintenanceStartDate())
                 .maintenanceEndDate(maintenanceDTO.getMaintenanceEndDate())
                 .maintenanceDetails(maintenanceDTO.getMaintenanceDetails())
@@ -104,7 +103,6 @@ public class MaintenanceService {
     // 정비 삭제
     @Transactional
     public void softDelete(int maintenanceCode) {
-
         MaintenanceEntity maintenanceEntity = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
 
         maintenanceEntity = maintenanceEntity.toBuilder().isActive("N").build();
@@ -114,154 +112,108 @@ public class MaintenanceService {
 
     @Transactional
     public String insertMaintenance(MaintenanceDTO maintenanceDTO) {
-
         MaintenanceEntity maintenanceEntity = modelMapper.map(maintenanceDTO, MaintenanceEntity.class);
         MaintenanceEntity maintenanceEntitySaved = maintenanceRepository.save(maintenanceEntity);
 
         if (maintenanceDTO.getStructure().equals("gate")) {
             Gate gate = gateRepository.findByLocation(Integer.valueOf(maintenanceDTO.getLocation()));
-
-            System.out.println("gate = " + gate);
+            log.info("Gate: {}", gate);
             maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().gate(gate).build();
-
-
-            System.out.println("maintenanceEntitySaved = " + maintenanceEntitySaved);
+            log.info("Updated Maintenance Entity: {}", maintenanceEntitySaved);
 
         } else if (maintenanceDTO.getStructure().equals("baggageClaim")) {
-
             BaggageClaimLocation location = BaggageClaimLocation.valueOf(maintenanceDTO.getLocation());
             BaggageClaim baggageClaim = baggageClaimRepository.findByLocation(location);
-
-            System.out.println("baggageClaim = " + baggageClaim);
+            log.info("Baggage Claim: {}", baggageClaim);
             maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().baggageClaim(baggageClaim).build();
-            System.out.println("maintenanceEntitySaved = " + maintenanceEntitySaved);
+            log.info("Updated Maintenance Entity: {}", maintenanceEntitySaved);
 
         } else if (maintenanceDTO.getStructure().equals("checkinCounter")) {
-
             CheckinCounterLocation location = CheckinCounterLocation.valueOf(maintenanceDTO.getLocation());
             CheckinCounter checkinCounter = checkinCounterRepository.findByLocation(location);
-
             maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().checkinCounter(checkinCounter).build();
 
-        }else if (maintenanceDTO.getStructure().equals("facilities")) {
+        } else if (maintenanceDTO.getStructure().equals("facilities")) {
             FacilitiesEntity facilities = facilitiesRepository.findByLocation(maintenanceDTO.getLocation());
-
             maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().facilities(facilities).build();
 
-        }
-//        else if(maintenanceDTO.getStructure().equals("store")){
-//            Store store = storeRepository.findByLocation(maintenanceDTO.getLocation());
-//
-//            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().store(store).build();
-//        }
-        else if(maintenanceDTO.getStructure().equals("storage")){
+        } else if (maintenanceDTO.getStructure().equals("storage")) {
             StorageEntity storage = storageRepository.findByLocation(maintenanceDTO.getLocation());
-
             maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().storage(storage).build();
         }
 
         maintenanceRepository.save(maintenanceEntitySaved);
 
-        return "정비 등록 성공";
-        }
+        return "Maintenance registration successful";
+    }
 
-
-    public List<Object> findlocation(String structure) {
-        System.out.println("structure = " + structure);
+    public List<Object> findLocation(String structure) {
+        log.info("Structure: {}", structure);
         List<Object> locations = new ArrayList<>();
 
-        if(structure.equals("gate")){
+        if (structure.equals("gate")) {
             List<Integer> locationList = gateRepository.findAlllocations();
-            System.out.println("locationList = " + locationList);
+            log.info("Gate Location List: {}", locationList);
+            locations.addAll(locationList);
 
-            for(Integer gate : locationList){
-                locations.add(gate);
-            }
-            System.out.println("locations = " + locations);
         } else if (structure.equals("baggageClaim")) {
             List<BaggageClaimLocation> locationList = Arrays.asList(BaggageClaimLocation.values());
+            locations.addAll(locationList);
 
-            for(BaggageClaimLocation location : locationList){
-                locations.add(location);
-            }
-            System.out.println("locations = " + locations);
         } else if (structure.equals("checkinCounter")) {
             List<CheckinCounterLocation> locationList = Arrays.asList(CheckinCounterLocation.values());
+            locations.addAll(locationList);
 
-            for(CheckinCounterLocation location : locationList){
-                locations.add(location);
-            }
-            System.out.println("locations = " + locations);
-        }else if (structure.equals("facilities")) {
+        } else if (structure.equals("facilities")) {
             List<String> locationList = facilitiesRepository.findAlllocations();
-            System.out.println("locationList = " + locationList);
-
-            for(String facilities : locationList){
-                locations.add(facilities);
-            }
-            System.out.println("locations = " + locations);
+            log.info("Facilities Location List: {}", locationList);
+            locations.addAll(locationList);
         }
 
-
+        log.info("Locations: {}", locations);
         return locations;
     }
 
     @Transactional
     public void maintenanceEquipment(MaintenanceEquipmentDTO maintenanceEquipment) {
-
         List<EquipmentQuantityDTO> equipment = maintenanceEquipment.getEquipment();
         MaintenanceEntity maintenance = maintenanceRepository.findBymaintenanceCode(maintenanceEquipment.getMaintenance().getMaintenanceCode());
 
         for (EquipmentQuantityDTO equip : equipment) {
             EquipmentEntity equipmentEntity = equipmentRepository.findByequipmentCode(equip.getEquipment());
-
-
             int newQuantity = equipmentEntity.getEquipmentQuantity() - equip.getQuantity();
-
-            equipmentEntity = equipmentEntity.toBuilder()
-                    .equipmentQuantity(newQuantity)
-                    .build();
-
+            equipmentEntity = equipmentEntity.toBuilder().equipmentQuantity(newQuantity).build();
             equipmentRepository.save(equipmentEntity);
 
-
             EquipmentEntity equipment1 = equipmentRepository.findByequipmentCode(equip.getEquipment());
-
             MaintenanceEquipment maintenanceEquip = new MaintenanceEquipment();
             maintenanceEquip = maintenanceEquip.toBuilder()
                     .maintenance(maintenance)
                     .equipment(equipment1)
                     .quantity(equip.getQuantity()).build();
 
-
             maintenanceEquipmentRepository.save(maintenanceEquip);
         }
 
         List<MaintenanceEquipment> maintenanceEquipments = maintenanceEquipmentRepository.findBymaintenance(maintenance);
-
-        System.out.println("111 = " + maintenanceEquipments);
+        log.info("Maintenance Equipments: {}", maintenanceEquipments);
         int price = 0;
         for (MaintenanceEquipment maintenanceEquip : maintenanceEquipments) {
             int total = maintenanceEquip.getQuantity() * maintenanceEquip.getEquipment().getEquipmentPrice();
-
             price += total;
 
             MaintenanceEntity maintenance1 = maintenanceRepository.findBymaintenanceCode(maintenanceEquip.getMaintenance().getMaintenanceCode());
-
             maintenance1 = maintenance1.toBuilder().price(price).build();
             maintenanceRepository.save(maintenance1);
         }
     }
 
     public int getMaintenanceEquipment(int maintenanceCode) {
-
         int result = 0;
-
         MaintenanceEntity maintenance = maintenanceRepository.findBymaintenanceCode(maintenanceCode);
+        List<MaintenanceEquipment> me = maintenanceEquipmentRepository.findBymaintenance(maintenance);
 
-        List<MaintenanceEquipment> me =  maintenanceEquipmentRepository.findBymaintenance(maintenance);
-
-        if(me.size() > 0){
+        if (me.size() > 0) {
             result = 1;
         }
         return result;

@@ -14,6 +14,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,16 +34,13 @@ import reactor.core.publisher.Mono;
 import java.util.*;
 
 @Service
+@Slf4j
 public class LocationService {
 
     private final LocationRepository locationRepository;
-
     private final ZoneRepository zoneRepository;
-
     private final String storeApiUrl;
-
     private final String apiKey;
-
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -90,7 +88,7 @@ public class LocationService {
 
         // 블록 호출 및 예외 처리
         LocationAPIDTO locationAPIDTO = locationAPIDTOMono
-                .doOnError(error -> System.out.println("Error occurred: " + error.getMessage()))
+                .doOnError(error -> log.error("Error occurred: {}", error.getMessage()))
                 .block();
 
         if (locationAPIDTO != null) {
@@ -109,7 +107,7 @@ public class LocationService {
             }
 
         } else {
-            System.out.println("데이터 못불러옴!");
+            log.error("데이터 못불러옴!");
         }
     }
 
@@ -129,6 +127,7 @@ public class LocationService {
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정상적으로 지역을 조회 하였습니다.", regions));
         } catch (Exception e) {
+            log.error("Error occurred: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
@@ -151,6 +150,7 @@ public class LocationService {
 
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "층수 불러오기에 성공하였습니다.", floors));
         } catch (Exception e) {
+            log.error("Error occurred: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
@@ -171,6 +171,7 @@ public class LocationService {
             }
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "위치 불러오기에 성공하였습니다.", locations));
         } catch (Exception e) {
+            log.error("Error occurred: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
 
@@ -289,7 +290,6 @@ public class LocationService {
                 break;
         }
 
-
         return ResponseEntity.ok().build();
     }
 
@@ -322,7 +322,6 @@ public class LocationService {
                     .body(new ResponseDTO(HttpStatus.NOT_FOUND, "위치나 구역을 찾을 수 없음", null));
         }
     }
-
 
     public ResponseEntity<?> getStorageLocation() {
 

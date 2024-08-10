@@ -49,10 +49,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
             if (query != null) {
                 Map<String, String> queryParams = parseQueryParams(query);
                 String userCode = queryParams.get("userCode");
-                System.out.println("userCode = " + userCode);
                 if (userCode != null) {
                     userSessions.put(userCode, session);
-                    System.out.println("새로운 세션 연결 성공: " + userCode);
+                    log.info("New session connected: {}", userCode);
 
                     // 사용자 온라인 상태를 모든 클라이언트에게 알림
                     sendUserStatusUpdate(userCode, "online");
@@ -63,7 +62,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
         }
-        log.error("쿼리스트링으로 유저코드 담아야함!!");
+        log.error("User code must be provided in query string!");
         session.close();
     }
 
@@ -76,7 +75,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     session.sendMessage(pingMessage);
                 }
             } catch (IOException e) {
-                System.err.println("Error sending ping message: " + e.getMessage());
+                log.error("Error sending ping message: {}", e.getMessage());
                 userSessions.remove(session.getId());
             }
         }
@@ -84,7 +83,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        System.out.println("Received message: " + message.getPayload());
+        log.info("Received message: {}", message.getPayload());
         JsonNode jsonMessage = objectMapper.readTree(message.getPayload());
 
         JsonNode typeNode = jsonMessage.get("type");
@@ -95,11 +94,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String messageType = typeNode.asText();
 
         if ("REQUEST_ALL_STATUSES".equals(messageType)) {
-            System.out.println("왜 여기로 넘어가니");
+            log.info("Handling REQUEST_ALL_STATUSES message");
             sendAllUserStatuses(session);
         } else if ("CHAT_MESSAGE".equals(messageType)) { // 채팅 메시지 타입 처리
             ChatMessageDTO messageDTO = objectMapper.readValue(message.getPayload(), ChatMessageDTO.class);
-            System.out.println("채팅으로 넘어감");
+            log.info("Handling CHAT_MESSAGE type");
             messageDTO.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             String to = messageDTO.getTo();
             WebSocketSession sessionTo = userSessions.get(to);
@@ -124,6 +123,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 session.sendMessage(new TextMessage(jsonMessage));
             }
         }
+        log.info("Broadcasted SOS alert to all users");
     }
 
     @Override
@@ -136,7 +136,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 String userCode = queryParams.get("userCode");
                 if (userCode != null) {
                     userSessions.remove(userCode);
-                    System.out.println("커넥션 종료 : " + userCode);
+                    log.info("Connection closed: {}", userCode);
 
                     // 사용자 오프라인 상태를 모든 클라이언트에게 알림
                     sendUserStatusUpdate(userCode, "offline");
@@ -168,7 +168,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 try {
                     session.sendMessage(new TextMessage(jsonMessage));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Error sending user status update: {}", e.getMessage());
                 }
             }
         }
@@ -183,12 +183,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         ObjectNode response = objectMapper.createObjectNode();
         response.put("type", "INITIAL_STATUS");
         response.set("statuses", objectMapper.valueToTree(allStatuses));
-        System.out.println("response = " + response);
+        log.info("Sending initial status to session: {}", response);
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
         } catch (IOException e) {
-            System.out.println("err" + e.getMessage());
+            log.error("Error sending initial statuses: {}", e.getMessage());
         }
-
     }
 }

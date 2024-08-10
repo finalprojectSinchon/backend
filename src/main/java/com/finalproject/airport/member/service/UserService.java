@@ -5,6 +5,7 @@ import com.finalproject.airport.member.dto.UserContactDTO;
 import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.member.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;

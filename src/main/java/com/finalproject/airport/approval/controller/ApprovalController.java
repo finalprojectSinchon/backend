@@ -92,7 +92,7 @@ public class ApprovalController {
 
             try {
                 if (approval.getCheckinCounter() != null) {
-                    approvalService.approveCheckInCounter(approvalCode);
+                    approvalService.approveCheckinCounter(approvalCode);
                     checkInCounterApproved = true;
                 }
             } catch (RuntimeException e) {
@@ -152,7 +152,7 @@ public class ApprovalController {
 
             try {
                 if (approval.getCheckinCounter() != null) {
-                    approvalService.saveChkinCounterApproval(approval);
+                    approvalService.saveCheckinCounterApproval(approval);
                     checkInCounterApproved = true;
                 }
             } catch (RuntimeException e) {
@@ -182,7 +182,7 @@ public class ApprovalController {
 
             try {
                 if (approval.getFacilities() != null) {
-                    approvalService.saveFacilities(approval);
+                    approvalService.saveFacilitiesApproval(approval);
                     facilitiesApproved = true;
                 }
             } catch (RuntimeException e) {

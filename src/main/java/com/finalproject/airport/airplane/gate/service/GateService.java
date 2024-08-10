@@ -12,6 +12,7 @@ import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.manager.entity.ManagersEntity;
 import com.finalproject.airport.manager.repository.ManagersRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,23 +24,17 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GateService {
 
     private final GateRepository gateRepository;
-
     private final ModelMapper modelMapper;
-
     private final ApprovalService approvalService;
-
     private final DepartureAirplaneRepository departureAirplaneRepository;
     private final ApprovalRepository approvalRepository;
-
     private final ManagersRepository managersRepository;
 
-
-
     public List<GateDTO> findAll() {
-
         List<Gate> gateList = gateRepository.findByisActive("Y");
 
         List<GateDTO> gateDTOList = gateList.stream()
@@ -47,35 +42,28 @@ public class GateService {
                 .collect(Collectors.toList());
 
         for (GateDTO gateDTO : gateDTOList) {
-            List<ManagersEntity> managersEntityList = managersRepository.findAllByGateCodeAndIsActive(gateDTO.getGateCode(),"Y");
-            List<String> managerNames = new ArrayList<>();
-            for (ManagersEntity managersEntity : managersEntityList) {
-                managerNames.add(managersEntity.getUser().getUserName());
-            }
+            List<ManagersEntity> managersEntityList = managersRepository.findAllByGateCodeAndIsActive(gateDTO.getGateCode(), "Y");
+            List<String> managerNames = managersEntityList.stream()
+                    .map(managersEntity -> managersEntity.getUser().getUserName())
+                    .collect(Collectors.toList());
             gateDTO.setManager(String.join(",", managerNames));
         }
 
         return gateDTOList;
     }
 
-
-
-
-    public GateDTO findBygateCode(int gateCode) {
-
+    public GateDTO findByGateCode(int gateCode) {
         Gate gate = gateRepository.findBygateCode(gateCode);
-        return modelMapper.map(gate,GateDTO.class);
+        return modelMapper.map(gate, GateDTO.class);
     }
-
 
     @Transactional
     public String modifyGate(GateDTO modifyGate) {
-
-        System.out.println("modifyGate = " + modifyGate);
+        log.info("Modifying gate: {}", modifyGate);
         int result = 0;
 
-        try{
-            Gate gate =  gateRepository.findAllBygateCode(modifyGate.getGateCode());
+        try {
+            Gate gate = gateRepository.findBygateCode(modifyGate.getGateCode());
             gate = gate.toBuilder()
                     .manager(modifyGate.getManager())
                     .type(modifyGate.getGateType())
@@ -85,130 +73,111 @@ public class GateService {
                     .lastInspectionDate(modifyGate.getLastInspectionDate())
                     .registrationDate(modifyGate.getRegistrationDate())
                     .build();
-            System.out.println("gate = " + gate);
-            Gate gate1 = gateRepository.save(gate);
-            System.out.println("gate1 = " + gate1);
+            log.info("Updated gate: {}", gate);
+            Gate updatedGate = gateRepository.save(gate);
+            log.info("Saved gate: {}", updatedGate);
 
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
                     "N",
-                    gate1,
+                    updatedGate,
                     null,
                     null,
                     null,
                     null,
                     null,
                     null
-
             );
             approvalRepository.save(approval);
             result = 1;
-        } catch (Exception e){
+        } catch (Exception e) {
+            log.error("Error modifying gate: ", e);
             throw new RuntimeException(e);
         }
-        return (result>0) ? "게이트 승인 수정 성공" : "게이트 승인 수정 실패";
+
+        return (result > 0) ? "게이트 승인 수정 성공" : "게이트 승인 수정 실패";
     }
 
     @Transactional
     public void softDelete(int gateCode) {
-
-       Gate gate = gateRepository.findBygateCode(gateCode);
-
+        log.info("Soft deleting gate with code: {}", gateCode);
+        Gate gate = gateRepository.findBygateCode(gateCode);
         gate = gate.toBuilder().isActive("N").build();
-
-
-       gateRepository.save(gate);
-
+        gateRepository.save(gate);
     }
+
     @Transactional
     public String insertGate(GateDTO gateDTO) {
-
         int result = 0;
 
         try {
-
             DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(gateDTO.getAirplaneCode());
 
             Gate insertGate = Gate.builder()
-                    .departureAirplane(departureAirplane) // DTO에서 가져온 비행기 정보
-                    .lastInspectionDate(gateDTO.getLastInspectionDate()) // 최근 점검 날짜
-                    .location(gateDTO.getLocation()) // 위치
-                    .manager(gateDTO.getManager()) // 담당자
-                    .note(gateDTO.getNote()) // 비고
-                    .status(gateDTO.getStatus()) // 상태
-                    .type(gateDTO.getGateType()) // 타입
-                    .isActive("N") // 활성화/비활성화 필드 추가
+                    .departureAirplane(departureAirplane)
+                    .lastInspectionDate(gateDTO.getLastInspectionDate())
+                    .location(gateDTO.getLocation())
+                    .manager(gateDTO.getManager())
+                    .note(gateDTO.getNote())
+                    .status(gateDTO.getStatus())
+                    .type(gateDTO.getGateType())
+                    .isActive("N")
                     .build();
 
-            Gate gate = gateRepository.save(insertGate);
-            System.out.println("gate = " + gate);
+            Gate savedGate = gateRepository.save(insertGate);
+            log.info("Saved gate: {}", savedGate);
 
-            // 승인 정보 저장
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.등록,
                     "N",
-                    gate,
+                    savedGate,
                     null,
                     null,
                     null,
                     null
             );
-
             approvalRepository.save(approval);
 
             result = 1;
         } catch (Exception e) {
+            log.error("Error inserting gate: ", e);
             throw new RuntimeException(e);
         }
 
         return (result > 0) ? "탑승구 승인 요청 성공" : "탑승구 승인 요청 실패";
-
     }
 
-
-    public List<Integer> findAlllocations() {
-
+    public List<Integer> findAllLocations() {
         List<Integer> locationList = gateRepository.findAlllocations();
-        System.out.println("locationList = " + locationList);
+        log.info("Location list: {}", locationList);
 
-        List<Integer> locations = new ArrayList<>();
-
-        for(Integer gate : locationList){
-            locations.add(gate);
-        }
-
-        System.out.println("locations = " + locations);
-        return locations;
+        return new ArrayList<>(locationList);
     }
 
     public void getTest() {
-        for(int i = 6; i <= 132; i++){
-            Gate gate = new Gate();
-            gate = gate.toBuilder()
+        for (int i = 6; i <= 132; i++) {
+            Gate gate = Gate.builder()
                     .gateCode(i)
                     .build();
             gateRepository.save(gate);
         }
-
     }
+
     @Transactional
-    public List<GateDTO> feach() {
+    public List<GateDTO> fetch() {
         LocalDateTime now = LocalDateTime.now();
         Map<Integer, DepartureAirplane> closestAirplanes = new HashMap<>();
         Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
 
         for (int i = 6; i <= 132; i++) {
-            List<DepartureAirplane> departureAirplaneList = departureAirplaneRepository.findByGatenumber(i); //게이트 다가져옴 넘버 기준으로
+            List<DepartureAirplane> departureAirplaneList = departureAirplaneRepository.findByGatenumber(i);
 
-            for (DepartureAirplane departureAirplane : departureAirplaneList) {    // 게이트 뽑기
-                LocalDateTime scheduleTime = departureAirplane.getScheduleDateTime().toLocalDateTime(); //시간 뽑는데 로컬데이트타임으로 뽑기
+            for (DepartureAirplane departureAirplane : departureAirplaneList) {
+                LocalDateTime scheduleTime = departureAirplane.getScheduleDateTime().toLocalDateTime();
 
-                if (scheduleTime.isAfter(now)) {
-                    //뽑은 데이터 중 현재 시간기준으로 30분 이후 애들만 가져옴 그러면 이전 시간은 자동으로 거르기
-                    if (!closestTimes.containsKey(i) || scheduleTime.isBefore(closestTimes.get(i))) {
-                        closestAirplanes.put(i, departureAirplane);
-                        closestTimes.put(i, scheduleTime);
-                    }
+                if (scheduleTime.isAfter(now) && (!closestTimes.containsKey(i) || scheduleTime.isBefore(closestTimes.get(i)))) {
+                    closestAirplanes.put(i, departureAirplane);
+                    closestTimes.put(i, scheduleTime);
                 }
             }
         }
@@ -217,61 +186,47 @@ public class GateService {
             LocalDateTime scheduleTime = closestAirplane.getScheduleDateTime().toLocalDateTime();
             LocalDateTime thirtyMinutesBeforeSchedule = scheduleTime.minusMinutes(30);
 
-            String status;
-            // 비행기 일정 시간 30분 전부터 비행기 일정 시간까지 "사용중"
-            if (now.isAfter(thirtyMinutesBeforeSchedule) && now.isBefore(scheduleTime)) {
-                status = "사용중";
-            } else {
-                // 그 외의 경우는 "사용가능"
-                status = "사용가능";
-            }
+            String status = (now.isAfter(thirtyMinutesBeforeSchedule) && now.isBefore(scheduleTime)) ? "사용중" : "사용가능";
 
-            System.out.println("게이트 번호: " + gateNumber);
-            System.out.println("가장 가까운 비행기 시간: " + scheduleTime);
-            System.out.println("항공사: " + closestAirplane.getAirline());
-            System.out.println("상태: " + status);
+            log.info("Gate number: {}", gateNumber);
+            log.info("Closest airplane schedule time: {}", scheduleTime);
+            log.info("Airline: {}", closestAirplane.getAirline());
+            log.info("Status: {}", status);
 
-            // 데이터베이스에서 gateNumber와 일치하는 Gate 객체 찾기
-            Optional<Gate> optionalGate = gateRepository.findByGateCode(gateNumber);
+            Gate gate = gateRepository.findByGateCode(gateNumber)
+                    .orElse(Gate.builder()
+                            .departureAirplane(closestAirplane)
+                            .scheduleDateTime(Timestamp.valueOf(scheduleTime))
+                            .gateCode(gateNumber)
+                            .airline(closestAirplane.getAirline())
+                            .isActive(status)
+                            .build());
 
-            Gate gate;
-            if (optionalGate.isPresent()) {
-                gate = optionalGate.get();
-                gate.updateGate(
-                        Timestamp.valueOf(scheduleTime),
-                        closestAirplane.getAirline(),
-                        status
-                );
-            } else {
-                gate = Gate.builder()
-                        .departureAirplane(closestAirplane)
-                        .scheduleDateTime(Timestamp.valueOf(scheduleTime))
-                        .gateCode(gateNumber)
-                        .airline(closestAirplane.getAirline())
-                        .isActive(status) // 새로 생성되는 Gate 객체의 상태도 설정
-                        .build();
-            }
+            gate.updateGate(
+                    Timestamp.valueOf(scheduleTime),
+                    closestAirplane.getAirline(),
+                    status
+            );
 
             gateRepository.save(gate);
         });
+
         return null;
     }
+
     @Transactional
     public List<GateDTO> gateList1() {
-        // GateCode가 101부터 132까지인 활성화된 게이트만 조회
         List<Gate> gateList = gateRepository.findByGateCodeBetween(101, 132);
-        System.out.println(gateList);
-        // Gate 엔티티를 GateDTO로 변환하여 반환
+        log.info("Gate list 1: {}", gateList);
         return gateList.stream()
-                .filter(gate -> "Y".equals(gate.getIsActive())) // 활성화된 게이트만 필터링
+                .filter(gate -> "Y".equals(gate.getIsActive()))
                 .map(gate -> modelMapper.map(gate, GateDTO.class))
                 .collect(Collectors.toList());
     }
 
     public List<GateDTO> gateList2() {
         List<Gate> gateList = gateRepository.findByGateCodeBetween(30, 41);
-        System.out.println(gateList);
-
+        log.info("Gate list 2: {}", gateList);
         return gateList.stream()
                 .filter(gate -> "Y".equals(gate.getIsActive()))
                 .map(gate -> modelMapper.map(gate, GateDTO.class))
@@ -280,8 +235,7 @@ public class GateService {
 
     public List<GateDTO> gateList3() {
         List<Gate> gateList = gateRepository.findByGateCodeBetween(12, 26);
-        System.out.println(gateList);
-
+        log.info("Gate list 3: {}", gateList);
         return gateList.stream()
                 .filter(gate -> "Y".equals(gate.getIsActive()))
                 .map(gate -> modelMapper.map(gate, GateDTO.class))
