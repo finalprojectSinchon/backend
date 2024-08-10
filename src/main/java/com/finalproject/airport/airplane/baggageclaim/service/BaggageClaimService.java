@@ -12,6 +12,8 @@ import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
+import com.finalproject.airport.manager.entity.ManagersEntity;
+import com.finalproject.airport.manager.repository.ManagersRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,16 +33,17 @@ public class BaggageClaimService {
 
     private final ArrivalAirplaneRepository airplaneRepository;
     private final ApprovalService approvalService;
-
+    private final ManagersRepository managersRepository;
 
 
     @Autowired
-    public BaggageClaimService(BaggageClaimRepository repository , ModelMapper modelMapper, DepartureAirplaneRepository departureAirplaneRepository, ArrivalAirplaneRepository airplaneRepository, ApprovalService approvalService){
+    public BaggageClaimService(BaggageClaimRepository repository , ModelMapper modelMapper, DepartureAirplaneRepository departureAirplaneRepository, ArrivalAirplaneRepository airplaneRepository, ApprovalService approvalService, ManagersRepository managersRepository){
         this.modelMapper = modelMapper;
         this.repository = repository;
         this.departureAirplaneRepository = departureAirplaneRepository;
         this.airplaneRepository = airplaneRepository;
         this.approvalService = approvalService;
+        this.managersRepository = managersRepository;
     }
 
     @Autowired
@@ -52,9 +52,22 @@ public class BaggageClaimService {
     public List<BaggageClaimDTO> findAll() {
         List<BaggageClaim> baggageClaimList = repository.findByisActive("Y");
 
-        return baggageClaimList.stream()
+
+
+        List<BaggageClaimDTO> list =  baggageClaimList.stream()
                 .map(baggageClaim -> modelMapper.map(baggageClaim, BaggageClaimDTO.class))
                 .collect(Collectors.toList());
+
+        for (BaggageClaimDTO baggageClaimDTO : list) {
+            List<ManagersEntity> managersEntityList = managersRepository.findAllByBaggageClaimCodeAndIsActive(baggageClaimDTO.getBaggageClaimCode(),"Y");
+            List<String> managerNames = new ArrayList<>();
+            for (ManagersEntity managersEntity : managersEntityList) {
+                managerNames.add(managersEntity.getUser().getUserName());
+            }
+            baggageClaimDTO.setManager(String.join(",", managerNames));
+        }
+
+        return list;
     }
 
     public BaggageClaimDTO findBybaggageClaimCode(int baggageClaimCode) {

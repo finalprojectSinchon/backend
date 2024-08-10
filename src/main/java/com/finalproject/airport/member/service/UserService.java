@@ -1,5 +1,6 @@
 package com.finalproject.airport.member.service;
 
+import com.finalproject.airport.member.dto.ImgAndNameDTO;
 import com.finalproject.airport.member.dto.UserContactDTO;
 import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.member.repository.UserRepository;
@@ -50,4 +51,11 @@ public class UserService {
     }
 
 
+    public ImgAndNameDTO getImgAndName(int userCode) {
+
+        UserEntity user = userRepository.findById(userCode).orElseThrow();
+        ImgAndNameDTO imgAndNameDTO = new ImgAndNameDTO(user.getUserName(),user.getUserImg());
+
+        return imgAndNameDTO;
+    }
 }

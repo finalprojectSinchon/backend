@@ -1,6 +1,7 @@
 package com.finalproject.airport.member.controller;
 
 import com.finalproject.airport.common.ResponseDTO;
+import com.finalproject.airport.member.dto.ImgAndNameDTO;
 import com.finalproject.airport.member.dto.UserContactDTO;
 import com.finalproject.airport.member.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +29,16 @@ public class UserController {
         List<UserContactDTO> contactDTO = userService.contact();
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"전체 유저 조회 성공", contactDTO));
+    }
+
+
+    @GetMapping("/chat/img/{userCode}")
+    public ResponseEntity<?> getImgAndName(@PathVariable int userCode) {
+
+        ImgAndNameDTO imgAndNameDTO = userService.getImgAndName(userCode);
+
+
+        return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"토스트 유저 조회 성공", imgAndNameDTO));
     }
 
 }
