@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.finalproject.airport.member.repository.UserRepository;
 import com.finalproject.airport.webSocket.chat.dto.ChatMessageDTO;
 import com.finalproject.airport.webSocket.chat.service.ChatService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -27,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> userSessions = new ConcurrentHashMap<>();
@@ -61,7 +63,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 }
             }
         }
-        System.err.println("쿼리스트링으로 유저코드 담아야함!!");
+        log.error("쿼리스트링으로 유저코드 담아야함!!");
         session.close();
     }
 

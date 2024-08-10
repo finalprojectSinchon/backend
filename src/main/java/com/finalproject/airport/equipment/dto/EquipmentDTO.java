@@ -1,7 +1,7 @@
 package com.finalproject.airport.equipment.dto;
 
-
 import com.finalproject.airport.equipment.entity.EquipmentCategory;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.Date;
@@ -13,29 +13,30 @@ import java.util.Date;
 @ToString
 public class EquipmentDTO {
 
+    @Schema(description = "장비 코드", example = "12345")
     private int equipmentCode;
 
-    //장비 이름
+    @Schema(description = "장비 이름", example = "지상 조종 장비")
     private String equipmentName;
 
-    //장비 가격
+    @Schema(description = "장비 가격", example = "500000")
     private int equipmentPrice;
 
-    //장비 수량
+    @Schema(description = "장비 수량", example = "10")
     private int equipmentQuantity;
 
-    //장비 위치
+    @Schema(description = "장비 위치", example = "1번 창고")
     private String location;
 
-    //카테고리
+    @Schema(description = "장비 카테고리", example = "GROUND_CONTROL")
     private EquipmentCategory category;
 
-    // 상태
+    @Schema(description = "장비 상태", example = "활성")
     private String status;
 
-    // location PK
+    @Schema(description = "위치 PK", example = "1")
     private int zoneCode;
 
+    @Schema(description = "장비 이미지 URL", example = "http://example.com/image.jpg")
     private String img;
-
 }
