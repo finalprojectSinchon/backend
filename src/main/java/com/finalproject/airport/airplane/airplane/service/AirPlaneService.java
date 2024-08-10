@@ -56,8 +56,10 @@ public class AirPlaneService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
+
         String requestUrl = ArrivalApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate;
         log.info("Request URL for arrival airplanes: {}", requestUrl);
+
 
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
@@ -86,8 +88,10 @@ public class AirPlaneService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = today.format(formatter);
+
         String requestUrl = DepartureApiUrl +"serviceKey=" +apiKey+ "&type=json" + "&numOfRows=10000" + "&searchday=" + formattedDate;
         log.info("Request URL for departure airplanes: {}", requestUrl);
+
 
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size

@@ -71,6 +71,7 @@ public class CheckinCounterController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        List<CheckinCounterDTO> checkinCounterdata = service.feachdate();
         List<CheckinCounterDTO> chkinCounterList = service.findAll();
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("chkinCounterList", chkinCounterList);
@@ -147,5 +148,10 @@ public class CheckinCounterController {
 
         service.removeCheckinCounter(checkinCounterCode);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/checkin/test")
+    public void test(){
+        service.insertdb();
     }
 }

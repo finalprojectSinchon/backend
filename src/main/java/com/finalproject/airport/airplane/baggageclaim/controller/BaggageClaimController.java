@@ -101,4 +101,8 @@ public class BaggageClaimController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/baggage/test")
+    public void test() {
+          service.insertdb();
+    }
 }

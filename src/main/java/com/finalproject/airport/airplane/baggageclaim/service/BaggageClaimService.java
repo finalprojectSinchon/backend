@@ -169,7 +169,9 @@ public class BaggageClaimService {
         Map<Integer, ArrivalAirplane> closestAirplanes = new HashMap<>();
         Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
 
+
         for (int i = 1; i <= 14; i++) {
+
             List<ArrivalAirplane> arrivalAirplaneList = airplaneRepository.findByCarousel(i);
 
             for (ArrivalAirplane arrivalAirplane : arrivalAirplaneList) {
@@ -217,4 +219,15 @@ public class BaggageClaimService {
 
         return null; // 실제로는 List<BaggageClaimDTO>를 반환해야 함
     }
+
+    public void insertdb() {
+        for (int i = 1 ; i <= 13 ; i++) {
+            BaggageClaim baggageClaim = new BaggageClaim();
+            baggageClaim.toBuilder()
+                    .baggageClaimCode(i)
+                    .isActive("Y");
+            repository.save(baggageClaim);
+        }
+    }
+
 }
