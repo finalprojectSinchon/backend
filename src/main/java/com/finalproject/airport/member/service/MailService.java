@@ -4,17 +4,20 @@ import com.finalproject.airport.store.dto.AuthMailPhoneDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MailService {
 
     private final JavaMailSender mailSender;
 
     public void sendForAuthCode(AuthMailPhoneDTO authMailDTO) throws MessagingException {
+        log.info("send Mail. {}", authMailDTO);
         int authCode = authMailDTO.getAuthCode();
         if (99999 < authCode && authCode <= 999999) {
             MimeMessage message = mailSender.createMimeMessage();
@@ -35,6 +38,7 @@ public class MailService {
 
 
     public void sendForNewPassword(String userEmail, String randomCode) throws MessagingException {
+        log.info("send newPw. {}", userEmail);
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 

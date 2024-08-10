@@ -24,6 +24,7 @@ import com.finalproject.airport.store.entity.StoreEntity;
 import com.finalproject.airport.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class InspectionService {
 
     private final InspectionRepository inspectionRepository;
@@ -66,7 +67,7 @@ public class InspectionService {
 
     //점검 전체 조회
     public List<InspectionDTO> getInspectionList() {
-
+        log.info("Fetching all active inspections");
         List<InspectionDTO> inspectionDTOList = new ArrayList<>();
         List<InspectionEntity> inspectionList1 = inspectionRepository.findByIsActive("Y");
         inspectionList1.forEach(inspectionEntity -> {inspectionDTOList.add(modelMapper.map(inspectionEntity, InspectionDTO.class));});
@@ -77,6 +78,7 @@ public class InspectionService {
 
     //점검 상세 조회
     public InspectionDTO getInspection(int inspectionCode) {
+        log.info("Fetching inspection with code: {}", inspectionCode);
         InspectionEntity inspection = inspectionRepository.findByinspectionCode(inspectionCode);
 
         return modelMapper.map(inspection, InspectionDTO.class);
@@ -86,7 +88,7 @@ public class InspectionService {
     // 점검 등록
     @Transactional
     public String addInspection(InspectionDTO inspectionDTO) {
-        System.out.println("이ㅏㄴ스퓨ㅔㄱ션 나옴 ? = " + inspectionDTO);
+        log.info("Adding inspection: {}", inspectionDTO);
         InspectionEntity inspectionEntity = modelMapper.map(inspectionDTO, InspectionEntity.class);
         InspectionEntity inspectionEntitySaved = inspectionRepository.save(inspectionEntity);
 
@@ -146,11 +148,14 @@ public class InspectionService {
 
     // 점검 수정
     public void updateInspection(int inspectionCode, InspectionDTO inspectionDTO) {
-
+        log.info("Updating inspection with code: {}", inspectionCode);
         InspectionEntity inspectionEntity = inspectionRepository.findByinspectionCode(inspectionCode);
 
+        if (inspectionEntity == null) {
+            log.error("Inspection not found with code: {}", inspectionCode);
+            throw new IllegalArgumentException("Inspection not found with code: " + inspectionCode);
+        }
 
-        System.out.println("inspectionEntity = " + inspectionEntity);
         inspectionEntity = modelMapper.map(inspectionDTO, InspectionEntity.class);
         inspectionRepository.save(inspectionEntity);
 
@@ -158,7 +163,9 @@ public class InspectionService {
 
     // 점검 삭제
     public void softDeleteInspection(int inspectionCode) {
-        InspectionEntity inspectionEntity = inspectionRepository.findById(Integer.valueOf(inspectionCode)).orElseThrow(IllegalArgumentException::new);
+        log.info("Soft deleting inspection with code: {}", inspectionCode);
+        InspectionEntity inspectionEntity = inspectionRepository.findById(inspectionCode)
+                .orElseThrow(() -> new IllegalArgumentException("Inspection not found with code: " + inspectionCode));
         inspectionEntity = inspectionEntity.toBuilder().isActive("N").build();
 
 
@@ -239,8 +246,6 @@ public class InspectionService {
         }
 
 
-
-        System.out.println("statusDTOList = " + statusDTOList);
 
 
         return statusDTOList;

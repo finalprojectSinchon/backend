@@ -50,7 +50,7 @@ public class CheckinCounterController {
     })
     @PostMapping("/checkin-counter")
     public ResponseEntity<Void> insertChkinCounter(@RequestBody CheckinCounterDTO chkinCounter) {
-        service.insertchkinCounter(chkinCounter);
+        service.insertCheckinCounter(chkinCounter);
         return ResponseEntity.ok().build();
     }
 
@@ -100,7 +100,7 @@ public class CheckinCounterController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        CheckinCounterDTO chkinCounter = service.findBycheckinCounterCode(checkinCounterCode);
+        CheckinCounterDTO chkinCounter = service.findByCheckinCounterCode(checkinCounterCode);
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("chkinCounter", chkinCounter);
@@ -145,7 +145,7 @@ public class CheckinCounterController {
     public ResponseEntity<Void> removeCheckinCounter(
             @PathVariable int checkinCounterCode) {
 
-        service.remodveCheckinCounter(checkinCounterCode);
+        service.removeCheckinCounter(checkinCounterCode);
         return ResponseEntity.ok().build();
     }
 }

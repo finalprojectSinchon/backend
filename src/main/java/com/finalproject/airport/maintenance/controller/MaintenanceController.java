@@ -120,7 +120,7 @@ public class MaintenanceController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        List<Object> locationList = maintenanceService.findlocation(structure);
+        List<Object> locationList = maintenanceService.findLocation(structure);
         Map<String, Object> response = new HashMap<>();
         response.put("locationList", locationList);
 

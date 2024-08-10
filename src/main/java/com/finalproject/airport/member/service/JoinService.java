@@ -7,6 +7,7 @@ import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.member.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JoinService {
 
     private final UserRepository userRepository;
@@ -35,7 +37,7 @@ public class JoinService {
 
     public ResponseEntity<?> joinProcess(JoinDTO joinDTO) {
 
-        System.out.println("joinDTO = " + joinDTO);
+        log.info("new people {}", joinDTO);
         String userId = joinDTO.getUserId();
         String password = joinDTO.getUserPassword();
         String userEmail = joinDTO.getUserEmail();
@@ -76,12 +78,11 @@ public class JoinService {
 
     public ResponseEntity<?> modifyUser(UserModifyDTO userModifyDTO) {
 
+        log.info("modify User {}", userModifyDTO);
         UserEntity user = userRepository.findById(userModifyDTO.getUserCode()).orElseThrow(IllegalArgumentException::new);
-        System.out.println("user = " + user);
         UserEntity modifiedUser = user.toBuilder().userName(userModifyDTO.getUserName()).userEmail(userModifyDTO.getUserEmail()).userPhone(userModifyDTO.getUserPhone())
                 .userAddress(userModifyDTO.getUserAddress()).userAbout(userModifyDTO.getUserAbout()).build();
 
-        System.out.println("modifiedUser = " + modifiedUser);
         userRepository.save(modifiedUser);
 
         return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK,"수정 성공하였습니다.",null));
@@ -95,7 +96,7 @@ public class JoinService {
 
     public ResponseEntity<?> passwordChange(ChangePasswordDTO changePasswordDTO) {
 
-        // 새로운 비밀번호 비밀번호 확인
+
         if(changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())){
             // 비밀번호 인코드
             String encodePassword = bCryptPasswordEncoder.encode(changePasswordDTO.getNewPassword());

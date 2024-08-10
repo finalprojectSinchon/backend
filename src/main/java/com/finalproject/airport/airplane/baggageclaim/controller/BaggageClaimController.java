@@ -38,7 +38,7 @@ public class BaggageClaimController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
-        List<BaggageClaimDTO> baggageClaimdata = service.baggageClaimfeach();
+        List<BaggageClaimDTO> baggageClaimdata = service.baggageClaimFetch();
         List<BaggageClaimDTO> baggageClaimList = service.findAll();
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("baggageClaimList", baggageClaimList);

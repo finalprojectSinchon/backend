@@ -47,7 +47,7 @@ public class GateController {
     public ResponseEntity<ResponseDTO> getGate(){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        List<GateDTO> gatedata = gateService.feach();
+        List<GateDTO> gatedata = gateService.fetch();
         List<GateDTO> gateList = gateService.findAll();
         System.out.println(gateList);
         Map<String, Object> responseMap = new HashMap<>();
@@ -109,7 +109,7 @@ public class GateController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
-        GateDTO gate = gateService.findBygateCode(gateCode);
+        GateDTO gate = gateService.findByGateCode(gateCode);
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("gate", gate);
 
