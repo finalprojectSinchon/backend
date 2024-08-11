@@ -94,7 +94,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String messageType = typeNode.asText();
 
         if ("REQUEST_ALL_STATUSES".equals(messageType)) {
-            log.info("Handling REQUEST_ALL_STATUSES message");
             sendAllUserStatuses(session);
         } else if ("CHAT_MESSAGE".equals(messageType)) { // 채팅 메시지 타입 처리
             ChatMessageDTO messageDTO = objectMapper.readValue(message.getPayload(), ChatMessageDTO.class);
@@ -183,7 +182,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         ObjectNode response = objectMapper.createObjectNode();
         response.put("type", "INITIAL_STATUS");
         response.set("statuses", objectMapper.valueToTree(allStatuses));
-        log.info("Sending initial status to session: {}", response);
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
         } catch (IOException e) {
