@@ -25,11 +25,11 @@ public class SMSUtil {
     }
 
     public SingleMessageSentResponse sendOne(String to, int authCode) {
-        String signUpUrl = "https://url.kr/qz1545";
+        String signUpUrl = "https://url.kr/u1dnsz";
         Message message = new Message();
         message.setFrom("01079410489");
         message.setTo(to);
-        message.setText("[AirService] 회원가입 인증코드 입니다.\n [" + authCode + "]" +  signUpUrl  );
+        message.setText("[SkyCare] 회원가입 인증코드 입니다.\n [" + authCode + "]" +  signUpUrl  );
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
         return response;
@@ -40,7 +40,7 @@ public class SMSUtil {
         Message message = new Message();
         message.setFrom("01079410489");
         message.setTo(userPhone);
-        message.setText("[AirService] 임시 비밀번호입니다 .\n [" + randomCode + "]"  );
+        message.setText("[SkyCare] 임시 비밀번호입니다 .\n [" + randomCode + "]"  );
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
         return response;
