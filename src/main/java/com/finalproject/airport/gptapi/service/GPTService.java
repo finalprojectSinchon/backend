@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -86,27 +87,93 @@ public class GPTService {
     }
 
     public GPTResponseDTO aiAskInfo(GPTRequestDTO request, String airportType) {
+        if ("store".equals(airportType)) {
+            return handleStoreInfo(request);
+        }
+
+        if ("airport".equals(airportType)) {
+            return handleAirportInfo(request);
+        }
         String prompt = generatePrompt(airportType);
-
-        request.setModel(apiModel);
-        enhanceUserMessage(request, prompt);
-
+        enhanceRequest(request, prompt);
         return sendRequestToGPT(request);
     }
 
-    private String generatePrompt(String airportType) {
-        Map<String, Supplier<List<?>>> dataSuppliers = Map.of(
-                "checkInCounter", () -> checkinCounterRepository.findByisActive("Y"),
-                "gate", () -> gateRepository.findByisActive("Y"),
-                "baggageClaim", () -> baggageClaimRepository.findByisActive("Y"),
-                "store", () -> storeRepository.findByIsActive("Y"),
-                "facilities", () -> facilitiesRepository.findAllByIsActive("Y"),
-                "storage", () -> storageRepository.findByisActive("Y"),
-                "equipment", () -> equipmentRepository.findByIsActive("Y")
-        );
+    private GPTResponseDTO handleAirportInfo(GPTRequestDTO request) {
+        String prompt = "아래에 제공된 인천국제공항에 관련된 데이터만을 사용하여 다음 질문에 답변해주세요. 제공된 정보 외의 다른 정보는 사용하지 마세요.\n\n" +
+                "질문: " + request.getMessages().get(request.getMessages().size() - 1).getContent() + "\n\n" +
+                "답변 시 다음 사항을 반드시 지켜주세요:\n" +
+                "1. 한국어로 답변해주세요.\n" +
+                "2. 친절하고 상세하게 답변해주세요.\n" +
+                "3. 제공된 인천국제공항 정보만을 사용하여 답변하세요. 이 정보 외의 내용은 언급하지 마세요.\n" +
+                "4. 정보가 부족하거나 확실하지 않은 경우, '제공된 정보로는 확실히 알 수 없습니다'라고 명시해주세요.\n\n" +
+                "제공된 인천국제공항 정보:\n\n";
 
-        List<?> data = dataSuppliers.getOrDefault(airportType, Collections::emptyList).get();
+        GPTRequestDTO finalRequest = new GPTRequestDTO();
+        finalRequest.setModel(apiModel);
+        finalRequest.setMessages(Arrays.asList(new GPTRequestDTO.Message("user", prompt)));
+
+        return sendRequestToGPT(finalRequest);
+    }
+
+    private GPTResponseDTO handleStoreInfo(GPTRequestDTO request) {
+        List<StoreEntity> stores = storeRepository.findByIsActive("Y");
+        StringBuilder allInfo = new StringBuilder();
+
+        for (int i = 0; i < stores.size(); i += 30) {
+            int end = Math.min(i + 30, stores.size());
+            List<StoreEntity> storeSubset = stores.subList(i, end);
+
+            String prompt = formatDataToPrompt(storeSubset, "store");
+            GPTRequestDTO tempRequest = new GPTRequestDTO();
+            tempRequest.setModel(apiModel);
+            tempRequest.setMessages(Arrays.asList(new GPTRequestDTO.Message("user", prompt)));
+
+            GPTResponseDTO response = sendRequestToGPT(tempRequest);
+            allInfo.append(response.getChoices().get(0).getMessage().getContent()).append("\n\n");
+        }
+
+        String finalPrompt = "아래에 제공된 점포 정보만을 사용하여 다음 질문에 답변해주세요. 제공된 정보 외의 다른 정보는 사용하지 마세요.\n\n" +
+                "질문: " + request.getMessages().get(request.getMessages().size() - 1).getContent() + "\n\n" +
+                "답변 시 다음 사항을 반드시 지켜주세요:\n" +
+                "1. 한국어로 답변해주세요.\n" +
+                "2. 친절하고 상세하게 답변해주세요.\n" +
+                "3. 제공된 점포 정보만을 사용하여 답변하세요. 이 정보 외의 내용은 언급하지 마세요.\n" +
+                "4. 정보가 부족하거나 확실하지 않은 경우, '제공된 정보로는 확실히 알 수 없습니다'라고 명시해주세요.\n\n" +
+                "제공된 점포 정보:\n" + allInfo.toString() + "\n\n" +
+                "이제 위 정보만을 사용하여 질문에 답변해주세요.";
+
+        GPTRequestDTO finalRequest = new GPTRequestDTO();
+        finalRequest.setModel(apiModel);
+        finalRequest.setMessages(Arrays.asList(new GPTRequestDTO.Message("user", finalPrompt)));
+
+        return sendRequestToGPT(finalRequest);
+    }
+
+    private String generatePrompt(String airportType) {
+        List<?> data = getDataByAirportType(airportType);
         return formatDataToPrompt(data, airportType);
+    }
+
+    private List<?> getDataByAirportType(String airportType) {
+        switch (airportType) {
+            case "checkInCounter":
+                return checkinCounterRepository.findByisActive("Y");
+            case "gate":
+                return gateRepository.findByisActive("Y");
+            case "baggageClaim":
+                return baggageClaimRepository.findByisActive("Y");
+            case "store":
+                return storeRepository.findByIsActive("Y");
+            case "facilities":
+                return facilitiesRepository.findAllByIsActive("Y");
+            case "storage":
+                return storageRepository.findByisActive("Y");
+            case "equipment":
+                return equipmentRepository.findByIsActive("Y");
+            default:
+                return Collections.emptyList();
+        }
     }
 
     private String formatDataToPrompt(List<?> data, String airportType) {
@@ -117,29 +184,25 @@ public class GPTService {
             promptBuilder.append("- ").append(item.toString()).append("\n");
         }
 
-        promptBuilder.append("\n이 정보를 바탕으로 질문에 답변해주세요. 답변은 다음 지침을 따라주세요:\n");
-        promptBuilder.append("1. 마크다운 형식을 사용하여 구조화된 답변을 제공하세요.\n");
-        promptBuilder.append("2. 필요한 경우 표나 목록을 사용하여 정보를 명확하게 전달하세요.\n");
-        promptBuilder.append("3. 전문 용어는 가능한 쉽게 설명해주세요.\n");
-        promptBuilder.append("4. 답변은 한국어로 작성해주세요.\n");
-
+        promptBuilder.append("\n이 정보를 친절하게 대답 해주세요. 대답은 사용자가 볼 것 이므로 깔끔하게 대답해주세요. 답변은 한국어로 작성해주세요.");
         return promptBuilder.toString();
     }
 
     private String getKoreanAirportType(String airportType) {
-        Map<String, String> koreanTypes = Map.of(
-                "checkInCounter", "체크인 카운터",
-                "gate", "탑승구",
-                "baggageClaim", "수하물 찾는 곳",
-                "store", "상점",
-                "facilities", "시설",
-                "storage", "보관소",
-                "equipment", "장비"
-        );
-        return koreanTypes.getOrDefault(airportType, airportType);
+        switch (airportType) {
+            case "checkInCounter": return "체크인 카운터";
+            case "gate": return "탑승구";
+            case "baggageClaim": return "수하물 찾는 곳";
+            case "store": return "상점";
+            case "facilities": return "시설";
+            case "storage": return "보관소";
+            case "equipment": return "장비";
+            default: return airportType;
+        }
     }
 
-    private void enhanceUserMessage(GPTRequestDTO request, String prompt) {
+    private void enhanceRequest(GPTRequestDTO request, String prompt) {
+        request.setModel(apiModel);
         for (GPTRequestDTO.Message message : request.getMessages()) {
             if ("user".equals(message.getRole())) {
                 String updatedContent = message.getContent() + "\n\n" + prompt;
