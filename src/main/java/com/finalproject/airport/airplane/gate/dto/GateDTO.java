@@ -3,6 +3,7 @@ package com.finalproject.airport.airplane.gate.dto;
 import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.gate.entity.GateType;
+import com.finalproject.airport.member.dto.UserDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -58,5 +59,8 @@ public class GateDTO {
 
     @Schema(description = "탑승구 오픈시간")
     private Timestamp scheduleDateTime;
+
+    @Schema(description = "승인요청자")
+    private UserDTO approvalRequester;
 
 }

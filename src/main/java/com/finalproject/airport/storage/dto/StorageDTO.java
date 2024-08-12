@@ -1,7 +1,9 @@
 package com.finalproject.airport.storage.dto;
 
+import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.storage.entity.Department;
 import com.finalproject.airport.storage.entity.StorageType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @NoArgsConstructor
@@ -40,5 +42,8 @@ public class StorageDTO {
 
     // 활성 여부
     private String isActive;
+
+    @Schema(description = "승인요청자")
+    private UserDTO approvalRequester;
 
 }

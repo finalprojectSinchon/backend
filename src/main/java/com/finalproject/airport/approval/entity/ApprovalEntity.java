@@ -64,8 +64,13 @@ public class ApprovalEntity extends BaseTimeEntity {
 
     @Column(name="CHECKED")
     private String checked;
-    
 
+    @PrePersist
+    private void ensureIsCheckedDefault() {
+        if (this.checked == null) {
+            this.checked = "N";
+        }
+    }
 
     protected ApprovalEntity() {
     }

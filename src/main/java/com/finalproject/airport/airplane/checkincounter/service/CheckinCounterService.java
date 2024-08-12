@@ -11,6 +11,7 @@ import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
+import com.finalproject.airport.member.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class CheckinCounterService {
     @Transactional
     public String insertchkinCounter(CheckinCounterDTO chkinCounter) {
 
+        UserEntity user = modelMapper.map(chkinCounter.getApprovalRequester(), UserEntity.class);
         log.info("Inserting check-in counter: {}", chkinCounter);
         int result = 0;
 
@@ -61,6 +63,7 @@ public class CheckinCounterService {
                     .status(chkinCounter.getStatus()) // 상태
                     .type(chkinCounter.getType()) // 타입
                     .isActive("N") // 활성화/비활성화 필드 추가
+                    .approvalRequester(user)
                     .build();
 
             CheckinCounter checkinCounter =  repository.save(insertchkinCounter);
@@ -108,6 +111,8 @@ public class CheckinCounterService {
         log.info("Modifying check-in counter: {}", modifyCheckinCounterDTO);
         int result = 0;
 
+        UserEntity user = modelMapper.map(modifyCheckinCounterDTO.getApprovalRequester() , UserEntity.class);
+
         try {
             CheckinCounter checkinCounter = repository.findBycheckinCounterCode(modifyCheckinCounterDTO.getCheckinCounterCode());
             checkinCounter = checkinCounter.toBuilder()
@@ -118,6 +123,7 @@ public class CheckinCounterService {
                     .lastInspectionDate(modifyCheckinCounterDTO.getLastInspectionDate())
                     .manager(modifyCheckinCounterDTO.getManager())
                     .note(modifyCheckinCounterDTO.getNote())
+                    .approvalRequester(user)
                     .build();
 
             CheckinCounter updatedCheckinCounter = repository.save(checkinCounter);

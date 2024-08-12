@@ -4,6 +4,7 @@ import com.finalproject.airport.airplane.airplane.DTO.AirplaneDTO;
 import com.finalproject.airport.airplane.airplane.DTO.ArrivalAirplaneDTO;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimLocation;
 import com.finalproject.airport.airplane.baggageclaim.entity.BaggageClaimType;
+import com.finalproject.airport.member.dto.UserDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -56,5 +57,8 @@ public class BaggageClaimDTO {
 
     @Schema(description = "항공사")
     private String airline;
+
+    @Schema(description = "승인요청자")
+    private UserDTO approvalRequester;
 
 }

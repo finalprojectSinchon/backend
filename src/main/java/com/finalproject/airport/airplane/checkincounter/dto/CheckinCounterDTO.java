@@ -2,6 +2,7 @@ package com.finalproject.airport.airplane.checkincounter.dto;
 
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterLocation;
 import com.finalproject.airport.airplane.checkincounter.entity.CheckinCounterType;
+import com.finalproject.airport.member.dto.UserDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -56,6 +57,7 @@ public class CheckinCounterDTO {
     private String airport;
 
     // 정적 메서드로 수정
-   
 
+    @Schema(description = "승인요청자")
+    private UserDTO approvalRequester;
 }
