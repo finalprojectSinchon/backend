@@ -2,6 +2,7 @@ package com.finalproject.airport.equipment.controller;
 
 import com.finalproject.airport.common.ResponseDTO;
 import com.finalproject.airport.equipment.dto.EquipmentDTO;
+import com.finalproject.airport.equipment.dto.EquipmentStorageDTO;
 import com.finalproject.airport.equipment.service.EquipmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -97,6 +98,16 @@ public class EquipmentController {
         try {
             equipmentService.softDeleteEquipment(equipmentCode);
             return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "삭제 성공하였습니다.", null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/equipment/storage")
+    public ResponseEntity<?> getStorage() {
+        try {
+            List<EquipmentStorageDTO> lists = equipmentService.getStorage();
+            return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "조회에 성공하였습니다.", lists));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
