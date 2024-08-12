@@ -90,10 +90,8 @@ public class FacilitiesService {
         UserEntity user = modelMapper.map(facilitiesDTO.getApprovalRequester(),UserEntity.class);
 
         try {
-            FacilitiesEntity existingFacility = facilitiesRepository.findById(facilitiesDTO.getFacilitiesCode())
-                    .orElseThrow(() -> new IllegalArgumentException("No facility found with code: " + facilitiesDTO.getFacilitiesCode()));
 
-            FacilitiesEntity modifiedFacility = existingFacility.toBuilder()
+            FacilitiesEntity modifiedFacility = FacilitiesEntity.builder()
                     .status(facilitiesDTO.getStatus())
                     .location(facilitiesDTO.getLocation())
                     .facilitiesName(facilitiesDTO.getFacilitiesName())

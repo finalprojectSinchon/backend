@@ -96,17 +96,12 @@ public class ApprovalService {
         log.info("Saving facilities approval: {}", approval);
 
         FacilitiesEntity facilities = facilitiesRepository.findByfacilitiesCode(approval.getFacilities().getFacilitiesCode());
-        ApprovalEntity approvalEntity = new ApprovalEntity(
-                approval.getType(),
-                approval.getStatus(),
-                null,
-                null,
-                null,
-                null,
-                facilities
-        );
-        log.info("Approval entity: {}", approvalEntity);
-        approvalRepository.save(approvalEntity);
+        facilities = facilities.toBuilder().isActive("Y").build();
+        facilitiesRepository.save(facilities);
+
+        approval = approval.toBuilder().status("Y").build();
+        approvalRepository.save(approval);
+
     }
 
     public ApprovalEntity approveCommon(Integer approvalCode) {
