@@ -56,7 +56,6 @@ public class StorageService {
                     .status(storageDTO.getStatus())
                     .location(storageDTO.getLocation())
                     .category(storageDTO.getCategory())
-                    .department(storageDTO.getDepartment())
                     .manager(storageDTO.getManager())
                     .period(storageDTO.getPeriod())
                     .date(storageDTO.getDate())
@@ -64,6 +63,7 @@ public class StorageService {
                     .build();
 
             StorageEntity storageEntity = storageRepository.save(insertStorage);
+            System.out.println(storageEntity);
             log.info("Saved new storage entity: {}", storageEntity);
 
             // 승인을 위한 정보 저장
@@ -96,7 +96,6 @@ public class StorageService {
                     .type(modifyStorage.getType())
                     .location(modifyStorage.getLocation())
                     .status(modifyStorage.getStatus())
-                    .department(modifyStorage.getDepartment())
                     .category(modifyStorage.getCategory())
                     .isActive("N")
                     .build();

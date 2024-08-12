@@ -127,6 +127,8 @@ public class GateService {
                     .note(gateDTO.getNote())
                     .status(gateDTO.getStatus())
                     .type(gateDTO.getGateType())
+//                    .airport(gateDTO.getAirport())
+//                    .flightid(gateDTO.getFlightid())
                     .isActive("N")
                     .approvalRequester(user)
                     .build();
@@ -199,6 +201,7 @@ public class GateService {
             log.info("Closest airplane schedule time: {}", scheduleTime);
             log.info("Airline: {}", closestAirplane.getAirline());
             log.info("Status: {}", status);
+            log.info("airport {}", closestAirplane.getAirport());
 
             Gate gate = gateRepository.findByGateCode(gateNumber)
                     .orElse(Gate.builder()
@@ -207,12 +210,17 @@ public class GateService {
                             .gateCode(gateNumber)
                             .airline(closestAirplane.getAirline())
                             .isActive(status)
+                            .airport(closestAirplane.getAirport())
+                            .flightid(closestAirplane.getFlightId())
                             .build());
 
             gate.updateGate(
                     Timestamp.valueOf(scheduleTime),
                     closestAirplane.getAirline(),
-                    status
+                    status,
+                    closestAirplane.getAirport(),
+                    closestAirplane.getFlightId()
+
             );
 
             gateRepository.save(gate);

@@ -1,6 +1,7 @@
 package com.finalproject.airport.storage.entity;
 
 import com.finalproject.airport.common.BaseTimeEntity;
+import com.finalproject.airport.member.entity.UserEntity;
 import jakarta.persistence.*;
 import jdk.jfr.Category;
 import lombok.*;
@@ -34,9 +35,8 @@ public class StorageEntity extends BaseTimeEntity {
     // 대분류
     private String category;
 
-    // 담당부서
-    @Enumerated(EnumType.STRING)
-    private Department department;
+
+
 
     // 담당자
     private String manager;
@@ -50,6 +50,10 @@ public class StorageEntity extends BaseTimeEntity {
 
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
+
+    @ManyToOne
+    @JoinColumn(name = "APPROVAL_REQUESTER")
+    private UserEntity approvalRequester;
 
     // Getter and Setter
     public String getIsActive() {
