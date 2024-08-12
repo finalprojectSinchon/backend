@@ -56,7 +56,6 @@ public class StorageService {
                     .status(storageDTO.getStatus())
                     .location(storageDTO.getLocation())
                     .category(storageDTO.getCategory())
-                    .department(storageDTO.getDepartment())
                     .manager(storageDTO.getManager())
                     .period(storageDTO.getPeriod())
                     .date(storageDTO.getDate())
@@ -97,7 +96,6 @@ public class StorageService {
                     .type(modifyStorage.getType())
                     .location(modifyStorage.getLocation())
                     .status(modifyStorage.getStatus())
-                    .department(modifyStorage.getDepartment())
                     .category(modifyStorage.getCategory())
                     .isActive("N")
                     .build();
