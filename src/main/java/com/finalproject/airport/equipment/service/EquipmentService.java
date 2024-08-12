@@ -1,15 +1,19 @@
 package com.finalproject.airport.equipment.service;
 
 import com.finalproject.airport.equipment.dto.EquipmentDTO;
+import com.finalproject.airport.equipment.dto.EquipmentStorageDTO;
 import com.finalproject.airport.equipment.entity.EquipmentEntity;
 import com.finalproject.airport.equipment.repository.EquipmentRepository;
 import com.finalproject.airport.location.service.LocationService;
+import com.finalproject.airport.storage.entity.StorageEntity;
+import com.finalproject.airport.storage.repository.StorageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +25,7 @@ public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final ModelMapper modelMapper;
     private final LocationService locationService;
+    private final StorageRepository storageRepository;
 
     public List<EquipmentDTO> findAllEquipment() {
         log.info("Fetching all active equipment");
@@ -92,5 +97,28 @@ public class EquipmentService {
             log.error("Error inserting equipment", e);
             throw new RuntimeException("Error inserting equipment", e);
         }
+    }
+
+    public List<EquipmentStorageDTO> getStorage() {
+
+        List<StorageEntity> storageList = storageRepository.findAll();
+
+        List<EquipmentStorageDTO> equipmentStorageDTOS = storageList.stream()
+                .map(storageEntity -> {
+                    EquipmentStorageDTO dto = new EquipmentStorageDTO();
+                    dto.setCode(storageEntity.getStorageCode());
+                    dto.setLocation(storageEntity.getLocation());
+                    return dto;
+                })
+                .collect(Collectors.toMap(
+                        EquipmentStorageDTO::getLocation,
+                        dto -> dto,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+
+        return equipmentStorageDTOS;
     }
 }

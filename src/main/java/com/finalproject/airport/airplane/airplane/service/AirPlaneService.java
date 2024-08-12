@@ -85,6 +85,7 @@ public class AirPlaneService {
     }
 
     @Scheduled(cron = "0 0 0 * * *")
+//    @PostConstruct
     public void fetchDepartureAirplane() {
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");

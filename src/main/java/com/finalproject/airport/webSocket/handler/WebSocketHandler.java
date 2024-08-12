@@ -66,7 +66,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         session.close();
     }
 
-    @Scheduled(fixedRate = 30000) // 30초마다 실행
+    @Scheduled(fixedRate = 5000) // 5초마다 실행
     public void sendPingMessages() {
         for (WebSocketSession session : userSessions.values()) {
             try {
