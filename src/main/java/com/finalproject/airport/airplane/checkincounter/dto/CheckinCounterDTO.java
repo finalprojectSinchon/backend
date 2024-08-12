@@ -55,6 +55,11 @@ public class CheckinCounterDTO {
     @Schema(description = "도착공항")
     private String airport;
 
+    @Schema(description = "편명")
+    private String flightid;
+
+    @Schema(description = "운항상태")
+    private String remark;
     // 정적 메서드로 수정
    
 
