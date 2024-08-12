@@ -59,10 +59,17 @@ public class CheckinCounter extends BaseTimeEntity {
     @Column(name = "AIRPORT")
     private String airport;
 
+    @Column(name = "FLIGHTID")
+    private String flightid;
+
+
+    @Column(name = "REMARK")
+    private String remark;
 
     @ManyToOne
     @JoinColumn(name = "APPROVAL_REQUESTER")
     private UserEntity approvalRequester;
+
 
 
 

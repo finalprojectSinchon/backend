@@ -210,14 +210,11 @@ public class CheckinCounterService {
             if (checkinCounter != null) {
                 // 엔티티 필드 업데이트
                 checkinCounter.setLocation(CheckinCounterLocation.values()[checkinCounterCode - 1]);  // 위치 설정
-//                checkinCounter.setType(CheckinCounterType.A);  // 예시 값, 실제로는 타입에 맞는 값 설정 필요
-//                checkinCounter.setStatus("정상");  // 예시 값
-//                checkinCounter.setRegistrationDate(new Date());  // 예시 값
-//                checkinCounter.setLastInspectionDate(new Date());  // 예시 값
-//                checkinCounter.setManager("담당자");  // 예시 값
-//                checkinCounter.setNote("비고");  // 예시 값
-//                checkinCounter.setAirplaneCode(airplane.getAirplaneCode());
-//                checkinCounter.setDelayTime(airplane.getGatenumber());  // 예시 값
+                checkinCounter.setType(CheckinCounterType.A);  // 예시 값, 실제로는 타입에 맞는 값 설정 필요
+//
+                checkinCounter.setRemark(airplane.getRemark());
+                checkinCounter.setFlightid(airplane.getFlightId());
+                checkinCounter.setAirline(airplane.getAirline());
                 checkinCounter.setAirport(airplane.getAirport());
                 checkinCounter.setScheduleDateTime(airplane.getScheduleDateTime());
                 checkinCounter.setAirline(airplane.getAirline());
