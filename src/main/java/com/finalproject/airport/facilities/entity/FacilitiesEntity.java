@@ -1,6 +1,7 @@
 package com.finalproject.airport.facilities.entity;
 
 import com.finalproject.airport.common.BaseTimeEntity;
+import com.finalproject.airport.member.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +12,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder(toBuilder = true)
 public class FacilitiesEntity extends BaseTimeEntity {
 
@@ -37,6 +40,11 @@ public class FacilitiesEntity extends BaseTimeEntity {
     private String isActive;
 
 
+    @ManyToOne
+    @JoinColumn(name = "APPROVAL_REQUESTER")
+    private UserEntity approvalRequester;
+
+
     @PrePersist
     @PreUpdate
     private void ensureIsActiveDefault() {
@@ -46,18 +54,6 @@ public class FacilitiesEntity extends BaseTimeEntity {
 
     }
 
-    public FacilitiesEntity() {
-    }
 
-    public FacilitiesEntity(int facilitiesCode, String status, String location, String facilitiesName, FacilitesType facilitiesType, String manager, String facilitiesClass, String isActive,  String note) {
-        this.facilitiesCode = facilitiesCode;
-        this.status = status;
-        this.location = location;
-        this.facilitiesName = facilitiesName;
-        this.facilitiesType = facilitiesType;
-        this.manager = manager;
-        this.facilitiesClass = facilitiesClass;
-        this.isActive = isActive;
-        this.note = note;
-    }
+
 }
