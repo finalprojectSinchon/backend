@@ -2,6 +2,7 @@ package com.finalproject.airport.airplane.baggageclaim.entity;
 
 import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
 import com.finalproject.airport.common.BaseTimeEntity;
+import com.finalproject.airport.member.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
