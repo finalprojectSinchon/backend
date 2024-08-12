@@ -1,6 +1,7 @@
 package com.finalproject.airport.facilities.dto;
 
 import com.finalproject.airport.facilities.entity.FacilitesType;
+import com.finalproject.airport.member.dto.UserDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -41,6 +42,9 @@ public class FacilitiesDTO {
 
     @Schema(description = "편의 시설 비고", example = "추가 정보 필요")
     private String note;
+
+    @Schema(description = "승인요청자")
+    private UserDTO approvalRequester;
 
     // 기본 생성자와 모든 필드를 포함한 생성자
     public FacilitiesDTO(int facilitiesCode, String status, String location, String facilitiesName, FacilitesType type, String manager, String facilitiesClass, String isActive, LocalDateTime createdDate, String note) {

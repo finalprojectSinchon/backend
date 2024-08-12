@@ -3,6 +3,7 @@ package com.finalproject.airport.store.service;
 import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
+import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.store.dto.StoreAPIDTO;
 import com.finalproject.airport.store.dto.StoreDTO;
 import com.finalproject.airport.store.dto.StoreRegistDTO;
@@ -68,6 +69,8 @@ public class StoreService {
     public String updateStore(StoreDTO modifyStore) {
         int result = 0;
 
+        UserEntity user = modelMapper.map(modifyStore.getApprovalRequester() , UserEntity.class);
+
         try {
             StoreEntity storeEntity = StoreEntity.builder()
                     .storeName(modifyStore.getStoreName())
@@ -79,6 +82,7 @@ public class StoreService {
                     .storeOperatingTime(modifyStore.getStoreOperatingTime())
                     .storeExtra(modifyStore.getStoreExtra())
                     .isActive("N")
+                    .approvalRequester(user)
                     .build();
 
             StoreEntity updatedStore = storeRepository.save(storeEntity);

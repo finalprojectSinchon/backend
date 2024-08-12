@@ -1,5 +1,6 @@
 package com.finalproject.airport.airplane.baggageclaim.entity;
 
+import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
 import com.finalproject.airport.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -60,6 +61,10 @@ public class BaggageClaim extends BaseTimeEntity {
     @Column(name = "FLIGHTID")
     private String flightid;
 
+    @ManyToOne
+    @JoinColumn(name = "APPROVAL_REQUESTER")
+    private UserEntity approvalRequester;
+
     // Getter and Setter
     public String getIsActive() {
         return isActive;
@@ -76,6 +81,8 @@ public class BaggageClaim extends BaseTimeEntity {
         this.airport = airport;
         this.flightid = flightId;
     }
+
+
 
     @PrePersist
     private void ensureIsActiveDefault() {

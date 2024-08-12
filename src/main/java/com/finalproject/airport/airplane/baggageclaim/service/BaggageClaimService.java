@@ -13,6 +13,10 @@ import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.manager.entity.ManagersEntity;
 import com.finalproject.airport.manager.repository.ManagersRepository;
+import com.finalproject.airport.member.dto.ImgAndNameDTO;
+import com.finalproject.airport.member.dto.UserDTO;
+import com.finalproject.airport.member.entity.UserEntity;
+import com.finalproject.airport.member.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +39,14 @@ public class BaggageClaimService {
     private final ApprovalService approvalService;
     private final ManagersRepository managersRepository;
     private final ApprovalRepository approvalRepository;
+    private final UserService userService;
 
     @Autowired
     public BaggageClaimService(BaggageClaimRepository repository, ModelMapper modelMapper,
                                DepartureAirplaneRepository departureAirplaneRepository,
                                ArrivalAirplaneRepository airplaneRepository,
                                ApprovalService approvalService, ManagersRepository managersRepository,
-                               ApprovalRepository approvalRepository) {
+                               ApprovalRepository approvalRepository, UserService userService) {
         this.modelMapper = modelMapper;
         this.repository = repository;
         this.departureAirplaneRepository = departureAirplaneRepository;
@@ -49,6 +54,7 @@ public class BaggageClaimService {
         this.approvalService = approvalService;
         this.managersRepository = managersRepository;
         this.approvalRepository = approvalRepository;
+        this.userService = userService;
     }
 
     public List<BaggageClaimDTO> findAll() {
@@ -78,6 +84,7 @@ public class BaggageClaimService {
     public String insertBaggageClaim(BaggageClaimDTO baggageClaim) {
         int result = 0;
 
+        UserEntity user = modelMapper.map(baggageClaim.getApprovalRequester() , UserEntity.class);
         try {
             DepartureAirplane departureAirplane = airplaneRepository.findByAirplaneCode(baggageClaim.getAirplaneCode());
 
@@ -89,6 +96,7 @@ public class BaggageClaimService {
                     .status(baggageClaim.getStatus())
                     .type(baggageClaim.getType())
                     .isActive("N")
+                    .approvalRequester(user)
                     .build();
 
             BaggageClaim baggageClaim1 = repository.save(insertBaggageClaim);
@@ -118,6 +126,7 @@ public class BaggageClaimService {
     public String modifyBaggageClaim(BaggageClaimDTO baggageClaim) {
         log.info("Modifying baggage claim: {}", baggageClaim);
         int result = 0;
+        UserEntity user = modelMapper.map(baggageClaim.getApprovalRequester() , UserEntity.class);
 
         try {
             BaggageClaim baggageClaim1 = repository.findBybaggageClaimCode(baggageClaim.getBaggageClaimCode());
@@ -129,10 +138,12 @@ public class BaggageClaimService {
                     .lastInspectionDate(baggageClaim.getLastInspectionDate())
                     .manager(baggageClaim.getManager())
                     .note(baggageClaim.getNote())
+                    .approvalRequester(user)
                     .build();
 
             BaggageClaim baggage = repository.save(baggageClaim1);
 
+            System.out.println("baggage11111111111111 = " + baggage);
             ApprovalEntity approval = new ApprovalEntity(
                     ApprovalTypeEntity.수정,
                     "N",
@@ -155,6 +166,7 @@ public class BaggageClaimService {
 
         return (result > 0) ? "수화물 수취대 수정 승인 성공" : "수화물 수취대 수정 승인 요청 실패";
     }
+
 
     @Transactional
     public void softDelete(int baggageClaimCode) {

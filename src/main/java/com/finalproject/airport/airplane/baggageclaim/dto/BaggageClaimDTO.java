@@ -63,4 +63,7 @@ public class BaggageClaimDTO {
     @Schema(description = "편명")
     private String flightid;
 
+    @Schema(description = "승인요청자")
+    private UserDTO approvalRequester;
+
 }

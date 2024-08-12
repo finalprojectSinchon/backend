@@ -2,6 +2,7 @@ package com.finalproject.airport.store.entity;
 
 import com.finalproject.airport.common.BaseTimeEntity;
 
+import com.finalproject.airport.member.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -54,6 +55,10 @@ public class StoreEntity extends BaseTimeEntity {
 
     @Column(columnDefinition = "TEXT")
     private String storeExtra;
+
+    @ManyToOne
+    @JoinColumn(name = "APPROVAL_REQUESTER")
+    private UserEntity approvalRequester;
 
     @PrePersist
     private void ensureIsActiveDefault() {

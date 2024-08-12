@@ -1,6 +1,7 @@
 package com.finalproject.airport.airplane.gate.entity;
 
 import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
+import com.finalproject.airport.member.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -58,11 +59,17 @@ public class Gate {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
+
+    @ManyToOne
+    @JoinColumn(name = "APPROVAL_REQUESTER")
+    private UserEntity approvalRequester;
+
     @Column(name = "FLIGHTID")
     private String flightid;
 
     @Column(name = "AIRPORT")
     private String airport;
+
 
     // Getter and Setter
     public String getIsActive() {
