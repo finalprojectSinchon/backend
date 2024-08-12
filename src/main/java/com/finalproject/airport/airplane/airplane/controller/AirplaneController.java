@@ -62,17 +62,17 @@ public class AirplaneController {
 
 
 
-//    @Operation(summary = "비행기 api 불러오기" ,description = "비행기 api")
-//    @GetMapping("/apiair")
-//    public ResponseEntity<ResponseDTO> getapi() {
-//
-//        airPlaneService.fetchArrivalAirplane();
-//        airPlaneService.fetchDepartureAirplane();
-//
-//        return ResponseEntity.ok()
-//                .body(new ResponseDTO(HttpStatus.OK,"비행기 api 조회 ",null));
-//
-//    }
+    @Operation(summary = "비행기 api 불러오기" ,description = "비행기 api")
+    @GetMapping("/apiair")
+    public ResponseEntity<ResponseDTO> getapi() {
+
+        airPlaneService.fetchArrivalAirplane();
+        airPlaneService.fetchDepartureAirplane();
+
+        return ResponseEntity.ok()
+                .body(new ResponseDTO(HttpStatus.OK,"비행기 api 조회 ",null));
+
+    }
 
     // 비행기 상세 조회
     @Operation(summary = "비행기 조회" , description = "비행기 상세 정보 조회"
