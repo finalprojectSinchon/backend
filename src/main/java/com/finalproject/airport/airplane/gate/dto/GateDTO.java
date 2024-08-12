@@ -59,4 +59,9 @@ public class GateDTO {
     @Schema(description = "탑승구 오픈시간")
     private Timestamp scheduleDateTime;
 
+    @Schema(description = "편명")
+    private String flightid;
+
+    @Schema(description = "도착공항명")
+    private String airport;
 }

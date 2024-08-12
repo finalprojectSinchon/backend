@@ -64,6 +64,7 @@ public class StorageService {
                     .build();
 
             StorageEntity storageEntity = storageRepository.save(insertStorage);
+            System.out.println(storageEntity);
             log.info("Saved new storage entity: {}", storageEntity);
 
             // 승인을 위한 정보 저장

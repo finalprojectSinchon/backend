@@ -58,6 +58,12 @@ public class Gate {
     @Column(name = "ISACTIVE", length = 1, nullable = false)
     private String isActive;
 
+    @Column(name = "FLIGHTID")
+    private String flightid;
+
+    @Column(name = "AIRPORT")
+    private String airport;
+
     // Getter and Setter
     public String getIsActive() {
         return isActive;
@@ -78,11 +84,14 @@ public class Gate {
     }
 
 
-    public void updateGate(Timestamp scheduleDateTime, String airline ,String status) {
+    public void updateGate(Timestamp scheduleDateTime, String airline , String status, String airport, String flightid) {
         this.scheduleDateTime = scheduleDateTime;
         this.airline = airline;
 //        this.isActive = isActive;
         this.status = status;
+        this.airport = airport;
+        this.flightid = flightid;
+
 
     }
 
