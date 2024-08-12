@@ -11,6 +11,7 @@ import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
 import com.finalproject.airport.manager.entity.ManagersEntity;
 import com.finalproject.airport.manager.repository.ManagersRepository;
+import com.finalproject.airport.member.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -62,6 +63,8 @@ public class GateService {
         log.info("Modifying gate: {}", modifyGate);
         int result = 0;
 
+        UserEntity user = modelMapper.map(modifyGate.getApprovalRequester(),UserEntity.class);
+
         try {
             Gate gate = gateRepository.findBygateCode(modifyGate.getGateCode());
             gate = gate.toBuilder()
@@ -72,6 +75,7 @@ public class GateService {
                     .status(modifyGate.getStatus())
                     .lastInspectionDate(modifyGate.getLastInspectionDate())
                     .registrationDate(modifyGate.getRegistrationDate())
+                    .approvalRequester(user)
                     .build();
             log.info("Updated gate: {}", gate);
             Gate updatedGate = gateRepository.save(gate);
@@ -110,6 +114,8 @@ public class GateService {
     public String insertGate(GateDTO gateDTO) {
         int result = 0;
 
+        UserEntity user = modelMapper.map(gateDTO.getApprovalRequester(),UserEntity.class);
+
         try {
             DepartureAirplane departureAirplane = departureAirplaneRepository.findByAirplaneCode(gateDTO.getAirplaneCode());
 
@@ -124,6 +130,7 @@ public class GateService {
 //                    .airport(gateDTO.getAirport())
 //                    .flightid(gateDTO.getFlightid())
                     .isActive("N")
+                    .approvalRequester(user)
                     .build();
 
             Gate savedGate = gateRepository.save(insertGate);

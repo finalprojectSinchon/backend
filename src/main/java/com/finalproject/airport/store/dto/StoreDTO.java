@@ -1,5 +1,6 @@
 package com.finalproject.airport.store.dto;
 
+import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.store.entity.StoreType;
 import com.finalproject.airport.store.entity.StoreWork;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,4 +48,8 @@ public class StoreDTO {
 
     @Schema(description = "위치", example = "1터미널 2층 면세점")
     private String storeLocation;
+
+    @Schema(description = "승인요청자")
+    private UserDTO approvalRequester;
+
 }

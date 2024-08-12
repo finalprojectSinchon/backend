@@ -6,6 +6,7 @@ import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.facilities.dto.FacilitiesDTO;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
+import com.finalproject.airport.member.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -46,6 +47,8 @@ public class FacilitiesService {
     public String insertFacilities(FacilitiesDTO facilitiesDTO) {
         log.info("Inserting new facility: {}", facilitiesDTO);
 
+        UserEntity user = modelMapper.map(facilitiesDTO.getApprovalRequester(),UserEntity.class);
+
         try {
             FacilitiesEntity newFacility = FacilitiesEntity.builder()
                     .status(facilitiesDTO.getStatus())
@@ -56,6 +59,7 @@ public class FacilitiesService {
                     .facilitiesClass(facilitiesDTO.getFacilitiesClass())
                     .note(facilitiesDTO.getNote())
                     .isActive("N")
+                    .approvalRequester(user)
                     .build();
 
             FacilitiesEntity savedFacility = facilitiesRepository.save(newFacility);
@@ -83,6 +87,8 @@ public class FacilitiesService {
     public String modifyFacilities(FacilitiesDTO facilitiesDTO) {
         log.info("Modifying facility: {}", facilitiesDTO);
 
+        UserEntity user = modelMapper.map(facilitiesDTO.getApprovalRequester(),UserEntity.class);
+
         try {
             FacilitiesEntity existingFacility = facilitiesRepository.findById(facilitiesDTO.getFacilitiesCode())
                     .orElseThrow(() -> new IllegalArgumentException("No facility found with code: " + facilitiesDTO.getFacilitiesCode()));
@@ -95,6 +101,7 @@ public class FacilitiesService {
                     .manager(facilitiesDTO.getManager())
                     .facilitiesClass(facilitiesDTO.getFacilitiesClass())
                     .note(facilitiesDTO.getNote())
+                    .approvalRequester(user)
                     .build();
 
             FacilitiesEntity savedFacility = facilitiesRepository.save(modifiedFacility);

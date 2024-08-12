@@ -2,6 +2,7 @@ package com.finalproject.airport.airplane.checkincounter.entity;
 
 import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
 import com.finalproject.airport.common.BaseTimeEntity;
+import com.finalproject.airport.member.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -61,8 +62,16 @@ public class CheckinCounter extends BaseTimeEntity {
     @Column(name = "FLIGHTID")
     private String flightid;
 
+
     @Column(name = "REMARK")
     private String remark;
+
+    @ManyToOne
+    @JoinColumn(name = "APPROVAL_REQUESTER")
+    private UserEntity approvalRequester;
+
+
+
 
     // Getter and Setter
     public String getIsActive() {

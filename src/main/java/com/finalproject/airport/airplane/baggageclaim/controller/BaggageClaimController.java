@@ -77,7 +77,6 @@ public class BaggageClaimController {
             parameters = {@Parameter(name = "baggageClaimCode", description = "사용자 화면에서 넘어오는 수화물 수취대의 pk")})
     @PutMapping("/baggage-claim/{baggageClaimCode}")
     public ResponseEntity<?> modifyBaggageClaim(@RequestBody BaggageClaimDTO modifyBaggageClaimDTO) {
-        System.out.println("컨트롤러 = " + modifyBaggageClaimDTO);
         try {
             // 서비스에서 수정 및 승인 처리
             String resultMessage = service.modifyBaggageClaim( modifyBaggageClaimDTO);
