@@ -2,9 +2,7 @@ package com.finalproject.airport.airplane.baggageclaim.entity;
 
 import com.finalproject.airport.airplane.airplane.Entity.DepartureAirplane;
 import com.finalproject.airport.common.BaseTimeEntity;
-import com.finalproject.airport.member.dto.UserDTO;
 import com.finalproject.airport.member.entity.UserEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -58,6 +56,12 @@ public class BaggageClaim extends BaseTimeEntity {
     @Column(name = "AIRLINE")
     private String airline;
 
+    @Column(name = "AIRPORT")
+    private String airport;
+
+    @Column(name = "FLIGHTID")
+    private String flightid;
+
     @ManyToOne
     @JoinColumn(name = "APPROVAL_REQUESTER")
     private UserEntity approvalRequester;
@@ -71,10 +75,12 @@ public class BaggageClaim extends BaseTimeEntity {
         this.isActive = isActive;
     }
 
-    public void updateBaggageClaim(Timestamp scheduleDateTime, String airline, String status) {
+    public void updateBaggageClaim(Timestamp scheduleDateTime, String airline, String status, String airport, String flightId) {
         this.scheduleDateTime = scheduleDateTime;
         this.status = status;
         this.airline = airline;
+        this.airport = airport;
+        this.flightid = flightId;
     }
 
 
