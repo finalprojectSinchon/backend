@@ -205,7 +205,9 @@ public class BaggageClaimService {
                 baggageClaim.updateBaggageClaim(
                         Timestamp.valueOf(arrivalTime),
                         closestAirplane.getAirline(),
-                        status
+                        status,
+                        closestAirplane.getAirport(),
+                        closestAirplane.getFlightId()
                 );
             } else {
                 baggageClaim = BaggageClaim.builder()

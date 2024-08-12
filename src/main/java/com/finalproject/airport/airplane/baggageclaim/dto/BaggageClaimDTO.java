@@ -57,4 +57,10 @@ public class BaggageClaimDTO {
     @Schema(description = "항공사")
     private String airline;
 
+    @Schema(description = "도착공항")
+    private String airport;
+
+    @Schema(description = "편명")
+    private String flightid;
+
 }
