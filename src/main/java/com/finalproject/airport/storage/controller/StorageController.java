@@ -68,7 +68,7 @@ public class StorageController {
     public ResponseEntity<ResponseDTO> addStorage(
             @Parameter(description = "등록할 창고의 세부 정보", required = true) @RequestBody StorageDTO storageDTO) {
 
-        System.out.println("123 " + storageDTO);
+
         try {
             storageService.addStorage(storageDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO(HttpStatus.CREATED, "창고 등록에 성공하였습니다", null));
