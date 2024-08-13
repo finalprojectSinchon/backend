@@ -4,6 +4,7 @@ import com.finalproject.airport.approval.entity.ApprovalEntity;
 import com.finalproject.airport.approval.entity.ApprovalTypeEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.approval.service.ApprovalService;
+import com.finalproject.airport.member.entity.UserEntity;
 import com.finalproject.airport.storage.dto.StorageDTO;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
@@ -50,6 +51,8 @@ public class StorageService {
     public String addStorage(StorageDTO storageDTO) {
         int result = 0;
 
+        UserEntity user = modelMapper.map(storageDTO.getApprovalRequester(), UserEntity.class);
+
         try {
             StorageEntity insertStorage = StorageEntity.builder()
                     .type(storageDTO.getType())
@@ -59,6 +62,7 @@ public class StorageService {
                     .manager(storageDTO.getManager())
                     .period(storageDTO.getPeriod())
                     .date(storageDTO.getDate())
+                    .approvalRequester(user)
                     .isActive("N")
                     .build();
 
