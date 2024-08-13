@@ -94,6 +94,8 @@ public class StorageService {
     public String updateStorage(StorageDTO modifyStorage) {
         int result = 0;
 
+        UserEntity user = modelMapper.map(modifyStorage.getApprovalRequester(), UserEntity.class);
+
         try {
             StorageEntity storage = StorageEntity.builder()
                     .manager(modifyStorage.getManager())
@@ -102,6 +104,7 @@ public class StorageService {
                     .status(modifyStorage.getStatus())
                     .category(modifyStorage.getCategory())
                     .isActive("N")
+                    .approvalRequester(user)
                     .build();
 
             StorageEntity storage1 = storageRepository.save(storage);
