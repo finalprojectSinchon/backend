@@ -25,7 +25,7 @@ public class SMSUtil {
     }
 
     public SingleMessageSentResponse sendOne(String to, int authCode) {
-        String signUpUrl = "https://url.kr/u1dnsz";
+        String signUpUrl = "http://skycare.site/auth/certification";
         Message message = new Message();
         message.setFrom("01079410489");
         message.setTo(to);
