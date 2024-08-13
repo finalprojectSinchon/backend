@@ -101,7 +101,7 @@ public class GPTService {
             case "checkInCounter":
                 return checkinCounterRepository.findByisActive("Y");
             case "gate":
-                return gateRepository.findByisActive("Y");
+                return gateRepository.findByIsActiveAndAirportIsNotNull("Y");
             case "baggageClaim":
                 return baggageClaimRepository.findByisActive("Y");
             case "store":

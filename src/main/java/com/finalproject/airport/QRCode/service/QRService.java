@@ -392,7 +392,7 @@ public class QRService {
                 "5. htm l을  적절히 조합하여 문서의 스타일을 조정하세요.\n" +
                 "6. 2000 자 정도를 채워주세요." +
                 "7. 한국어로 작성하세요!" +
-                "8. html 만 사용해야 합니다. css 는 사용 할 수 없습니다.";
+                "8. html 만 사용해야 합니다. css 와 style 태그도 사용 할 수 없습니다.";
 
         GPTResponseDTO createText = gptService.getChatCompletion(gptRequestDTO, prompt);
         log.info("Received GPT response.");

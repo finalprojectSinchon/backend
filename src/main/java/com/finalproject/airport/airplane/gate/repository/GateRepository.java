@@ -33,4 +33,6 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
 
 
     List<Gate> findByGateCodeBetween(int i, int i1);
+
+    List<?> findByIsActiveAndAirportIsNotNull(String y);
 }
