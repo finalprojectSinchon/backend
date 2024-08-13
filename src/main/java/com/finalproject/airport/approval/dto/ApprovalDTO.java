@@ -73,4 +73,7 @@ public class ApprovalDTO {
 
     @Schema(description = "검토 여부", example = "검토 완료")
     private String checked;
+
+    @Schema(description = "알림 클릭 여부")
+    private String noti;
 }

@@ -206,14 +206,14 @@ public class ApprovalController {
                 .body(new ResponseDTO(status, message, errorMessage));
     }
 
-    //    @GetMapping("/noti-checked")
-//    public void notiChecked(@RequestParam("approveCode") String approveCode){
-//        System.out.println("approveCode = " + approveCode);
-//        approvalService.notiChecked(Integer.parseInt(approveCode));
-//
-//    }
-//
-//}
+    @GetMapping("/noti-checked")
+    public void notiChecked(@RequestParam("approveCode") String approveCode){
+        System.out.println("approveCode = " + approveCode);
+        approvalService.notiChecked(Integer.parseInt(approveCode));
+
+    }
+
+
 
 }
 

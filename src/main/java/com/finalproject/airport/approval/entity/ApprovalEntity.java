@@ -65,10 +65,15 @@ public class ApprovalEntity extends BaseTimeEntity {
     @Column(name="CHECKED")
     private String checked;
 
+    @Column(name = "NOTI")
+    private String noti;
+
     @PrePersist
     private void ensureIsCheckedDefault() {
         if (this.checked == null) {
             this.checked = "N";
+        }else if(this.noti == null){
+            this.noti = "N";
         }
     }
 
