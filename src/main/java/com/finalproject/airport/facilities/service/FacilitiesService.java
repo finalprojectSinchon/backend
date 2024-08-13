@@ -100,6 +100,7 @@ public class FacilitiesService {
                     .facilitiesClass(facilitiesDTO.getFacilitiesClass())
                     .note(facilitiesDTO.getNote())
                     .approvalRequester(user)
+                    .isActive("N")
                     .build();
 
             FacilitiesEntity savedFacility = facilitiesRepository.save(modifiedFacility);
