@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -174,44 +175,38 @@ public class CheckinCounterService {
     public List<CheckinCounterDTO> feachdate() {
         LocalDateTime now = LocalDateTime.now();
         Map<Integer, DepartureAirplane> closestAirplanes = new HashMap<>();
-        Map<Integer, LocalDateTime> closestTimes = new HashMap<>();
+        Map<Integer, Long> closestDifferences = new HashMap<>();
 
-        // 필터링된 항공기 리스트 가져오기
-        List<DepartureAirplane> filteredAirplanes = getFilteredAirplanes();
+        List<DepartureAirplane> filteredAirplanes = getFilteredAirplanes().stream()
+                .filter(airplane -> airplane.getScheduleDateTime().toLocalDateTime().isAfter(now))  // 과거 항공기 제외
+                .collect(Collectors.toList());
 
-        // A ~ N 각 알파벳에 대해 체크인 카운터 코드 설정
         for (int i = 1; i <= 14; i++) {
-            String prefix = String.valueOf((char) ('A' + i - 1));  // 'A' ~ 'N' 생성
+            String prefix = String.valueOf((char) ('A' + i - 1));
 
-            // chkinrange의 첫 문자와 일치하는 항공기 리스트 조회
             List<DepartureAirplane> departureAirplaneList = filteredAirplanes.stream()
                     .filter(airplane -> airplane.getChkinrange().startsWith(prefix))
                     .collect(Collectors.toList());
 
-            // 현재 시간과 가장 가까운 항공기를 찾음
             for (DepartureAirplane airplane : departureAirplaneList) {
-                LocalDateTime departureTime = airplane.getScheduleDateTime().toLocalDateTime();  // Timestamp를 LocalDateTime으로 변환
+                LocalDateTime departureTime = airplane.getScheduleDateTime().toLocalDateTime();
+                long difference = Duration.between(now, departureTime).toMillis();
 
-                // 맵에 저장된 항공기보다 더 가까운 시간이면 업데이트
-                if (!closestTimes.containsKey(i) || departureTime.isBefore(closestTimes.get(i))) {
-                    closestTimes.put(i, departureTime);
+                if (!closestDifferences.containsKey(i) || difference < closestDifferences.get(i)) {
+                    closestDifferences.put(i, difference);
                     closestAirplanes.put(i, airplane);
                 }
             }
         }
 
-        // closestAirplanes 맵을 기반으로 CheckinCounter 엔티티 업데이트
         for (Map.Entry<Integer, DepartureAirplane> entry : closestAirplanes.entrySet()) {
             Integer checkinCounterCode = entry.getKey();
             DepartureAirplane airplane = entry.getValue();
 
-            // CheckinCounter 엔티티 조회
             CheckinCounter checkinCounter = repository.findByCheckinCounterCode(checkinCounterCode);
             if (checkinCounter != null) {
-                // 엔티티 필드 업데이트
-                checkinCounter.setLocation(CheckinCounterLocation.values()[checkinCounterCode - 1]);  // 위치 설정
-                checkinCounter.setType(CheckinCounterType.A);  // 예시 값, 실제로는 타입에 맞는 값 설정 필요
-//
+                checkinCounter.setLocation(CheckinCounterLocation.values()[checkinCounterCode - 1]);
+                checkinCounter.setType(CheckinCounterType.A);
                 checkinCounter.setRemark(airplane.getRemark());
                 checkinCounter.setFlightid(airplane.getFlightId());
                 checkinCounter.setAirline(airplane.getAirline());
@@ -219,13 +214,13 @@ public class CheckinCounterService {
                 checkinCounter.setScheduleDateTime(airplane.getScheduleDateTime());
                 checkinCounter.setAirline(airplane.getAirline());
 
-                // 변경된 엔티티 저장
                 repository.save(checkinCounter);
             }
-
         }
+
         return null;
     }
+
 
     public List<DepartureAirplane> getFilteredAirplanes() {
         List<DepartureAirplane> departureAirplaneList = departureAirplaneRepository.findAll();
