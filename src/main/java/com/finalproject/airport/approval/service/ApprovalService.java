@@ -218,7 +218,7 @@ public class ApprovalService {
         for(ManagersEntity managerEntity : managersEntity) {
             ManagersEntity managersEntity2 = new ManagersEntity();
             managersEntity2 = managersEntity2.toBuilder()
-                    .facilitiesCode(modifiedStorageCode)
+                    .storageCode(modifiedStorageCode)
                     .user(managerEntity.getUser())
                     .build();
             managersRepository.save(managersEntity2);
@@ -255,7 +255,7 @@ public class ApprovalService {
         for(ManagersEntity managerEntity : managersEntity) {
             ManagersEntity managersEntity2 = new ManagersEntity();
             managersEntity2 = managersEntity2.toBuilder()
-                    .facilitiesCode(modifiedStoreCode)
+                    .storeId(modifiedStoreCode)
                     .user(managerEntity.getUser())
                     .build();
             managersRepository.save(managersEntity2);
