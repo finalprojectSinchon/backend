@@ -26,7 +26,7 @@ public class MailService {
             String content = "<h2>SkyCare 인증코드입니다.</h2>" +
                     "<br> <br>" +
                     "<h3>인증코드는 " + authCode + "입니다.<h3>" +
-                    "<a href=\"https://url.kr/u1dnsz\">회원가입 하기</a>";
+                    "<a href=\"http://skycare.site/auth/certification\">회원가입 하기</a>";
 
             helper.setTo(authMailDTO.getUserEmail());
             helper.setSubject("SkyCare 인증코드입니다.");

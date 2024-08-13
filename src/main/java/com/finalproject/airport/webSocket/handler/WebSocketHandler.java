@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.finalproject.airport.member.repository.UserRepository;
 import com.finalproject.airport.webSocket.chat.dto.ChatMessageDTO;
 import com.finalproject.airport.webSocket.chat.service.ChatService;
+import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.SetOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Component
@@ -65,6 +69,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
         log.error("User code must be provided in query string!");
         session.close();
     }
+
+
+
+
 
     @Scheduled(fixedRate = 5000) // 5초마다 실행
     public void sendPingMessages() {
