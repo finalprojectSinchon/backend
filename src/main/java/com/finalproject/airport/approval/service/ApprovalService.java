@@ -268,7 +268,7 @@ public class ApprovalService {
         log.info("Updating notification status for approval code: {}", approveCode);
 
         ApprovalEntity approval = approvalRepository.findByApprovalCode(approveCode);
-        approval = approval.toBuilder().checked("Y").build();
+        approval = approval.toBuilder().noti("Y").build();
         approvalRepository.save(approval);
     }
 }
