@@ -80,7 +80,7 @@ public class ApprovalEntity extends BaseTimeEntity {
     protected ApprovalEntity() {
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, String status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities/* Integer code*/) {
+    public ApprovalEntity(ApprovalTypeEntity type, String status, Gate gate ,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities,String noti) {
         this.type = type;
         this.status = status;
         this.gate = gate;
@@ -88,10 +88,10 @@ public class ApprovalEntity extends BaseTimeEntity {
         this.baggageClaim = baggageClaim;
         this.storage = storage;
         this.facilities = facilities;
-        //this.code = code;
+        this.noti = noti;
     }
 
-    public ApprovalEntity(ApprovalTypeEntity type, String status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,Integer code) {
+    public ApprovalEntity(ApprovalTypeEntity type, String status,Gate gate,CheckinCounter checkinCounter,BaggageClaim baggageClaim, StorageEntity storage, FacilitiesEntity facilities, StoreEntity store,Integer code,String noti) {
         this.type = type;
         this.status = status;
         this.gate = gate;
@@ -101,6 +101,7 @@ public class ApprovalEntity extends BaseTimeEntity {
         this.facilities = facilities;
         this.store = store;
         this.code = code;
+        this.noti = noti;
     }
 
 }

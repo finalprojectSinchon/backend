@@ -72,7 +72,7 @@ public class FacilitiesService {
                     null,
                     null,
                     null,
-                    savedFacility
+                    savedFacility,"N"
             );
 
             approvalRepository.save(approval);
@@ -115,7 +115,7 @@ public class FacilitiesService {
                     null,
                     savedFacility,
                     null,
-                    facilitiesDTO.getFacilitiesCode()
+                    facilitiesDTO.getFacilitiesCode(),"N"
             );
 
             approvalRepository.save(approval);

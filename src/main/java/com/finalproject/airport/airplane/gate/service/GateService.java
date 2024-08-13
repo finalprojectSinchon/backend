@@ -90,7 +90,7 @@ public class GateService {
                     null,
                     null,
                     null,
-                    null
+                    null,"N"
             );
             approvalRepository.save(approval);
             result = 1;
@@ -143,7 +143,7 @@ public class GateService {
                     null,
                     null,
                     null,
-                    null
+                    null,"N"
             );
             approvalRepository.save(approval);
 

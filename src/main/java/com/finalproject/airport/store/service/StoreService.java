@@ -96,7 +96,7 @@ public class StoreService {
                     null,
                     null,
                     updatedStore,
-                    modifyStore.getStoreId()
+                    modifyStore.getStoreId(),"N"
             );
             approvalRepository.save(approval);
             result = 1;
