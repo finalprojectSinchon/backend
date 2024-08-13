@@ -26,4 +26,6 @@ public interface ManagersRepository extends JpaRepository<ManagersEntity, Intege
     List<ManagersEntity> findAllByGateCodeAndIsActive(int pk, String y);
 
     List<ManagersEntity> findAllByGateCode(Integer gateCode);
+
+    List<ManagersEntity> findAllByMaintenanceCodeAndIsActive(int pk, String y);
 }

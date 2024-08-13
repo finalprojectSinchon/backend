@@ -98,8 +98,13 @@ public class ManagersService {
                     findUserList.add(userFindManagerDTO);
                 }
                 break;
-            case "inspection":
-                log.warn("Inspection case is not yet implemented.");
+            case "maintenance":
+                List<ManagersEntity> findUserCodeForMaintenance = managersRepository.findAllByMaintenanceCodeAndIsActive(pk,"Y");
+                for (ManagersEntity manager : findUserCodeForMaintenance) {
+                    UserDTO userDTO = modelMapper.map(manager.getUser(), UserDTO.class);
+                    UserFindManagerDTO userFindManagerDTO = new UserFindManagerDTO(userDTO.getUserCode(),userDTO.getUserName(),userDTO.getUserImg(),userDTO.getUserPhone(),userDTO.getUserDepartment());
+                    findUserList.add(userFindManagerDTO);
+                }
                 break;
             default:
                 log.error("Unknown airport type: {}", airportType);
@@ -250,8 +255,19 @@ public class ManagersService {
                     managersRepository.save(managersEntity);
                 }
                 break;
-            case "inspection":
-                log.warn("Inspection case is not yet implemented.");
+            case "maintenance":
+                List<ManagersEntity> managerForMaintenanceList = managersRepository.findAllByMaintenanceCodeAndIsActive(airportCode, "Y");
+                for (ManagersEntity manager : managerForMaintenanceList) {
+                    manager.setIsActive("N");
+                }
+                for (ManagerUpdateDTO managerUpdate : managerUpdateDTO) {
+                    UserEntity user = userRepository.findById(managerUpdate.getUserCode()).orElseThrow();
+                    ManagersEntity managersEntity = ManagersEntity.builder()
+                            .maintenanceCode(managerUpdate.getAirportCode())
+                            .user(user)
+                            .build();
+                    managersRepository.save(managersEntity);
+                }
                 break;
             default:
                 log.error("Unknown airport type: {}", airportType);
