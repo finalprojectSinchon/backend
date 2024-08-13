@@ -18,14 +18,13 @@ public interface GateRepository extends JpaRepository<Gate, Integer> {
     List<Gate> findByisActive(String y);
 
 
-    @Query("SELECT location FROM gate")
+    @Query("SELECT gateCode FROM gate")
     List<Integer> findAlllocations();
 
 
     Gate findByLocation(Integer location);
 
 
-    Gate findAllBygateCode(int i);
 
     Optional<Gate> findByGateCode(Integer gateNumber);
 
