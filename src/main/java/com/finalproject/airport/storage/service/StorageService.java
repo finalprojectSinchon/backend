@@ -78,7 +78,7 @@ public class StorageService {
                     null,
                     null,
                     storageEntity,
-                    null
+                    null,"N"
             );
             approvalRepository.save(approval);
 
@@ -118,7 +118,7 @@ public class StorageService {
                     storage1,
                     null,
                     null,
-                    modifyStorage.getStorageCode()
+                    modifyStorage.getStorageCode(),"N"
             );
             approvalRepository.save(approval);
             result = 1;

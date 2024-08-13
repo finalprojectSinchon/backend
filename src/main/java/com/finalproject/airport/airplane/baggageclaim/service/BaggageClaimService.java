@@ -108,7 +108,7 @@ public class BaggageClaimService {
                     null,
                     baggageClaim1,
                     null,
-                    null
+                    null,"N"
             );
 
             approvalRepository.save(approval);
@@ -153,7 +153,7 @@ public class BaggageClaimService {
                     null,
                     null,
                     null,
-                    null
+                    null,"N"
             );
 
             approvalRepository.save(approval);

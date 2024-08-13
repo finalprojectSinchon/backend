@@ -78,7 +78,7 @@ public class CheckinCounterService {
                     checkinCounter,
                     null,
                     null,
-                    null
+                    null,"N"
             );
 
             approvalRepository.save(approval);
@@ -138,7 +138,7 @@ public class CheckinCounterService {
                     null,
                     null,
                     null,
-                    null
+                    null,"N"
             );
 
             approvalRepository.save(approval);
