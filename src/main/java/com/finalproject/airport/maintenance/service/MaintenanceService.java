@@ -23,6 +23,7 @@ import com.finalproject.airport.maintenance.repository.MaintenanceEquipmentRepos
 import com.finalproject.airport.maintenance.repository.MaintenanceRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
+import com.finalproject.airport.store.entity.StoreEntity;
 import com.finalproject.airport.store.repository.StoreRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -112,11 +113,12 @@ public class MaintenanceService {
 
     @Transactional
     public String insertMaintenance(MaintenanceDTO maintenanceDTO) {
+
         MaintenanceEntity maintenanceEntity = modelMapper.map(maintenanceDTO, MaintenanceEntity.class);
         MaintenanceEntity maintenanceEntitySaved = maintenanceRepository.save(maintenanceEntity);
 
         if (maintenanceDTO.getStructure().equals("gate")) {
-            Gate gate = gateRepository.findByLocation(Integer.valueOf(maintenanceDTO.getLocation()));
+            Gate gate = gateRepository.findByGateCode(Integer.valueOf(maintenanceDTO.getLocation())).orElseThrow();
             log.info("Gate: {}", gate);
             maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().gate(gate).build();
             log.info("Updated Maintenance Entity: {}", maintenanceEntitySaved);
@@ -140,6 +142,9 @@ public class MaintenanceService {
         } else if (maintenanceDTO.getStructure().equals("storage")) {
             StorageEntity storage = storageRepository.findByLocation(maintenanceDTO.getLocation());
             maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().storage(storage).build();
+        }else if (maintenanceDTO.getStructure().equals("store")) {
+            StoreEntity store = storeRepository.findBystoreLocation(maintenanceDTO.getLocation());
+            maintenanceEntitySaved = maintenanceEntitySaved.toBuilder().store(store).build();
         }
 
         maintenanceRepository.save(maintenanceEntitySaved);
@@ -168,6 +173,14 @@ public class MaintenanceService {
             List<String> locationList = facilitiesRepository.findAlllocations();
             log.info("Facilities Location List: {}", locationList);
             locations.addAll(locationList);
+        } else if (structure.equals("store")) {
+            List<String> locationList = storeRepository.findAlllocations();
+            log.info("store Location List: {}", locationList);
+            locations.addAll(locationList);
+        } else if (structure.equals("storage")) {
+            List<String> locationList = storageRepository.findAlllocations();
+            log.info("storage Location List: {}", locationList);
+            locations.addAll(locationList);
         }
 
         log.info("Locations: {}", locations);
@@ -176,6 +189,7 @@ public class MaintenanceService {
 
     @Transactional
     public void maintenanceEquipment(MaintenanceEquipmentDTO maintenanceEquipment) {
+
         List<EquipmentQuantityDTO> equipment = maintenanceEquipment.getEquipment();
         MaintenanceEntity maintenance = maintenanceRepository.findBymaintenanceCode(maintenanceEquipment.getMaintenance().getMaintenanceCode());
 

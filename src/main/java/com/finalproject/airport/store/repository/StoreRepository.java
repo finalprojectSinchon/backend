@@ -19,4 +19,9 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Integer> {
 
     @Query("SELECT cc.status AS status, COUNT(cc) AS count FROM store cc GROUP BY cc.status")
     List<Object[]> findStoreStatusCounts();
+
+    @Query("SELECT s.storeLocation FROM store s ")
+    List<String> findAlllocations();
+
+
 }
