@@ -12,6 +12,8 @@ import com.finalproject.airport.approval.entity.ApprovalStatusEntity;
 import com.finalproject.airport.approval.repository.ApprovalRepository;
 import com.finalproject.airport.facilities.entity.FacilitiesEntity;
 import com.finalproject.airport.facilities.repository.FacilitiesRepository;
+import com.finalproject.airport.manager.entity.ManagersEntity;
+import com.finalproject.airport.manager.repository.ManagersRepository;
 import com.finalproject.airport.storage.entity.StorageEntity;
 import com.finalproject.airport.storage.repository.StorageRepository;
 import com.finalproject.airport.store.entity.StoreEntity;
@@ -38,6 +40,7 @@ public class ApprovalService {
     private final StorageRepository storageRepository;
     private final FacilitiesRepository facilitiesRepository;
     private final StoreRepository storeRepository;
+    private final ManagersRepository managersRepository;
 
     public List<ApprovalEntity> findAll() {
         return approvalRepository.findAll();
@@ -128,6 +131,7 @@ public class ApprovalService {
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
         approvalEntity = approvalEntity.toBuilder().status("Y").build();
         approvalRepository.save(approvalEntity);
+
     }
 
     @Transactional
@@ -172,6 +176,20 @@ public class ApprovalService {
         Integer modifiedFacilitiesCode = approvalEntity.getFacilities().getFacilitiesCode();
         FacilitiesEntity modifiedFacilitiesEntity = facilitiesRepository.findByfacilitiesCode(modifiedFacilitiesCode);
         modifiedFacilitiesEntity = modifiedFacilitiesEntity.toBuilder().isActive("Y").build();
+        List<ManagersEntity> managersEntity = managersRepository.findAllByFacilitiesCodeAndIsActive(originalFacilitiesCode,"Y");
+        for(ManagersEntity managersEntity1 : managersEntity) {
+            managersEntity1.setIsActive("N");
+            managersRepository.save(managersEntity1);
+        }
+        for(ManagersEntity managerEntity : managersEntity) {
+            ManagersEntity managersEntity2 = new ManagersEntity();
+            managersEntity2 = managersEntity2.toBuilder()
+                    .facilitiesCode(modifiedFacilitiesCode)
+                    .user(managerEntity.getUser())
+                    .build();
+            managersRepository.save(managersEntity2);
+        }
+
         facilitiesRepository.save(modifiedFacilitiesEntity);
     }
 
@@ -191,7 +209,25 @@ public class ApprovalService {
         Integer modifiedStorageCode = approvalEntity.getStorage().getStorageCode();
         StorageEntity modifiedStorageEntity = storageRepository.findBystorageCode(modifiedStorageCode);
         modifiedStorageEntity = modifiedStorageEntity.toBuilder().isActive("Y").build();
+
+        List<ManagersEntity> managersEntity = managersRepository.findAllByStorageCodeAndIsActive(originalStorageCode,"Y");
+        for(ManagersEntity managersEntity1 : managersEntity) {
+            managersEntity1.setIsActive("N");
+            managersRepository.save(managersEntity1);
+        }
+        for(ManagersEntity managerEntity : managersEntity) {
+            ManagersEntity managersEntity2 = new ManagersEntity();
+            managersEntity2 = managersEntity2.toBuilder()
+                    .facilitiesCode(modifiedStorageCode)
+                    .user(managerEntity.getUser())
+                    .build();
+            managersRepository.save(managersEntity2);
+        }
+
+
         storageRepository.save(modifiedStorageEntity);
+
+
     }
 
     @Transactional
@@ -210,6 +246,21 @@ public class ApprovalService {
         Integer modifiedStoreCode = approvalEntity.getStore().getStoreId();
         StoreEntity modifiedStoreEntity = storeRepository.findBystoreId(modifiedStoreCode);
         modifiedStoreEntity = modifiedStoreEntity.toBuilder().isActive("Y").build();
+
+        List<ManagersEntity> managersEntity = managersRepository.findAllByStoreIdAndIsActive(originalStoreCode,"Y");
+        for(ManagersEntity managersEntity1 : managersEntity) {
+            managersEntity1.setIsActive("N");
+            managersRepository.save(managersEntity1);
+        }
+        for(ManagersEntity managerEntity : managersEntity) {
+            ManagersEntity managersEntity2 = new ManagersEntity();
+            managersEntity2 = managersEntity2.toBuilder()
+                    .facilitiesCode(modifiedStoreCode)
+                    .user(managerEntity.getUser())
+                    .build();
+            managersRepository.save(managersEntity2);
+        }
+
         storeRepository.save(modifiedStoreEntity);
     }
 
