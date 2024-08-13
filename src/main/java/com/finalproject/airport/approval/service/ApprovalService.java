@@ -129,7 +129,7 @@ public class ApprovalService {
     public void approveGate(Integer approvalCode) {
         log.info("Approving gate with code: {}", approvalCode);
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
-        approvalEntity = approvalEntity.toBuilder().status("Y").build();
+        approvalEntity = approvalEntity.toBuilder().status("Y").checked("Y").build();
         approvalRepository.save(approvalEntity);
 
     }
@@ -138,7 +138,7 @@ public class ApprovalService {
     public void approveBaggageClaim(Integer approvalCode) {
         log.info("Approving baggage claim with code: {}", approvalCode);
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
-        approvalEntity = approvalEntity.toBuilder().status("Y").build();
+        approvalEntity = approvalEntity.toBuilder().status("Y").checked("Y").build();
         approvalRepository.save(approvalEntity);
     }
 
@@ -146,7 +146,7 @@ public class ApprovalService {
     public void approveCheckinCounter(Integer approvalCode) {
         log.info("Approving check-in counter with code: {}", approvalCode);
         ApprovalEntity approvalEntity = approveCommon(approvalCode);
-        approvalEntity = approvalEntity.toBuilder().status("Y").build();
+        approvalEntity = approvalEntity.toBuilder().status("Y").checked("Y").build();
         approvalRepository.save(approvalEntity);
     }
 
