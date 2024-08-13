@@ -71,7 +71,6 @@ public class GateService {
                     .manager(modifyGate.getManager())
                     .type(modifyGate.getGateType())
                     .note(modifyGate.getNote())
-                    .location(modifyGate.getLocation())
                     .status(modifyGate.getStatus())
                     .lastInspectionDate(modifyGate.getLastInspectionDate())
                     .registrationDate(modifyGate.getRegistrationDate())
