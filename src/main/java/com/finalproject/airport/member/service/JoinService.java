@@ -192,46 +192,54 @@ public class JoinService {
 
         UserEntity user = userRepository.findByUserId(userId);
 
-        if (user.userId != null){
+        if (user != null && user.getUserId() != null) {
+            boolean emailSent = false;
+            boolean smsSent = false;
 
-
-          if (userEmail != null && !userEmail.isEmpty()){
-
-              if (user.userEmail .equals(userEmail)){
-
-                  String randomCode = String.valueOf((int) (Math.random() * 90000000) + 10000000);
-                  mailService.sendForNewPassword(user.userEmail,randomCode);
-                  String code = bCryptPasswordEncoder.encode(randomCode);
-                  UserEntity newPwd = user.toBuilder().userPassword(code).build();
-                  userRepository.save(newPwd);
-
-                  return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정상적으로 이메일을 보냈습니다.", null));
-
-              } else {
-                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이메일이 일치하지 않습니다.");
-              }
-          } else {
-            if (userPhone != null || !userPhone.isEmpty()){
-                if (user.userPhone .equals(userPhone)) {
+            // 이메일이 제공된 경우
+            if (userEmail != null && !userEmail.isEmpty()) {
+                if (user.getUserEmail().equals(userEmail)) {
                     String randomCode = String.valueOf((int) (Math.random() * 90000000) + 10000000);
-                    smsUtil.newpassword(userPhone,randomCode);
-                    String code = bCryptPasswordEncoder.encode(randomCode);
-                    UserEntity newPwd = user.toBuilder().userPassword(code).build();
+                    mailService.sendForNewPassword(user.getUserEmail(), randomCode);
+                    String encodedCode = bCryptPasswordEncoder.encode(randomCode);
+                    UserEntity newPwd = user.toBuilder().userPassword(encodedCode).build();
                     userRepository.save(newPwd);
-
-                    return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "정상적으로 SMS를 보냈습니다.", null));
+                    emailSent = true;
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("이메일이 일치하지 않습니다.");
                 }
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("전화번호가 일치하지 않습니다.");
             }
-              return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이디를 찾을수 없습니다");
-          }
+
+            // 전화번호가 제공된 경우
+            if (userPhone != null && !userPhone.isEmpty()) {
+                if (user.getUserPhone().equals(userPhone)) {
+                    String randomCode = String.valueOf((int) (Math.random() * 90000000) + 10000000);
+                    smsUtil.newpassword(userPhone, randomCode);
+                    String encodedCode = bCryptPasswordEncoder.encode(randomCode);
+                    UserEntity newPwd = user.toBuilder().userPassword(encodedCode).build();
+                    userRepository.save(newPwd);
+                    smsSent = true;
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("전화번호가 일치하지 않습니다.");
+                }
+            }
+
+            // 처리 결과에 따른 응답 반환
+            if (emailSent && smsSent) {
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "이메일과 SMS로 새 비밀번호를 보냈습니다.", null));
+            } else if (emailSent) {
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "이메일로 새 비밀번호를 보냈습니다.", null));
+            } else if (smsSent) {
+                return ResponseEntity.ok().body(new ResponseDTO(HttpStatus.OK, "SMS로 새 비밀번호를 보냈습니다.", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유효한 이메일 또는 전화번호를 제공해주세요.");
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이디를 찾을수 없습니다");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("아이디를 찾을 수 없습니다.");
         }
-
-
     }
+
+
 
     public List<NewUserDTO> getNewUser() {
 
