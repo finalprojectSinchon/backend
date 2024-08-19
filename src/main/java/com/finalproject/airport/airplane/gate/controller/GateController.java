@@ -49,7 +49,7 @@ public class GateController {
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
         List<GateDTO> gatedata = gateService.fetch();
         List<GateDTO> gateList = gateService.findAll();
-        System.out.println("여행간당"+gateList);
+        System.out.println("여행간당12"+gateList);
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("gateList", gateList);
 
